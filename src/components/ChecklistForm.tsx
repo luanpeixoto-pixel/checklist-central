@@ -17,8 +17,8 @@ import {
   Truck
 } from "lucide-react";
 import { StatusGroup } from "./StatusButton";
-import { VehicleDiagram } from "./VehicleDiagram";
-import { 
+import { VehicleDiagram3D } from "./vehicle-3d";
+import {
   type ChecklistData, 
   type ConditionStatus, 
   type YesNoNA,
@@ -307,7 +307,7 @@ export const ChecklistForm = ({ onSubmit, initialData }: ChecklistFormProps) => 
       {/* Vehicle Diagram */}
       <CollapsibleSection title="Áreas Afetadas do Veículo" icon={<Car className="h-5 w-5" />}>
         <div className="mt-4">
-          <VehicleDiagram
+          <VehicleDiagram3D
             markers={formData.areaMarkers}
             onAddMarker={(marker) => updateField('areaMarkers', [...formData.areaMarkers, marker])}
             onRemoveMarker={(id) => updateField('areaMarkers', formData.areaMarkers.filter(m => m.id !== id))}

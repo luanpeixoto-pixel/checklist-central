@@ -60,11 +60,14 @@ export interface MechanicalChecks {
   tanqueDePartida: YesNoNA;
 }
 
+// 3D marker with position in world coordinates
 export interface VehicleAreaMarker {
   id: string;
   x: number;
   y: number;
-  position: 'front' | 'back' | 'left' | 'right' | 'top';
+  z?: number; // Z coordinate for 3D markers
+  position: 'front' | 'back' | 'left' | 'right' | 'top' | 'bottom';
+  // Legacy 2D support - stored as percentages
 }
 
 export interface ChecklistData {
