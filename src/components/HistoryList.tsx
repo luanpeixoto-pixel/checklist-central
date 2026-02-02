@@ -8,10 +8,13 @@ import {
   XCircle,
   ChevronRight,
   FileText,
-  Trash2
+  Trash2,
+  Download
 } from "lucide-react";
 import type { ChecklistData } from "@/types/checklist";
 import { cn } from "@/lib/utils";
+import { exportChecklistsToCSV } from "@/lib/exportChecklist";
+import { toast } from "sonner";
 
 interface HistoryListProps {
   checklists: ChecklistData[];
@@ -67,15 +70,29 @@ export const HistoryList = ({ checklists, onSelect, onDelete }: HistoryListProps
     );
   }
 
+  const handleExport = () => {
+    exportChecklistsToCSV(checklists);
+    toast.success("Inspeções exportadas com sucesso!");
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-foreground">
-          Histórico de Inspeções
-        </h2>
-        <span className="text-sm text-muted-foreground">
-          {checklists.length} registro(s)
-        </span>
+        <div>
+          <h2 className="text-xl font-bold text-foreground">
+            Histórico de Inspeções
+          </h2>
+          <span className="text-sm text-muted-foreground">
+            {checklists.length} registro(s)
+          </span>
+        </div>
+        <button
+          onClick={handleExport}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
+        >
+          <Download className="h-4 w-4" />
+          Exportar CSV
+        </button>
       </div>
 
       <div className="grid gap-4">
