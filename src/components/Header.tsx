@@ -1,6 +1,15 @@
-import { Car, ClipboardList, BarChart3, Menu, X } from "lucide-react";
+import { Car, ClipboardList, BarChart3, Menu, X, LogOut, User } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface HeaderProps {
   currentView: 'checklist' | 'history';
@@ -9,11 +18,14 @@ interface HeaderProps {
 
 export const Header = ({ currentView, onViewChange }: HeaderProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user, signOut } = useAuth();
 
   const navItems = [
     { id: 'checklist' as const, label: 'Novo Checklist', icon: ClipboardList },
     { id: 'history' as const, label: 'Histórico', icon: BarChart3 },
   ];
+
+  const userName = user?.user_metadata?.nome || user?.email?.split('@')[0] || 'Usuário';
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-card/95 backdrop-blur-md">
@@ -51,6 +63,30 @@ export const Header = ({ currentView, onViewChange }: HeaderProps) => {
               );
             })}
           </nav>
+
+          {/* User Menu */}
+          <div className="hidden md:flex items-center gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center gap-2">
+                  <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                    <User className="h-4 w-4 text-primary" />
+                  </div>
+                  <span className="max-w-[120px] truncate">{userName}</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem className="text-muted-foreground text-xs">
+                  {user?.email}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={signOut} className="text-destructive">
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sair
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
 
           {/* Mobile Menu Button */}
           <button
@@ -92,6 +128,22 @@ export const Header = ({ currentView, onViewChange }: HeaderProps) => {
                 </button>
               );
             })}
+            {/* Mobile User Info & Logout */}
+            <div className="pt-2 mt-2 border-t border-border">
+              <div className="px-4 py-2 text-sm text-muted-foreground">
+                {user?.email}
+              </div>
+              <button
+                onClick={() => {
+                  signOut();
+                  setMobileMenuOpen(false);
+                }}
+                className="flex items-center gap-2 px-4 py-3 w-full rounded-lg font-medium text-destructive hover:bg-destructive/10 transition-colors"
+              >
+                <LogOut className="h-5 w-5" />
+                Sair
+              </button>
+            </div>
           </nav>
         </div>
       </div>
