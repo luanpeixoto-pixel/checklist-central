@@ -1,5 +1,16 @@
 export type ConditionStatus = 'good' | 'medium' | 'bad' | null;
 export type YesNoNA = 'yes' | 'no' | 'na' | null;
+export type VehicleType = 'caminhao' | 'carro_passeio' | 'van' | 'furgao' | 'onibus' | 'moto' | 'picape' | null;
+
+export const VEHICLE_TYPE_OPTIONS: { value: VehicleType; label: string }[] = [
+  { value: 'caminhao', label: 'Caminhão' },
+  { value: 'carro_passeio', label: 'Carro de Passeio' },
+  { value: 'van', label: 'Van' },
+  { value: 'furgao', label: 'Furgão' },
+  { value: 'onibus', label: 'Ônibus' },
+  { value: 'moto', label: 'Moto' },
+  { value: 'picape', label: 'Picape' },
+];
 
 export interface VehicleCondition {
   limpezaExterna: ConditionStatus;
@@ -60,6 +71,7 @@ export interface ChecklistData {
   id?: string;
   nome: string;
   data: string;
+  tipoVeiculo: VehicleType;
   veiculo: string;
   empresa: string;
   placa: string;
@@ -120,6 +132,7 @@ export const createEmptyMechanicalChecks = (): MechanicalChecks => ({
 export const createEmptyChecklist = (): ChecklistData => ({
   nome: '',
   data: new Date().toISOString().split('T')[0],
+  tipoVeiculo: null,
   veiculo: '',
   empresa: '',
   placa: '',

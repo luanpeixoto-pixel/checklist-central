@@ -13,7 +13,8 @@ import {
   ChevronDown,
   ChevronUp,
   Save,
-  RotateCcw
+  RotateCcw,
+  Truck
 } from "lucide-react";
 import { StatusGroup } from "./StatusButton";
 import { VehicleDiagram } from "./VehicleDiagram";
@@ -21,10 +22,19 @@ import {
   type ChecklistData, 
   type ConditionStatus, 
   type YesNoNA,
+  type VehicleType,
+  VEHICLE_TYPE_OPTIONS,
   createEmptyChecklist 
 } from "@/types/checklist";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface ChecklistFormProps {
   onSubmit: (data: ChecklistData) => void;
@@ -210,6 +220,28 @@ export const ChecklistForm = ({ onSubmit, initialData }: ChecklistFormProps) => 
               onChange={(e) => updateField('data', e.target.value)}
               className="input-field w-full"
             />
+          </div>
+          
+          <div className="space-y-2">
+            <label className="flex items-center gap-2 text-sm font-medium text-foreground">
+              <Truck className="h-4 w-4 text-muted-foreground" />
+              Tipo de Veículo
+            </label>
+            <Select
+              value={formData.tipoVeiculo || ""}
+              onValueChange={(value) => updateField('tipoVeiculo', value as VehicleType)}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Selecione o tipo" />
+              </SelectTrigger>
+              <SelectContent>
+                {VEHICLE_TYPE_OPTIONS.map((option) => (
+                  <SelectItem key={option.value} value={option.value!}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           
           <div className="space-y-2">
