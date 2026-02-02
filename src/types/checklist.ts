@@ -65,7 +65,6 @@ export interface VehicleAreaMarker {
   x: number;
   y: number;
   position: 'front' | 'back' | 'left' | 'right' | 'top';
-  view?: 'left' | 'front' | 'back' | 'top';
 }
 
 export interface ChecklistData {
