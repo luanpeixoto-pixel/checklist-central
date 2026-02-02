@@ -311,6 +311,7 @@ export const ChecklistForm = ({ onSubmit, initialData }: ChecklistFormProps) => 
             markers={formData.areaMarkers}
             onAddMarker={(marker) => updateField('areaMarkers', [...formData.areaMarkers, marker])}
             onRemoveMarker={(id) => updateField('areaMarkers', formData.areaMarkers.filter(m => m.id !== id))}
+            vehicleType={formData.tipoVeiculo}
           />
         </div>
       </CollapsibleSection>
