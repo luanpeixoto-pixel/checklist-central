@@ -3,7 +3,8 @@ import { Canvas, ThreeEvent } from '@react-three/fiber';
 import { OrbitControls, Environment, ContactShadows, Html } from '@react-three/drei';
 import { Vector3 } from 'three';
 import type { VehicleAreaMarker, VehicleType } from '@/types/checklist';
-import { getVehicleModel, getVehicleLabel } from './VehicleModels';
+import { getVehicleLabel } from './VehicleModels';
+import { getRealisticVehicleModel } from './VehicleModelsRealistic';
 import { DamageMarker3D } from './DamageMarker3D';
 import { RotateCw } from 'lucide-react';
 
@@ -76,7 +77,7 @@ const VehicleScene = ({
       
       {/* Vehicle model */}
       <group>
-        {getVehicleModel(vehicleType, handlePointerDown)}
+        {getRealisticVehicleModel(vehicleType, handlePointerDown)}
       </group>
       
       {/* Damage markers */}
