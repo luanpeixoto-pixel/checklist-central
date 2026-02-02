@@ -1,49 +1,48 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Header } from "@/components/Header";
 import { ChecklistForm } from "@/components/ChecklistForm";
 import { HistoryList } from "@/components/HistoryList";
+import { LimitReachedDialog } from "@/components/LimitReachedDialog";
+import { useChecklists } from "@/hooks/useChecklists";
 import type { ChecklistData } from "@/types/checklist";
 import { toast } from "sonner";
-
-const STORAGE_KEY = 'vehicle-checklists';
+import { Loader2 } from "lucide-react";
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<'checklist' | 'history'>('checklist');
-  const [checklists, setChecklists] = useState<ChecklistData[]>([]);
   const [editingChecklist, setEditingChecklist] = useState<ChecklistData | undefined>();
+  
+  const {
+    checklists,
+    loading,
+    limitReached,
+    setLimitReached,
+    canAddChecklist,
+    addChecklist,
+    updateChecklist,
+    deleteChecklist,
+    remainingChecklists,
+  } = useChecklists();
 
-  // Load from localStorage on mount
-  useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        setChecklists(JSON.parse(saved));
-      } catch (e) {
-        console.error('Error loading checklists:', e);
+  const handleSubmit = async (data: ChecklistData) => {
+    if (editingChecklist) {
+      const success = await updateChecklist(editingChecklist.id!, data);
+      if (success) {
+        setEditingChecklist(undefined);
+        setCurrentView('history');
+        toast.success("Checklist atualizado com sucesso!");
+      }
+    } else {
+      if (!canAddChecklist()) {
+        setLimitReached(true);
+        return;
+      }
+      const success = await addChecklist(data);
+      if (success) {
+        setCurrentView('history');
+        toast.success("Checklist salvo com sucesso!");
       }
     }
-  }, []);
-
-  // Save to localStorage when checklists change
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(checklists));
-  }, [checklists]);
-
-  const handleSubmit = (data: ChecklistData) => {
-    const newChecklist: ChecklistData = {
-      ...data,
-      id: data.id || `checklist-${Date.now()}`,
-      createdAt: data.createdAt || new Date(),
-    };
-
-    if (editingChecklist) {
-      setChecklists(prev => prev.map(c => c.id === editingChecklist.id ? newChecklist : c));
-      setEditingChecklist(undefined);
-    } else {
-      setChecklists(prev => [newChecklist, ...prev]);
-    }
-    
-    setCurrentView('history');
   };
 
   const handleSelectChecklist = (checklist: ChecklistData) => {
@@ -51,30 +50,53 @@ const Index = () => {
     setCurrentView('checklist');
   };
 
-  const handleDeleteChecklist = (id: string) => {
-    setChecklists(prev => prev.filter(c => c.id !== id));
-    toast.success("Checklist excluído com sucesso");
+  const handleDeleteChecklist = async (id: string) => {
+    await deleteChecklist(id);
   };
 
   const handleViewChange = (view: 'checklist' | 'history') => {
     if (view === 'checklist') {
+      if (!editingChecklist && !canAddChecklist()) {
+        setLimitReached(true);
+        return;
+      }
       setEditingChecklist(undefined);
     }
     setCurrentView(view);
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <Header currentView={currentView} onViewChange={handleViewChange} />
+      
+      <LimitReachedDialog 
+        open={limitReached} 
+        onClose={() => setLimitReached(false)} 
+      />
       
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           {currentView === 'checklist' ? (
             <div className="animate-fade-in">
               <div className="mb-8">
-                <h2 className="text-2xl font-bold text-foreground">
-                  {editingChecklist ? 'Editar Checklist' : 'Novo Checklist de Inspeção'}
-                </h2>
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl font-bold text-foreground">
+                    {editingChecklist ? 'Editar Checklist' : 'Novo Checklist de Inspeção'}
+                  </h2>
+                  {!editingChecklist && (
+                    <span className="text-sm text-muted-foreground bg-muted px-3 py-1 rounded-full">
+                      {remainingChecklists} restantes
+                    </span>
+                  )}
+                </div>
                 <p className="text-muted-foreground mt-1">
                   {editingChecklist 
                     ? 'Atualize as informações do checklist selecionado'
