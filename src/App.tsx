@@ -5,7 +5,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { AnalyticsProvider } from "@/components/AnalyticsProvider";
-import Index from "./pages/Index";
+
+// Pages
+import Cockpit from "./pages/Cockpit";
+import Checklist from "./pages/Checklist";
+import Vehicles from "./pages/Vehicles";
+import Maintenance from "./pages/Maintenance";
+import Fuel from "./pages/Fuel";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
@@ -24,7 +30,39 @@ const App = () => (
               path="/" 
               element={
                 <ProtectedRoute>
-                  <Index />
+                  <Cockpit />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/checklist" 
+              element={
+                <ProtectedRoute>
+                  <Checklist />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/veiculos" 
+              element={
+                <ProtectedRoute>
+                  <Vehicles />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/manutencao" 
+              element={
+                <ProtectedRoute>
+                  <Maintenance />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/combustivel" 
+              element={
+                <ProtectedRoute>
+                  <Fuel />
                 </ProtectedRoute>
               } 
             />
