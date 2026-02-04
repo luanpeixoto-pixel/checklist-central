@@ -30,8 +30,11 @@ const App = () => (
               path="/" 
               element={
                 <ProtectedRoute>
+                  <AppLayout>
                   <Cockpit />
+                  </AppLayout>
                 </ProtectedRoute>
+
               } 
             />
             <Route 
