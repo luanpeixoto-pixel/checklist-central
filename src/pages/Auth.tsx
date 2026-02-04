@@ -1,3 +1,5 @@
+console.log("🚨 Auth.tsx carregou");
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/lib/supabaseClient";
@@ -13,7 +15,7 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  
+
   const [formData, setFormData] = useState({
     nome: "",
     email: "",
@@ -74,7 +76,7 @@ const Auth = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     setLoading(true);
@@ -132,8 +134,8 @@ const Auth = () => {
   };
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    setErrors(prev => ({ ...prev, [field]: "" }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    setErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
   return (
@@ -151,14 +153,9 @@ const Auth = () => {
 
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">
-            {isLogin ? "Entrar na conta" : "Criar nova conta"}
-          </CardTitle>
+          <CardTitle className="text-xl">{isLogin ? "Entrar na conta" : "Criar nova conta"}</CardTitle>
           <CardDescription>
-            {isLogin 
-              ? "Faça login para acessar o sistema" 
-              : "Preencha os dados para se cadastrar"
-            }
+            {isLogin ? "Faça login para acessar o sistema" : "Preencha os dados para se cadastrar"}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -174,9 +171,7 @@ const Auth = () => {
                   onChange={(e) => handleInputChange("nome", e.target.value)}
                   className={errors.nome ? "border-destructive" : ""}
                 />
-                {errors.nome && (
-                  <p className="text-sm text-destructive">{errors.nome}</p>
-                )}
+                {errors.nome && <p className="text-sm text-destructive">{errors.nome}</p>}
               </div>
             )}
 
@@ -190,9 +185,7 @@ const Auth = () => {
                 onChange={(e) => handleInputChange("email", e.target.value)}
                 className={errors.email ? "border-destructive" : ""}
               />
-              {errors.email && (
-                <p className="text-sm text-destructive">{errors.email}</p>
-              )}
+              {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
             </div>
 
             <div className="space-y-2">
@@ -214,13 +207,9 @@ const Auth = () => {
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
-              {errors.password && (
-                <p className="text-sm text-destructive">{errors.password}</p>
-              )}
+              {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
               {!isLogin && !errors.password && (
-                <p className="text-xs text-muted-foreground">
-                  A senha deve conter números e letras maiúsculas
-                </p>
+                <p className="text-xs text-muted-foreground">A senha deve conter números e letras maiúsculas</p>
               )}
             </div>
 
@@ -249,9 +238,7 @@ const Auth = () => {
         </CardContent>
       </Card>
 
-      <p className="mt-8 text-center text-sm text-muted-foreground">
-        VeiculoCheck © {new Date().getFullYear()}
-      </p>
+      <p className="mt-8 text-center text-sm text-muted-foreground">VeiculoCheck © {new Date().getFullYear()}</p>
     </div>
   );
 };
