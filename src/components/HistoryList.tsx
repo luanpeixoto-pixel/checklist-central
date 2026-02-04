@@ -2,22 +2,20 @@ import {
   Car, 
   Calendar, 
   User, 
-  Building2, 
   CheckCircle2, 
   AlertTriangle, 
   XCircle,
   ChevronRight,
   FileText,
   Trash2,
-  Download
 } from "lucide-react";
 import type { ChecklistData } from "@/types/checklist";
+import type { Vehicle } from "@/types/fleet";
 import { cn } from "@/lib/utils";
-import { exportChecklistsToCSV } from "@/lib/exportChecklist";
-import { toast } from "sonner";
 
 interface HistoryListProps {
   checklists: ChecklistData[];
+  vehicles: Vehicle[];
   onSelect: (checklist: ChecklistData) => void;
   onDelete: (id: string) => void;
 }
@@ -53,7 +51,9 @@ const statusConfig = {
   },
 };
 
-export const HistoryList = ({ checklists, onSelect, onDelete }: HistoryListProps) => {
+export const HistoryList = ({ checklists, vehicles, onSelect, onDelete }: HistoryListProps) => {
+  const vehicleMap = new Map(vehicles.map((v) => [v.id, v]));
+
   if (checklists.length === 0) {
     return (
       <div className="card-elevated p-12 text-center animate-fade-in">
@@ -70,11 +70,6 @@ export const HistoryList = ({ checklists, onSelect, onDelete }: HistoryListProps
     );
   }
 
-  const handleExport = () => {
-    exportChecklistsToCSV(checklists);
-    toast.success("Inspeções exportadas com sucesso!");
-  };
-
   return (
     <div className="space-y-4">
       <div className="grid gap-4">
@@ -82,6 +77,7 @@ export const HistoryList = ({ checklists, onSelect, onDelete }: HistoryListProps
           const status = getOverallStatus(checklist);
           const config = statusConfig[status];
           const StatusIcon = config.icon;
+          const vehicle = vehicleMap.get(checklist.vehicle_id);
 
           return (
             <div
@@ -104,10 +100,10 @@ export const HistoryList = ({ checklists, onSelect, onDelete }: HistoryListProps
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <h3 className="font-semibold text-foreground truncate">
-                        {checklist.veiculo}
+                        {vehicle ? vehicle.modelo : "Veículo não encontrado"}
                       </h3>
                       <p className="text-sm text-primary font-medium">
-                        {checklist.placa}
+                        {vehicle ? vehicle.placa : "-"}
                       </p>
                     </div>
                     <span className={cn(
@@ -127,16 +123,10 @@ export const HistoryList = ({ checklists, onSelect, onDelete }: HistoryListProps
                       <Calendar className="h-4 w-4" />
                       <span>{new Date(checklist.data).toLocaleDateString('pt-BR')}</span>
                     </div>
-                    {checklist.empresa && (
-                      <div className="flex items-center gap-1.5">
-                        <Building2 className="h-4 w-4" />
-                        <span>{checklist.empresa}</span>
-                      </div>
-                    )}
                     {checklist.quilometragem && (
                       <div className="flex items-center gap-1.5">
                         <Car className="h-4 w-4" />
-                        <span>{checklist.quilometragem}</span>
+                        <span>{checklist.quilometragem} km</span>
                       </div>
                     )}
                   </div>

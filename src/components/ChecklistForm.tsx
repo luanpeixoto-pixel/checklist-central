@@ -183,7 +183,7 @@ export const ChecklistForm = ({ vehicles, initialData, onSubmit }: ChecklistForm
               <SelectContent>
                 {vehicles.map((vehicle) => (
                   <SelectItem key={vehicle.id} value={vehicle.id}>
-                    {vehicle.plate} — {vehicle.model}
+                    {vehicle.placa} — {vehicle.modelo}
                   </SelectItem>
                 ))}
               </SelectContent>
