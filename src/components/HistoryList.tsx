@@ -9,10 +9,8 @@ import {
   ChevronRight,
   FileText,
   Trash2,
-  Download,
-  Plus
+  Download
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import type { ChecklistData } from "@/types/checklist";
 import { cn } from "@/lib/utils";
 import { exportChecklistsToCSV } from "@/lib/exportChecklist";
@@ -22,7 +20,6 @@ interface HistoryListProps {
   checklists: ChecklistData[];
   onSelect: (checklist: ChecklistData) => void;
   onDelete: (id: string) => void;
-  onNew?: () => void;
 }
 
 const getOverallStatus = (checklist: ChecklistData): 'good' | 'warning' | 'critical' => {
@@ -56,7 +53,7 @@ const statusConfig = {
   },
 };
 
-export const HistoryList = ({ checklists, onSelect, onDelete, onNew }: HistoryListProps) => {
+export const HistoryList = ({ checklists, onSelect, onDelete }: HistoryListProps) => {
   if (checklists.length === 0) {
     return (
       <div className="card-elevated p-12 text-center animate-fade-in">
@@ -66,15 +63,9 @@ export const HistoryList = ({ checklists, onSelect, onDelete, onNew }: HistoryLi
         <h3 className="text-lg font-semibold text-foreground mb-2">
           Nenhum checklist registrado
         </h3>
-        <p className="text-muted-foreground max-w-sm mx-auto mb-6">
+        <p className="text-muted-foreground max-w-sm mx-auto">
           Crie seu primeiro checklist de inspeção veicular para começar a manter o histórico.
         </p>
-        {onNew && (
-          <Button onClick={onNew} className="gap-2">
-            <Plus className="h-4 w-4" />
-            Novo Checklist
-          </Button>
-        )}
       </div>
     );
   }
@@ -86,32 +77,6 @@ export const HistoryList = ({ checklists, onSelect, onDelete, onNew }: HistoryLi
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-bold text-foreground">
-            Histórico de Inspeções
-          </h2>
-          <span className="text-sm text-muted-foreground">
-            {checklists.length} registro(s)
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          {onNew && (
-            <Button onClick={onNew} className="gap-2">
-              <Plus className="h-4 w-4" />
-              Novo Checklist
-            </Button>
-          )}
-          <button
-            onClick={handleExport}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
-          >
-            <Download className="h-4 w-4" />
-            Exportar CSV
-          </button>
-        </div>
-      </div>
-
       <div className="grid gap-4">
         {checklists.map((checklist, index) => {
           const status = getOverallStatus(checklist);

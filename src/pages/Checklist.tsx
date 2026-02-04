@@ -6,7 +6,8 @@ import { LimitReachedDialog } from "@/components/LimitReachedDialog";
 import { useChecklists } from "@/hooks/useChecklists";
 import type { ChecklistData } from "@/types/checklist";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const Checklist = () => {
   const [currentView, setCurrentView] = useState<'checklist' | 'history'>('history');
@@ -85,26 +86,36 @@ const Checklist = () => {
       
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h1 className="text-2xl font-bold text-foreground">
+                {currentView === 'checklist' 
+                  ? (editingChecklist ? 'Editar Checklist' : 'Novo Checklist de Inspeção')
+                  : 'Checklist de Inspeção'
+                }
+              </h1>
+              <p className="text-muted-foreground mt-1">
+                {currentView === 'checklist'
+                  ? (editingChecklist 
+                      ? 'Atualize as informações do checklist selecionado'
+                      : 'Preencha todos os campos para registrar a inspeção do veículo'
+                    )
+                  : `${checklists.length} registro${checklists.length !== 1 ? 's' : ''} • ${remainingChecklists} restantes`
+                }
+              </p>
+            </div>
+            {currentView === 'history' && (
+              <Button onClick={handleNewChecklist} className="gap-2">
+                <Plus className="h-4 w-4" />
+                Novo Checklist
+              </Button>
+            )}
+          </div>
+
+          {/* Content */}
           {currentView === 'checklist' ? (
             <div className="animate-fade-in">
-              <div className="mb-8">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-2xl font-bold text-foreground">
-                    {editingChecklist ? 'Editar Checklist' : 'Novo Checklist de Inspeção'}
-                  </h2>
-                  {!editingChecklist && (
-                    <span className="text-sm text-muted-foreground bg-muted px-3 py-1 rounded-full">
-                      {remainingChecklists} restantes
-                    </span>
-                  )}
-                </div>
-                <p className="text-muted-foreground mt-1">
-                  {editingChecklist 
-                    ? 'Atualize as informações do checklist selecionado'
-                    : 'Preencha todos os campos para registrar a inspeção do veículo'
-                  }
-                </p>
-              </div>
               <ChecklistForm 
                 onSubmit={handleSubmit} 
                 initialData={editingChecklist}
@@ -116,7 +127,6 @@ const Checklist = () => {
               checklists={checklists}
               onSelect={handleSelectChecklist}
               onDelete={handleDeleteChecklist}
-              onNew={handleNewChecklist}
             />
           )}
         </div>
