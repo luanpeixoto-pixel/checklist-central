@@ -26,13 +26,7 @@ import { StatusGroup } from "./StatusButton";
 import { VehicleDiagram } from "./VehicleDiagram";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 /* -------------------------------------------------------------------------- */
 /* Types                                                                       */
@@ -55,12 +49,7 @@ interface CollapsibleSectionProps {
 /* UI helpers                                                                  */
 /* -------------------------------------------------------------------------- */
 
-const CollapsibleSection = ({
-  title,
-  icon,
-  children,
-  defaultOpen = true,
-}: CollapsibleSectionProps) => {
+const CollapsibleSection = ({ title, icon, children, defaultOpen = true }: CollapsibleSectionProps) => {
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
@@ -71,9 +60,7 @@ const CollapsibleSection = ({
         className="w-full flex items-center justify-between p-4 hover:bg-muted/50 transition-colors"
       >
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-primary/10 text-primary">
-            {icon}
-          </div>
+          <div className="p-2 rounded-lg bg-primary/10 text-primary">{icon}</div>
           <h3 className="section-title">{title}</h3>
         </div>
         {isOpen ? (
@@ -86,7 +73,7 @@ const CollapsibleSection = ({
       <div
         className={cn(
           "overflow-hidden transition-all duration-300",
-          isOpen ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
+          isOpen ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0",
         )}
       >
         <div className="p-4 pt-0 border-t border-border">{children}</div>
@@ -95,17 +82,9 @@ const CollapsibleSection = ({
   );
 };
 
-const FieldRow = ({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) => (
+const FieldRow = ({ label, children }: { label: string; children: React.ReactNode }) => (
   <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 py-3 border-b border-border/50 last:border-0">
-    <span className="text-sm font-medium text-foreground min-w-[160px]">
-      {label}
-    </span>
+    <span className="text-sm font-medium text-foreground min-w-[160px]">{label}</span>
     <div className="flex-1">{children}</div>
   </div>
 );
@@ -114,39 +93,23 @@ const FieldRow = ({
 /* Component                                                                  */
 /* -------------------------------------------------------------------------- */
 
-export const ChecklistForm = ({
-  vehicles,
-  initialData,
-  onSubmit,
-}: ChecklistFormProps) => {
-  const [formData, setFormData] = useState<ChecklistData>(
-    initialData || createEmptyChecklist()
-  );
+export const ChecklistForm = ({ vehicles, initialData, onSubmit }: ChecklistFormProps) => {
+  const [formData, setFormData] = useState<ChecklistData>(initialData || createEmptyChecklist());
 
   /* ----------------------------- helpers ---------------------------------- */
 
-  const updateField = <K extends keyof ChecklistData>(
-    field: K,
-    value: ChecklistData[K]
-  ) => {
+  const updateField = <K extends keyof ChecklistData>(field: K, value: ChecklistData[K]) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const updateCondition = (
-    field: keyof ChecklistData["vehicleCondition"],
-    value: ConditionStatus
-  ) => {
+  const updateCondition = (field: keyof ChecklistData["vehicleCondition"], value: ConditionStatus) => {
     setFormData((prev) => ({
       ...prev,
       vehicleCondition: { ...prev.vehicleCondition, [field]: value },
     }));
   };
 
-  const updateYesNoGroup = (
-    group: keyof ChecklistData,
-    field: string,
-    value: YesNoNA
-  ) => {
+  const updateYesNoGroup = (group: keyof ChecklistData, field: string, value: YesNoNA) => {
     setFormData((prev: any) => ({
       ...prev,
       [group]: { ...prev[group], [field]: value },
@@ -176,10 +139,7 @@ export const ChecklistForm = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Informações gerais */}
-      <CollapsibleSection
-        title="Informações Gerais"
-        icon={<ClipboardCheck className="h-5 w-5" />}
-      >
+      <CollapsibleSection title="Informações Gerais" icon={<ClipboardCheck className="h-5 w-5" />}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
           {/* Inspetor */}
           <div className="space-y-2">
@@ -216,10 +176,7 @@ export const ChecklistForm = ({
               <Car className="h-4 w-4 text-muted-foreground" />
               Veículo *
             </label>
-            <Select
-              value={formData.vehicle_id || ""}
-              onValueChange={(value) => updateField("vehicle_id", value)}
-            >
+            <Select value={formData.vehicle_id || ""} onValueChange={(value) => updateField("vehicle_id", value)}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Selecione um veículo" />
               </SelectTrigger>
@@ -238,9 +195,7 @@ export const ChecklistForm = ({
             <label className="text-sm font-medium">Tipo de veículo</label>
             <Select
               value={formData.tipoVeiculo || ""}
-              onValueChange={(v) =>
-                updateField("tipoVeiculo", v as VehicleType)
-              }
+              onValueChange={(v) => updateField("tipoVeiculo", v as VehicleType)}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Selecione" />
@@ -275,13 +230,11 @@ export const ChecklistForm = ({
       <CollapsibleSection title="Áreas Afetadas" icon={<Car className="h-5 w-5" />}>
         <VehicleDiagram
           markers={formData.areaMarkers}
-          onAddMarker={(m) =>
-            updateField("areaMarkers", [...formData.areaMarkers, m])
-          }
+          onAddMarker={(m) => updateField("areaMarkers", [...formData.areaMarkers, m])}
           onRemoveMarker={(id) =>
             updateField(
               "areaMarkers",
-              formData.areaMarkers.filter((m) => m.id !== id)
+              formData.areaMarkers.filter((m) => m.id !== id),
             )
           }
           vehicleType={formData.tipoVeiculo}
@@ -289,10 +242,7 @@ export const ChecklistForm = ({
       </CollapsibleSection>
 
       {/* Observações */}
-      <CollapsibleSection
-        title="Observações"
-        icon={<MessageSquare className="h-5 w-5" />}
-      >
+      <CollapsibleSection title="Observações" icon={<MessageSquare className="h-5 w-5" />}>
         <textarea
           value={formData.observacoes}
           onChange={(e) => updateField("observacoes", e.target.value)}
@@ -302,10 +252,7 @@ export const ChecklistForm = ({
 
       {/* Ações */}
       <div className="flex flex-col sm:flex-row gap-4 pt-4">
-        <button
-          type="submit"
-          className="btn-accent-gradient flex-1 flex items-center justify-center gap-2"
-        >
+        <button type="submit" className="btn-accent-gradient flex-1 flex items-center justify-center gap-2">
           <Save className="h-5 w-5" />
           Salvar Checklist
         </button>
