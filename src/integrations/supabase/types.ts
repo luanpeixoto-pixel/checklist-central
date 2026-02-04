@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      analytics_events: {
+        Row: {
+          created_at: string
+          element_class: string | null
+          element_id: string | null
+          element_text: string | null
+          event_name: string | null
+          event_type: string
+          id: string
+          metadata: Json | null
+          page_path: string
+          scroll_depth: number | null
+          session_id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          element_class?: string | null
+          element_id?: string | null
+          element_text?: string | null
+          event_name?: string | null
+          event_type: string
+          id?: string
+          metadata?: Json | null
+          page_path: string
+          scroll_depth?: number | null
+          session_id: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          element_class?: string | null
+          element_id?: string | null
+          element_text?: string | null
+          event_name?: string | null
+          event_type?: string
+          id?: string
+          metadata?: Json | null
+          page_path?: string
+          scroll_depth?: number | null
+          session_id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       checklists: {
         Row: {
           created_at: string
@@ -37,6 +82,164 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      popup_definitions: {
+        Row: {
+          created_at: string
+          description: string | null
+          form_schema: Json
+          id: string
+          is_active: boolean
+          name: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          form_schema: Json
+          id?: string
+          is_active?: boolean
+          name: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          form_schema?: Json
+          id?: string
+          is_active?: boolean
+          name?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      popup_displays: {
+        Row: {
+          displayed_at: string
+          id: string
+          popup_id: string
+          trigger_id: string | null
+          user_id: string
+        }
+        Insert: {
+          displayed_at?: string
+          id?: string
+          popup_id: string
+          trigger_id?: string | null
+          user_id: string
+        }
+        Update: {
+          displayed_at?: string
+          id?: string
+          popup_id?: string
+          trigger_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "popup_displays_popup_id_fkey"
+            columns: ["popup_id"]
+            isOneToOne: false
+            referencedRelation: "popup_definitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "popup_displays_trigger_id_fkey"
+            columns: ["trigger_id"]
+            isOneToOne: false
+            referencedRelation: "popup_triggers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      popup_responses: {
+        Row: {
+          created_at: string
+          id: string
+          popup_id: string
+          response_data: Json
+          trigger_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          popup_id: string
+          response_data: Json
+          trigger_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          popup_id?: string
+          response_data?: Json
+          trigger_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "popup_responses_popup_id_fkey"
+            columns: ["popup_id"]
+            isOneToOne: false
+            referencedRelation: "popup_definitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "popup_responses_trigger_id_fkey"
+            columns: ["trigger_id"]
+            isOneToOne: false
+            referencedRelation: "popup_triggers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      popup_triggers: {
+        Row: {
+          conditions: Json
+          cooldown_hours: number | null
+          created_at: string
+          id: string
+          is_active: boolean
+          max_displays: number | null
+          popup_id: string
+          priority: number
+          trigger_type: string
+        }
+        Insert: {
+          conditions: Json
+          cooldown_hours?: number | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          max_displays?: number | null
+          popup_id: string
+          priority?: number
+          trigger_type: string
+        }
+        Update: {
+          conditions?: Json
+          cooldown_hours?: number | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          max_displays?: number | null
+          popup_id?: string
+          priority?: number
+          trigger_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "popup_triggers_popup_id_fkey"
+            columns: ["popup_id"]
+            isOneToOne: false
+            referencedRelation: "popup_definitions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
