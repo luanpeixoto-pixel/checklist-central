@@ -498,17 +498,17 @@ export const VehicleDiagram = ({ markers, onAddMarker, onRemoveMarker, vehicleTy
     const x = ((e.clientX - rect.left) / rect.width) * 100;
     const y = ((e.clientY - rect.top) / rect.height) * 100;
     
-    let position: VehicleAreaMarker['position'] = 'top';
-    if (y < 25) position = 'front';
-    else if (y > 75) position = 'back';
-    else if (x < 35) position = 'left';
-    else if (x > 65) position = 'right';
+    let markerType: VehicleAreaMarker['type'] = 'outro';
+    if (y < 25) markerType = 'amassado';
+    else if (y > 75) markerType = 'quebrado';
+    else if (x < 35) markerType = 'risco';
+    else if (x > 65) markerType = 'risco';
     
     const newMarker: VehicleAreaMarker = {
       id: `marker-${Date.now()}`,
       x,
       y,
-      position,
+      type: markerType,
     };
     
     onAddMarker(newMarker);

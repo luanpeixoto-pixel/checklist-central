@@ -60,8 +60,8 @@ export const generateChecklistCSV = (checklists: ChecklistData[], vehicles: Vehi
     return [
       formatDate(checklist.data),
       checklist.nome,
-      vehicle ? vehicle.model : "Veículo não encontrado",
-      vehicle ? vehicle.plate : "-",
+      vehicle ? vehicle.modelo : "Veículo não encontrado",
+      vehicle ? vehicle.placa : "-",
       checklist.tipoVeiculo ? vehicleTypeLabels[checklist.tipoVeiculo] : "-",
       checklist.quilometragem || "-",
       formatValue(checklist.vehicleCondition.limpezaExterna),

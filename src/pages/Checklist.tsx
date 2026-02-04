@@ -165,7 +165,7 @@ const Checklist = () => {
               />
             </div>
           ) : (
-            <HistoryList checklists={checklists} onSelect={handleEditChecklist} onDelete={handleDeleteChecklist} />
+            <HistoryList checklists={checklists} vehicles={vehicles} onSelect={handleEditChecklist} onDelete={handleDeleteChecklist} />
           )}
         </div>
       </main>

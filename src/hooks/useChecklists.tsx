@@ -30,7 +30,7 @@ export const useChecklists = () => {
       if (error) throw error;
 
       const parsed: ChecklistData[] = (data || []).map((row) => ({
-        ...(row.data as ChecklistData),
+        ...(row.data as unknown as ChecklistData),
         id: row.id,
         createdAt: new Date(row.created_at),
       }));
