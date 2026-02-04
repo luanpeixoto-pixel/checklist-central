@@ -9,8 +9,10 @@ import {
   ChevronRight,
   FileText,
   Trash2,
-  Download
+  Download,
+  Plus
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import type { ChecklistData } from "@/types/checklist";
 import { cn } from "@/lib/utils";
 import { exportChecklistsToCSV } from "@/lib/exportChecklist";
@@ -68,12 +70,10 @@ export const HistoryList = ({ checklists, onSelect, onDelete, onNew }: HistoryLi
           Crie seu primeiro checklist de inspeção veicular para começar a manter o histórico.
         </p>
         {onNew && (
-          <button
-            onClick={onNew}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-accent text-accent-foreground font-semibold hover:bg-accent/90 transition-colors"
-          >
+          <Button onClick={onNew} className="gap-2">
+            <Plus className="h-4 w-4" />
             Novo Checklist
-          </button>
+          </Button>
         )}
       </div>
     );
@@ -97,12 +97,10 @@ export const HistoryList = ({ checklists, onSelect, onDelete, onNew }: HistoryLi
         </div>
         <div className="flex items-center gap-2">
           {onNew && (
-            <button
-              onClick={onNew}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-accent text-accent-foreground font-medium hover:bg-accent/90 transition-colors"
-            >
+            <Button onClick={onNew} className="gap-2">
+              <Plus className="h-4 w-4" />
               Novo Checklist
-            </button>
+            </Button>
           )}
           <button
             onClick={handleExport}
