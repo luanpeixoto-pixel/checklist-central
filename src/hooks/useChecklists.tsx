@@ -29,14 +29,14 @@ export const useChecklists = () => {
 
       if (error) throw error;
 
-      const parsedChecklists: ChecklistData[] = (data || []).map((row) => ({
-        ...(row.data as unknown as ChecklistData),
+      const parsed: ChecklistData[] = (data || []).map((row) => ({
+        ...(row.data as ChecklistData),
         id: row.id,
         createdAt: new Date(row.created_at),
       }));
 
-      setChecklists(parsedChecklists);
-      setLimitReached(parsedChecklists.length >= MAX_CHECKLISTS);
+      setChecklists(parsed);
+      setLimitReached(parsed.length >= MAX_CHECKLISTS);
     } catch (error) {
       console.error("Error fetching checklists:", error);
       toast.error("Erro ao carregar checklists");
@@ -49,13 +49,16 @@ export const useChecklists = () => {
     fetchChecklists();
   }, [user]);
 
-  const canAddChecklist = () => {
-    return checklists.length < MAX_CHECKLISTS;
-  };
+  const canAddChecklist = () => checklists.length < MAX_CHECKLISTS;
 
   const addChecklist = async (data: ChecklistData): Promise<boolean> => {
     if (!user) {
       toast.error("Usuário não autenticado");
+      return false;
+    }
+
+    if (!data.vehicle_id) {
+      toast.error("Checklist precisa estar vinculado a um veículo");
       return false;
     }
 
@@ -65,25 +68,31 @@ export const useChecklists = () => {
     }
 
     try {
-      const { data: newData, error } = await supabase
+      const payload: ChecklistData = {
+        ...data,
+        vehicle_id: data.vehicle_id, // explícito
+      };
+
+      const { data: newRow, error } = await supabase
         .from("checklists")
         .insert({
           user_id: user.id,
-          data: data as unknown as Json,
+          data: payload as unknown as Json,
         })
         .select()
         .single();
 
       if (error) throw error;
 
-      const newChecklist: ChecklistData = {
-        ...data,
-        id: newData.id,
-        createdAt: new Date(newData.created_at),
-      };
-
       setChecklists((prev) => {
-        const updated = [newChecklist, ...prev];
+        const updated = [
+          {
+            ...payload,
+            id: newRow.id,
+            createdAt: new Date(newRow.created_at),
+          },
+          ...prev,
+        ];
         setLimitReached(updated.length >= MAX_CHECKLISTS);
         return updated;
       });
@@ -102,20 +111,28 @@ export const useChecklists = () => {
       return false;
     }
 
+    if (!data.vehicle_id) {
+      toast.error("Checklist precisa estar vinculado a um veículo");
+      return false;
+    }
+
     try {
+      const payload: ChecklistData = {
+        ...data,
+        vehicle_id: data.vehicle_id,
+      };
+
       const { error } = await supabase
         .from("checklists")
         .update({
-          data: data as unknown as Json,
+          data: payload as unknown as Json,
         })
         .eq("id", id)
         .eq("user_id", user.id);
 
       if (error) throw error;
 
-      setChecklists((prev) =>
-        prev.map((c) => (c.id === id ? { ...data, id, createdAt: c.createdAt } : c))
-      );
+      setChecklists((prev) => prev.map((c) => (c.id === id ? { ...payload, id, createdAt: c.createdAt } : c)));
 
       return true;
     } catch (error) {
@@ -132,11 +149,7 @@ export const useChecklists = () => {
     }
 
     try {
-      const { error } = await supabase
-        .from("checklists")
-        .delete()
-        .eq("id", id)
-        .eq("user_id", user.id);
+      const { error } = await supabase.from("checklists").delete().eq("id", id).eq("user_id", user.id);
 
       if (error) throw error;
 
@@ -169,4 +182,3 @@ export const useChecklists = () => {
     remainingChecklists: MAX_CHECKLISTS - checklists.length,
   };
 };
-
