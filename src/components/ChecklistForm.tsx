@@ -227,6 +227,21 @@ export const ChecklistForm = ({ vehicles, initialData, onSubmit }: ChecklistForm
         </div>
       </CollapsibleSection>
 
+      {/* Áreas do veículo */}
+      <CollapsibleSection title="Áreas Afetadas" icon={<Car className="h-5 w-5" />} defaultOpen={true}>
+        <VehicleDiagram
+          markers={formData.areaMarkers}
+          onAddMarker={(m) => updateField("areaMarkers", [...formData.areaMarkers, m])}
+          onRemoveMarker={(id) =>
+            updateField(
+              "areaMarkers",
+              formData.areaMarkers.filter((m) => m.id !== id),
+            )
+          }
+          vehicleType={formData.tipoVeiculo}
+        />
+      </CollapsibleSection>
+
       {/* Condições do Veículo */}
       <CollapsibleSection title="Condições do Veículo" icon={<Car className="h-5 w-5" />} defaultOpen={false}>
         <div className="space-y-1 mt-4">
@@ -475,21 +490,6 @@ export const ChecklistForm = ({ vehicles, initialData, onSubmit }: ChecklistForm
             />
           </FieldRow>
         </div>
-      </CollapsibleSection>
-
-      {/* Áreas do veículo */}
-      <CollapsibleSection title="Áreas Afetadas" icon={<Car className="h-5 w-5" />} defaultOpen={false}>
-        <VehicleDiagram
-          markers={formData.areaMarkers}
-          onAddMarker={(m) => updateField("areaMarkers", [...formData.areaMarkers, m])}
-          onRemoveMarker={(id) =>
-            updateField(
-              "areaMarkers",
-              formData.areaMarkers.filter((m) => m.id !== id),
-            )
-          }
-          vehicleType={formData.tipoVeiculo}
-        />
       </CollapsibleSection>
 
       {/* Observações */}
