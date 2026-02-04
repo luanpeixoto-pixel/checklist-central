@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabaseClient";
 import { useAuth } from "./useAuth";
 import type { ChecklistData } from "@/types/checklist";
 import { toast } from "sonner";
@@ -169,3 +169,4 @@ export const useChecklists = () => {
     remainingChecklists: MAX_CHECKLISTS - checklists.length,
   };
 };
+
