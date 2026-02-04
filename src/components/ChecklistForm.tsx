@@ -12,6 +12,7 @@ import {
   ChevronUp,
   Save,
   RotateCcw,
+  Shield,
 } from "lucide-react";
 import {
   type ChecklistData,
@@ -226,8 +227,258 @@ export const ChecklistForm = ({ vehicles, initialData, onSubmit }: ChecklistForm
         </div>
       </CollapsibleSection>
 
+      {/* Condições do Veículo */}
+      <CollapsibleSection title="Condições do Veículo" icon={<Car className="h-5 w-5" />} defaultOpen={false}>
+        <div className="space-y-1 mt-4">
+          <FieldRow label="Limpeza Externa">
+            <StatusGroup
+              type="condition"
+              value={formData.vehicleCondition.limpezaExterna}
+              onChange={(v) => updateCondition("limpezaExterna", v as ConditionStatus)}
+            />
+          </FieldRow>
+          <FieldRow label="Limpeza Interna">
+            <StatusGroup
+              type="condition"
+              value={formData.vehicleCondition.limpezaInterna}
+              onChange={(v) => updateCondition("limpezaInterna", v as ConditionStatus)}
+            />
+          </FieldRow>
+          <FieldRow label="Pneus">
+            <StatusGroup
+              type="condition"
+              value={formData.vehicleCondition.pneus}
+              onChange={(v) => updateCondition("pneus", v as ConditionStatus)}
+            />
+          </FieldRow>
+          <FieldRow label="Estepe">
+            <StatusGroup
+              type="condition"
+              value={formData.vehicleCondition.estepe}
+              onChange={(v) => updateCondition("estepe", v as ConditionStatus)}
+            />
+          </FieldRow>
+        </div>
+      </CollapsibleSection>
+
+      {/* Luzes Dianteiras */}
+      <CollapsibleSection title="Luzes Dianteiras" icon={<Lightbulb className="h-5 w-5" />} defaultOpen={false}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+          {/* Esquerda */}
+          <div>
+            <h4 className="text-sm font-semibold text-muted-foreground mb-3">Lado Esquerdo</h4>
+            <div className="space-y-1">
+              <FieldRow label="Farol">
+                <StatusGroup
+                  type="yesno"
+                  value={formData.luzesDianteirasEsquerda.farol}
+                  onChange={(v) => updateYesNoGroup("luzesDianteirasEsquerda", "farol", v as YesNoNA)}
+                />
+              </FieldRow>
+              <FieldRow label="Seta">
+                <StatusGroup
+                  type="yesno"
+                  value={formData.luzesDianteirasEsquerda.seta}
+                  onChange={(v) => updateYesNoGroup("luzesDianteirasEsquerda", "seta", v as YesNoNA)}
+                />
+              </FieldRow>
+              <FieldRow label="Lanterna">
+                <StatusGroup
+                  type="yesno"
+                  value={formData.luzesDianteirasEsquerda.lanterna}
+                  onChange={(v) => updateYesNoGroup("luzesDianteirasEsquerda", "lanterna", v as YesNoNA)}
+                />
+              </FieldRow>
+            </div>
+          </div>
+          {/* Direita */}
+          <div>
+            <h4 className="text-sm font-semibold text-muted-foreground mb-3">Lado Direito</h4>
+            <div className="space-y-1">
+              <FieldRow label="Farol">
+                <StatusGroup
+                  type="yesno"
+                  value={formData.luzesDianteirasDireita.farol}
+                  onChange={(v) => updateYesNoGroup("luzesDianteirasDireita", "farol", v as YesNoNA)}
+                />
+              </FieldRow>
+              <FieldRow label="Seta">
+                <StatusGroup
+                  type="yesno"
+                  value={formData.luzesDianteirasDireita.seta}
+                  onChange={(v) => updateYesNoGroup("luzesDianteirasDireita", "seta", v as YesNoNA)}
+                />
+              </FieldRow>
+              <FieldRow label="Lanterna">
+                <StatusGroup
+                  type="yesno"
+                  value={formData.luzesDianteirasDireita.lanterna}
+                  onChange={(v) => updateYesNoGroup("luzesDianteirasDireita", "lanterna", v as YesNoNA)}
+                />
+              </FieldRow>
+            </div>
+          </div>
+        </div>
+      </CollapsibleSection>
+
+      {/* Luzes Traseiras */}
+      <CollapsibleSection title="Luzes Traseiras" icon={<Lightbulb className="h-5 w-5" />} defaultOpen={false}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+          {/* Esquerda */}
+          <div>
+            <h4 className="text-sm font-semibold text-muted-foreground mb-3">Lado Esquerdo</h4>
+            <div className="space-y-1">
+              <FieldRow label="Lanterna">
+                <StatusGroup
+                  type="yesno"
+                  value={formData.luzesTraseirasEsquerda.lanterna}
+                  onChange={(v) => updateYesNoGroup("luzesTraseirasEsquerda", "lanterna", v as YesNoNA)}
+                />
+              </FieldRow>
+              <FieldRow label="Freio">
+                <StatusGroup
+                  type="yesno"
+                  value={formData.luzesTraseirasEsquerda.freio}
+                  onChange={(v) => updateYesNoGroup("luzesTraseirasEsquerda", "freio", v as YesNoNA)}
+                />
+              </FieldRow>
+              <FieldRow label="Seta">
+                <StatusGroup
+                  type="yesno"
+                  value={formData.luzesTraseirasEsquerda.seta}
+                  onChange={(v) => updateYesNoGroup("luzesTraseirasEsquerda", "seta", v as YesNoNA)}
+                />
+              </FieldRow>
+              <FieldRow label="Ré">
+                <StatusGroup
+                  type="yesno"
+                  value={formData.luzesTraseirasEsquerda.re}
+                  onChange={(v) => updateYesNoGroup("luzesTraseirasEsquerda", "re", v as YesNoNA)}
+                />
+              </FieldRow>
+            </div>
+          </div>
+          {/* Direita */}
+          <div>
+            <h4 className="text-sm font-semibold text-muted-foreground mb-3">Lado Direito</h4>
+            <div className="space-y-1">
+              <FieldRow label="Lanterna">
+                <StatusGroup
+                  type="yesno"
+                  value={formData.luzesTraseiraDireita.lanterna}
+                  onChange={(v) => updateYesNoGroup("luzesTraseiraDireita", "lanterna", v as YesNoNA)}
+                />
+              </FieldRow>
+              <FieldRow label="Freio">
+                <StatusGroup
+                  type="yesno"
+                  value={formData.luzesTraseiraDireita.freio}
+                  onChange={(v) => updateYesNoGroup("luzesTraseiraDireita", "freio", v as YesNoNA)}
+                />
+              </FieldRow>
+              <FieldRow label="Seta">
+                <StatusGroup
+                  type="yesno"
+                  value={formData.luzesTraseiraDireita.seta}
+                  onChange={(v) => updateYesNoGroup("luzesTraseiraDireita", "seta", v as YesNoNA)}
+                />
+              </FieldRow>
+              <FieldRow label="Ré">
+                <StatusGroup
+                  type="yesno"
+                  value={formData.luzesTraseiraDireita.re}
+                  onChange={(v) => updateYesNoGroup("luzesTraseiraDireita", "re", v as YesNoNA)}
+                />
+              </FieldRow>
+            </div>
+          </div>
+        </div>
+      </CollapsibleSection>
+
+      {/* Outros Itens */}
+      <CollapsibleSection title="Outros Itens" icon={<Shield className="h-5 w-5" />} defaultOpen={false}>
+        <div className="space-y-1 mt-4">
+          <FieldRow label="Triângulo">
+            <StatusGroup
+              type="yesno"
+              value={formData.otherItems.triangulo}
+              onChange={(v) => updateYesNoGroup("otherItems", "triangulo", v as YesNoNA)}
+            />
+          </FieldRow>
+          <FieldRow label="Extintor">
+            <StatusGroup
+              type="yesno"
+              value={formData.otherItems.extintor}
+              onChange={(v) => updateYesNoGroup("otherItems", "extintor", v as YesNoNA)}
+            />
+          </FieldRow>
+          <FieldRow label="Macaco">
+            <StatusGroup
+              type="yesno"
+              value={formData.otherItems.macaco}
+              onChange={(v) => updateYesNoGroup("otherItems", "macaco", v as YesNoNA)}
+            />
+          </FieldRow>
+          <FieldRow label="Chave de Roda">
+            <StatusGroup
+              type="yesno"
+              value={formData.otherItems.chaveRoda}
+              onChange={(v) => updateYesNoGroup("otherItems", "chaveRoda", v as YesNoNA)}
+            />
+          </FieldRow>
+          <FieldRow label="Documentos">
+            <StatusGroup
+              type="yesno"
+              value={formData.otherItems.documentos}
+              onChange={(v) => updateYesNoGroup("otherItems", "documentos", v as YesNoNA)}
+            />
+          </FieldRow>
+        </div>
+      </CollapsibleSection>
+
+      {/* Verificação Mecânica */}
+      <CollapsibleSection title="Verificação Mecânica" icon={<Wrench className="h-5 w-5" />} defaultOpen={false}>
+        <div className="space-y-1 mt-4">
+          <FieldRow label="Nível de Óleo">
+            <StatusGroup
+              type="yesno"
+              value={formData.mechanicalChecks.nivelOleo}
+              onChange={(v) => updateYesNoGroup("mechanicalChecks", "nivelOleo", v as YesNoNA)}
+            />
+          </FieldRow>
+          <FieldRow label="Nível de Água">
+            <StatusGroup
+              type="yesno"
+              value={formData.mechanicalChecks.nivelAgua}
+              onChange={(v) => updateYesNoGroup("mechanicalChecks", "nivelAgua", v as YesNoNA)}
+            />
+          </FieldRow>
+          <FieldRow label="Fluido de Freio">
+            <StatusGroup
+              type="yesno"
+              value={formData.mechanicalChecks.fluidoFreio}
+              onChange={(v) => updateYesNoGroup("mechanicalChecks", "fluidoFreio", v as YesNoNA)}
+            />
+          </FieldRow>
+          <FieldRow label="Bateria">
+            <StatusGroup
+              type="yesno"
+              value={formData.mechanicalChecks.bateria}
+              onChange={(v) => updateYesNoGroup("mechanicalChecks", "bateria", v as YesNoNA)}
+            />
+          </FieldRow>
+          <FieldRow label="Correia">
+            <StatusGroup
+              type="yesno"
+              value={formData.mechanicalChecks.correia}
+              onChange={(v) => updateYesNoGroup("mechanicalChecks", "correia", v as YesNoNA)}
+            />
+          </FieldRow>
+        </div>
+      </CollapsibleSection>
+
       {/* Áreas do veículo */}
-      <CollapsibleSection title="Áreas Afetadas" icon={<Car className="h-5 w-5" />}>
+      <CollapsibleSection title="Áreas Afetadas" icon={<Car className="h-5 w-5" />} defaultOpen={false}>
         <VehicleDiagram
           markers={formData.areaMarkers}
           onAddMarker={(m) => updateField("areaMarkers", [...formData.areaMarkers, m])}
@@ -242,11 +493,11 @@ export const ChecklistForm = ({ vehicles, initialData, onSubmit }: ChecklistForm
       </CollapsibleSection>
 
       {/* Observações */}
-      <CollapsibleSection title="Observações" icon={<MessageSquare className="h-5 w-5" />}>
+      <CollapsibleSection title="Observações" icon={<MessageSquare className="h-5 w-5" />} defaultOpen={false}>
         <textarea
           value={formData.observacoes}
           onChange={(e) => updateField("observacoes", e.target.value)}
-          className="input-field w-full min-h-[120px]"
+          className="input-field w-full min-h-[120px] mt-4"
         />
       </CollapsibleSection>
 
@@ -260,7 +511,7 @@ export const ChecklistForm = ({ vehicles, initialData, onSubmit }: ChecklistForm
         <button
           type="button"
           onClick={handleReset}
-          className="px-6 py-3 rounded-lg border-2 border-border text-muted-foreground font-semibold hover:bg-muted transition"
+          className="px-6 py-3 rounded-lg border-2 border-border text-muted-foreground font-semibold hover:bg-muted transition flex items-center justify-center gap-2"
         >
           <RotateCcw className="h-5 w-5" />
           Limpar
