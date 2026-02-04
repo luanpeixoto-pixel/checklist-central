@@ -20,6 +20,7 @@ interface HistoryListProps {
   checklists: ChecklistData[];
   onSelect: (checklist: ChecklistData) => void;
   onDelete: (id: string) => void;
+  onNew?: () => void;
 }
 
 const getOverallStatus = (checklist: ChecklistData): 'good' | 'warning' | 'critical' => {
@@ -53,7 +54,7 @@ const statusConfig = {
   },
 };
 
-export const HistoryList = ({ checklists, onSelect, onDelete }: HistoryListProps) => {
+export const HistoryList = ({ checklists, onSelect, onDelete, onNew }: HistoryListProps) => {
   if (checklists.length === 0) {
     return (
       <div className="card-elevated p-12 text-center animate-fade-in">
@@ -86,13 +87,23 @@ export const HistoryList = ({ checklists, onSelect, onDelete }: HistoryListProps
             {checklists.length} registro(s)
           </span>
         </div>
-        <button
-          onClick={handleExport}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
-        >
-          <Download className="h-4 w-4" />
-          Exportar CSV
-        </button>
+        <div className="flex items-center gap-2">
+          {onNew && (
+            <button
+              onClick={onNew}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-accent text-accent-foreground font-medium hover:bg-accent/90 transition-colors"
+            >
+              Novo Checklist
+            </button>
+          )}
+          <button
+            onClick={handleExport}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
+          >
+            <Download className="h-4 w-4" />
+            Exportar CSV
+          </button>
+        </div>
       </div>
 
       <div className="grid gap-4">

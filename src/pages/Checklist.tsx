@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Header } from "@/components/Header";
+import { AppHeader } from "@/components/layout/AppHeader";
 import { ChecklistForm } from "@/components/ChecklistForm";
 import { HistoryList } from "@/components/HistoryList";
 import { LimitReachedDialog } from "@/components/LimitReachedDialog";
@@ -8,8 +8,8 @@ import type { ChecklistData } from "@/types/checklist";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
-const Index = () => {
-  const [currentView, setCurrentView] = useState<'checklist' | 'history'>('checklist');
+const Checklist = () => {
+  const [currentView, setCurrentView] = useState<'checklist' | 'history'>('history');
   const [editingChecklist, setEditingChecklist] = useState<ChecklistData | undefined>();
   
   const {
@@ -54,28 +54,29 @@ const Index = () => {
     await deleteChecklist(id);
   };
 
-  const handleViewChange = (view: 'checklist' | 'history') => {
-    if (view === 'checklist') {
-      if (!editingChecklist && !canAddChecklist()) {
-        setLimitReached(true);
-        return;
-      }
-      setEditingChecklist(undefined);
+  const handleNewChecklist = () => {
+    if (!canAddChecklist()) {
+      setLimitReached(true);
+      return;
     }
-    setCurrentView(view);
+    setEditingChecklist(undefined);
+    setCurrentView('checklist');
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="min-h-screen bg-background">
+        <AppHeader />
+        <div className="flex items-center justify-center h-[calc(100vh-4rem)]">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-background">
-      <Header currentView={currentView} onViewChange={handleViewChange} />
+      <AppHeader />
       
       <LimitReachedDialog 
         open={limitReached} 
@@ -115,21 +116,13 @@ const Index = () => {
               checklists={checklists}
               onSelect={handleSelectChecklist}
               onDelete={handleDeleteChecklist}
+              onNew={handleNewChecklist}
             />
           )}
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="border-t border-border mt-16">
-        <div className="container mx-auto px-4 py-6">
-          <p className="text-center text-sm text-muted-foreground">
-            VeiculoCheck © {new Date().getFullYear()} — Sistema de Inspeção Veicular
-          </p>
-        </div>
-      </footer>
     </div>
   );
 };
 
-export default Index;
+export default Checklist;

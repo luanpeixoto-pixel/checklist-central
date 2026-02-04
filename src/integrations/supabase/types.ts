@@ -83,6 +83,145 @@ export type Database = {
         }
         Relationships: []
       }
+      fuel_records: {
+        Row: {
+          condutor: string | null
+          created_at: string
+          data_abastecimento: string
+          id: string
+          km_por_litro: number | null
+          km_rodados: number | null
+          litros: number
+          observacoes: string | null
+          posto: string | null
+          quilometragem: number
+          tanque_cheio: boolean | null
+          tipo_combustivel: string
+          updated_at: string
+          user_id: string
+          valor_litro: number | null
+          valor_total: number
+          vehicle_id: string
+        }
+        Insert: {
+          condutor?: string | null
+          created_at?: string
+          data_abastecimento: string
+          id?: string
+          km_por_litro?: number | null
+          km_rodados?: number | null
+          litros: number
+          observacoes?: string | null
+          posto?: string | null
+          quilometragem: number
+          tanque_cheio?: boolean | null
+          tipo_combustivel: string
+          updated_at?: string
+          user_id: string
+          valor_litro?: number | null
+          valor_total: number
+          vehicle_id: string
+        }
+        Update: {
+          condutor?: string | null
+          created_at?: string
+          data_abastecimento?: string
+          id?: string
+          km_por_litro?: number | null
+          km_rodados?: number | null
+          litros?: number
+          observacoes?: string | null
+          posto?: string | null
+          quilometragem?: number
+          tanque_cheio?: boolean | null
+          tipo_combustivel?: string
+          updated_at?: string
+          user_id?: string
+          valor_litro?: number | null
+          valor_total?: number
+          vehicle_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fuel_records_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      maintenance_records: {
+        Row: {
+          created_at: string
+          custo: number | null
+          data_manutencao: string
+          data_proxima: string | null
+          descricao: string | null
+          fornecedor: string | null
+          grupo: string | null
+          id: string
+          item: string
+          nota_fiscal: string | null
+          observacoes: string | null
+          quilometragem_atual: number | null
+          quilometragem_proxima: number | null
+          status: string | null
+          tipo_manutencao: string
+          updated_at: string
+          user_id: string
+          vehicle_id: string
+        }
+        Insert: {
+          created_at?: string
+          custo?: number | null
+          data_manutencao: string
+          data_proxima?: string | null
+          descricao?: string | null
+          fornecedor?: string | null
+          grupo?: string | null
+          id?: string
+          item: string
+          nota_fiscal?: string | null
+          observacoes?: string | null
+          quilometragem_atual?: number | null
+          quilometragem_proxima?: number | null
+          status?: string | null
+          tipo_manutencao: string
+          updated_at?: string
+          user_id: string
+          vehicle_id: string
+        }
+        Update: {
+          created_at?: string
+          custo?: number | null
+          data_manutencao?: string
+          data_proxima?: string | null
+          descricao?: string | null
+          fornecedor?: string | null
+          grupo?: string | null
+          id?: string
+          item?: string
+          nota_fiscal?: string | null
+          observacoes?: string | null
+          quilometragem_atual?: number | null
+          quilometragem_proxima?: number | null
+          status?: string | null
+          tipo_manutencao?: string
+          updated_at?: string
+          user_id?: string
+          vehicle_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "maintenance_records_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       popup_definitions: {
         Row: {
           created_at: string
@@ -263,6 +402,54 @@ export type Database = {
           email?: string
           id?: string
           nome?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      vehicles: {
+        Row: {
+          ano: number | null
+          cor: string | null
+          created_at: string
+          empresa: string | null
+          id: string
+          marca: string | null
+          modelo: string
+          placa: string
+          quilometragem_atual: number | null
+          status: string | null
+          tipo: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ano?: number | null
+          cor?: string | null
+          created_at?: string
+          empresa?: string | null
+          id?: string
+          marca?: string | null
+          modelo: string
+          placa: string
+          quilometragem_atual?: number | null
+          status?: string | null
+          tipo: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ano?: number | null
+          cor?: string | null
+          created_at?: string
+          empresa?: string | null
+          id?: string
+          marca?: string | null
+          modelo?: string
+          placa?: string
+          quilometragem_atual?: number | null
+          status?: string | null
+          tipo?: string
           updated_at?: string
           user_id?: string
         }
