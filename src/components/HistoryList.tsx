@@ -64,9 +64,17 @@ export const HistoryList = ({ checklists, onSelect, onDelete, onNew }: HistoryLi
         <h3 className="text-lg font-semibold text-foreground mb-2">
           Nenhum checklist registrado
         </h3>
-        <p className="text-muted-foreground max-w-sm mx-auto">
+        <p className="text-muted-foreground max-w-sm mx-auto mb-6">
           Crie seu primeiro checklist de inspeção veicular para começar a manter o histórico.
         </p>
+        {onNew && (
+          <button
+            onClick={onNew}
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-accent text-accent-foreground font-semibold hover:bg-accent/90 transition-colors"
+          >
+            Novo Checklist
+          </button>
+        )}
       </div>
     );
   }
