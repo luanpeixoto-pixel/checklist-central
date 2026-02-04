@@ -29,10 +29,7 @@ const Checklist = () => {
   } = useChecklists();
 
   // Vehicles (DEPENDÊNCIA EXPLÍCITA)
-  const {
-    vehicles,
-    loading: vehiclesLoading,
-  } = useVehicles();
+  const { vehicles, loading: vehiclesLoading } = useVehicles();
 
   const loading = checklistsLoading || vehiclesLoading;
 
@@ -105,12 +102,9 @@ const Checklist = () => {
         <AppHeader />
         <main className="container mx-auto px-4 py-12">
           <div className="max-w-xl mx-auto text-center space-y-4">
-            <h1 className="text-2xl font-bold text-foreground">
-              Nenhum veículo cadastrado
-            </h1>
+            <h1 className="text-2xl font-bold text-foreground">Nenhum veículo cadastrado</h1>
             <p className="text-muted-foreground">
-              Para criar um checklist de inspeção, você precisa cadastrar
-              pelo menos um veículo primeiro.
+              Para criar um checklist de inspeção, você precisa cadastrar pelo menos um veículo primeiro.
             </p>
             <Button asChild className="mt-4">
               <Link to="/veiculos">Cadastrar veículo</Link>
@@ -129,10 +123,7 @@ const Checklist = () => {
     <div className="min-h-screen bg-background">
       <AppHeader />
 
-      <LimitReachedDialog
-        open={limitReached}
-        onClose={() => setLimitReached(false)}
-      />
+      <LimitReachedDialog open={limitReached} onClose={() => setLimitReached(false)} />
 
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
@@ -174,11 +165,7 @@ const Checklist = () => {
               />
             </div>
           ) : (
-            <HistoryList
-              checklists={checklists}
-              onSelect={handleEditChecklist}
-              onDelete={handleDeleteChecklist}
-            />
+            <HistoryList checklists={checklists} onSelect={handleEditChecklist} onDelete={handleDeleteChecklist} />
           )}
         </div>
       </main>
