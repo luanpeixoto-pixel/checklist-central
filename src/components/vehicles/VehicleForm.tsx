@@ -194,7 +194,12 @@ export const VehicleForm = ({ initialData, onSubmit, onCancel }: VehicleFormProp
 
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
-            <Button type="submit" disabled={submitting} className="flex-1 gap-2">
+            <Button 
+              type="submit" 
+              disabled={submitting} 
+              className="flex-1 gap-2"
+              data-track={initialData ? "update_veiculo" : "cadastrar_veiculo"}
+            >
               <Save className="h-4 w-4" />
               {submitting ? 'Salvando...' : (initialData ? 'Atualizar' : 'Cadastrar')}
             </Button>

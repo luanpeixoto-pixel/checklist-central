@@ -68,7 +68,7 @@ const Vehicles = () => {
               </p>
             </div>
             {!showForm && (
-              <Button onClick={() => setShowForm(true)} className="gap-2">
+              <Button onClick={() => setShowForm(true)} className="gap-2" data-track="novo_veiculo">
                 <Plus className="h-4 w-4" />
                 Novo Veículo
               </Button>
