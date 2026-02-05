@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { authErrorSkill } from "@/skills/authErrorSkill";
 import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -92,7 +93,7 @@ const Auth = () => {
           } else if (error.message.includes("Email not confirmed")) {
             toast.error("Por favor, confirme seu e-mail antes de fazer login");
           } else {
-            toast.error(error.message);
+            toast.error(authErrorSkill(error.message));
           }
           return;
         }
@@ -115,7 +116,7 @@ const Auth = () => {
           if (error.message.includes("User already registered")) {
             toast.error("Este e-mail já está cadastrado");
           } else {
-            toast.error(error.message);
+            toast.error(authErrorSkill(error.message));
           }
           return;
         }
