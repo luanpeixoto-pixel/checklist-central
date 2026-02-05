@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { useAuth } from "./useAuth";
 import type { FuelRecord, FuelFormData } from "@/types/fleet";
 import { toast } from "sonner";
+import { trackUserEvent } from "@/lib/eventTracking";
 
 export const useFuel = () => {
   const { user } = useAuth();
@@ -89,6 +90,7 @@ export const useFuel = () => {
 
       setRecords((prev) => [newRecord, ...prev]);
       toast.success("Abastecimento registrado com sucesso!");
+      void trackUserEvent({ userId: user.id, action: "cadastro", resourceType: "abastecimento", resourceId: newRecord.id });
       return true;
     } catch (error) {
       console.error("Error adding fuel record:", error);
@@ -122,6 +124,7 @@ export const useFuel = () => {
         prev.map((r) => (r.id === id ? { ...r, ...updateData } : r))
       );
       toast.success("Registro atualizado com sucesso!");
+      void trackUserEvent({ userId: user.id, action: "edicao", resourceType: "abastecimento", resourceId: id });
       return true;
     } catch (error) {
       console.error("Error updating fuel record:", error);
@@ -147,6 +150,7 @@ export const useFuel = () => {
 
       setRecords((prev) => prev.filter((r) => r.id !== id));
       toast.success("Registro excluído com sucesso");
+      void trackUserEvent({ userId: user.id, action: "delete", resourceType: "abastecimento", resourceId: id });
       return true;
     } catch (error) {
       console.error("Error deleting fuel record:", error);
