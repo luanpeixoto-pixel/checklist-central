@@ -233,7 +233,12 @@ export const FuelForm = ({ vehicles, initialData, onSubmit, onCancel }: FuelForm
 
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
-            <Button type="submit" disabled={submitting} className="flex-1 gap-2">
+            <Button 
+              type="submit" 
+              disabled={submitting} 
+              className="flex-1 gap-2"
+              data-track={initialData ? "update_abastecimento" : "salvar_abastecimento"}
+            >
               <Save className="h-4 w-4" />
               {submitting ? 'Salvando...' : (initialData ? 'Atualizar' : 'Registrar')}
             </Button>

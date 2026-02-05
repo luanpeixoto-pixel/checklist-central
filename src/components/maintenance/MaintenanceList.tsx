@@ -128,7 +128,7 @@ export const MaintenanceList = ({ records, onEdit, onDelete }: MaintenanceListPr
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => onEdit(record)}>
+                    <DropdownMenuItem onClick={() => onEdit(record)} data-track="edit_manutencao">
                       <Edit2 className="h-4 w-4 mr-2" />
                       Editar
                     </DropdownMenuItem>
@@ -148,11 +148,12 @@ export const MaintenanceList = ({ records, onEdit, onDelete }: MaintenanceListPr
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                          <AlertDialogAction
-                            onClick={() => onDelete(record.id)}
-                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                          >
-                            Excluir
+                        <AlertDialogAction
+                          onClick={() => onDelete(record.id)}
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          data-track="delete_manutencao"
+                        >
+                          Excluir
                           </AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
