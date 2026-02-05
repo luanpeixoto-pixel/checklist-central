@@ -120,9 +120,8 @@ const Auth = () => {
           return;
         }
 
-        toast.success("Cadastro realizado! Verifique seu e-mail para confirmar a conta.");
-        setIsLogin(true);
-        setFormData({ nome: "", email: "", password: "" });
+        toast.success("Cadastro realizado com sucesso!");
+        navigate("/");
       }
     } catch (error) {
       toast.error("Ocorreu um erro. Tente novamente.");
