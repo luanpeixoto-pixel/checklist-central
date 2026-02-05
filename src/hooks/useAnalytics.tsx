@@ -2,6 +2,7 @@ import { useEffect, useCallback, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useAuth } from "./useAuth";
 import type { Json } from "@/integrations/supabase/types";
+import { trackUserEvent } from "@/lib/eventTracking";
 
 interface TrackEventOptions {
   eventName?: string;
@@ -27,6 +28,7 @@ export const useAnalytics = () => {
   const sessionId = useRef(getSessionId());
   const lastScrollDepth = useRef(0);
   const scrollThrottleTimeout = useRef<NodeJS.Timeout | null>(null);
+  const lastPathRef = useRef<string>(window.location.pathname);
 
   const trackEvent = useCallback(
     async (
@@ -58,28 +60,42 @@ export const useAnalytics = () => {
   // Track page views
   const trackPageView = useCallback(() => {
     trackEvent("page_view");
-  }, [trackEvent]);
+    if (user?.id) {
+      void trackUserEvent({ userId: user.id, action: "acesso", resourceType: "page", metadata: { path: window.location.pathname } });
+    }
+  }, [trackEvent, user?.id]);
 
   // Track clicks with data attributes
   const handleClick = useCallback(
     (event: MouseEvent) => {
       const target = event.target as HTMLElement;
       const trackableElement = target.closest("[data-track]");
-      
-      if (trackableElement) {
-        const element = trackableElement as HTMLElement;
-        trackEvent("click", {
-          eventName: element.dataset.track,
-          elementId: element.id || undefined,
-          elementClass: element.className || undefined,
-          elementText: element.textContent?.trim() || undefined,
-          metadata: element.dataset.trackMeta 
-            ? JSON.parse(element.dataset.trackMeta) 
-            : undefined,
+      const clickedElement = (trackableElement || target) as HTMLElement;
+
+      trackEvent("click", {
+        eventName: clickedElement.dataset.track || `click:${clickedElement.tagName.toLowerCase()}`,
+        elementId: clickedElement.id || undefined,
+        elementClass: clickedElement.className || undefined,
+        elementText: clickedElement.textContent?.trim() || undefined,
+        metadata: clickedElement.dataset.trackMeta
+          ? JSON.parse(clickedElement.dataset.trackMeta)
+          : undefined,
+      });
+
+      if (user?.id) {
+        void trackUserEvent({
+          userId: user.id,
+          action: "clique",
+          resourceType: "ui",
+          metadata: {
+            tag: clickedElement.tagName.toLowerCase(),
+            path: window.location.pathname,
+            id: clickedElement.id || null,
+          } as Record<string, Json>,
         });
       }
     },
-    [trackEvent]
+    [trackEvent, user?.id]
   );
 
   // Track scroll depth
@@ -129,15 +145,24 @@ export const useAnalytics = () => {
     window.addEventListener("scroll", handleScroll, { passive: true });
     document.addEventListener("submit", handleFormSubmit, true);
 
-    // Track page views on route changes
+    // Track page views on route changes (browser nav + SPA push/replace)
     const handlePopState = () => trackPageView();
     window.addEventListener("popstate", handlePopState);
+
+    const pathWatcher = window.setInterval(() => {
+      const currentPath = window.location.pathname;
+      if (currentPath !== lastPathRef.current) {
+        lastPathRef.current = currentPath;
+        trackPageView();
+      }
+    }, 500);
 
     return () => {
       document.removeEventListener("click", handleClick, true);
       window.removeEventListener("scroll", handleScroll);
       document.removeEventListener("submit", handleFormSubmit, true);
       window.removeEventListener("popstate", handlePopState);
+      window.clearInterval(pathWatcher);
       if (scrollThrottleTimeout.current) {
         clearTimeout(scrollThrottleTimeout.current);
       }
