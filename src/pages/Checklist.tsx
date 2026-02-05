@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { ChecklistForm } from "@/components/ChecklistForm";
 import { HistoryList } from "@/components/HistoryList";
 import { LimitReachedDialog } from "@/components/LimitReachedDialog";
+import { EmptyState } from "@/components/EmptyState";
 import { useChecklists } from "@/hooks/useChecklists";
 import { useVehicles } from "@/hooks/useVehicles";
 import type { ChecklistData } from "@/types/checklist";
@@ -101,15 +101,7 @@ const Checklist = () => {
       <div className="min-h-screen bg-background">
         <AppHeader />
         <main className="container mx-auto px-4 py-12">
-          <div className="max-w-xl mx-auto text-center space-y-4">
-            <h1 className="text-2xl font-bold text-foreground">Nenhum veículo cadastrado</h1>
-            <p className="text-muted-foreground">
-              Para criar um checklist de inspeção, você precisa cadastrar pelo menos um veículo primeiro.
-            </p>
-            <Button asChild className="mt-4">
-              <Link to="/veiculos">Cadastrar veículo</Link>
-            </Button>
-          </div>
+          <EmptyState variant="no-vehicles" toolName="checklist" />
         </main>
       </div>
     );

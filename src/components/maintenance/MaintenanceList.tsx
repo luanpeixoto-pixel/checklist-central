@@ -61,8 +61,10 @@ export const MaintenanceList = ({ records, onEdit, onDelete }: MaintenanceListPr
     return (
       <Card className="card-elevated">
         <CardContent className="py-12 text-center">
-          <Wrench className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-foreground mb-2">Nenhuma manutenção registrada</h3>
+          <div className="inline-flex p-4 rounded-full bg-muted mb-4">
+            <Wrench className="h-8 w-8 text-muted-foreground" />
+          </div>
+          <h3 className="text-lg font-semibold text-foreground mb-2">Nenhuma manutenção registrada</h3>
           <p className="text-muted-foreground">
             Clique em "Nova Manutenção" para adicionar o primeiro registro.
           </p>
