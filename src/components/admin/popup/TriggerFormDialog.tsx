@@ -218,6 +218,9 @@ export const TriggerFormDialog = ({
       priority: data.priority,
       max_displays: data.max_displays,
       cooldown_hours: data.cooldown_hours,
+      delay_seconds: null,
+      pages: null,
+      trigger_event_name: null,
       is_active: data.is_active,
     });
   };

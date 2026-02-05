@@ -341,42 +341,33 @@ export type Database = {
           conditions: Json
           cooldown_hours: number | null
           created_at: string
-          delay_seconds: number | null
           id: string
           is_active: boolean
           max_displays: number | null
-          pages: string[] | null
           popup_id: string
           priority: number
-          trigger_event_name: string | null
           trigger_type: string
         }
         Insert: {
           conditions: Json
           cooldown_hours?: number | null
           created_at?: string
-          delay_seconds?: number | null
           id?: string
           is_active?: boolean
           max_displays?: number | null
-          pages?: string[] | null
           popup_id: string
           priority?: number
-          trigger_event_name?: string | null
           trigger_type: string
         }
         Update: {
           conditions?: Json
           cooldown_hours?: number | null
           created_at?: string
-          delay_seconds?: number | null
           id?: string
           is_active?: boolean
           max_displays?: number | null
-          pages?: string[] | null
           popup_id?: string
           priority?: number
-          trigger_event_name?: string | null
           trigger_type?: string
         }
         Relationships: [

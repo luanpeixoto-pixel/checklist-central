@@ -142,14 +142,13 @@ export const HistoryList = ({ checklists, vehicles, onSelect, onDelete }: Histor
                 {/* Actions */}
                 <div className="flex items-center gap-2">
                   <button
-                    data-track="confirm_delete_checklist"
+                    data-track="delete_checklist"
                     onClick={(e) => {
                       e.stopPropagation();
                       if (checklist.id) onDelete(checklist.id);
                     }}
                     className="p-2 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors opacity-0 group-hover:opacity-100"
                     title="Excluir"
-                    data-track="delete_checklist"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>

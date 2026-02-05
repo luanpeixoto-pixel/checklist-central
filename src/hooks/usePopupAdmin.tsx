@@ -84,6 +84,7 @@ export const usePopupAdmin = () => {
       const mapped = (data as PopupTriggerRow[] || []).map((row): PopupTrigger => {
         const conditions = row.conditions as unknown as Record<string, unknown>;
         const triggerCategory = (conditions?.trigger_category as PopupTrigger["trigger_category"]) || "action";
+        const rowAny = row as unknown as Record<string, unknown>;
         return {
           id: row.id,
           popup_id: row.popup_id,
@@ -93,6 +94,9 @@ export const usePopupAdmin = () => {
           priority: row.priority,
           max_displays: row.max_displays,
           cooldown_hours: row.cooldown_hours,
+          delay_seconds: (rowAny.delay_seconds as number | null) ?? null,
+          pages: (rowAny.pages as string[] | null) ?? null,
+          trigger_event_name: (rowAny.trigger_event_name as string | null) ?? null,
           is_active: row.is_active,
           created_at: row.created_at,
         };
