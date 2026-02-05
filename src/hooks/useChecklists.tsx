@@ -6,10 +6,13 @@ import { toast } from "sonner";
 import type { Json } from "@/integrations/supabase/types";
 import { trackUserEvent } from "@/lib/eventTracking";
 
+const UNLIMITED_CHECKLISTS = Number.POSITIVE_INFINITY;
+
 export const useChecklists = () => {
   const { user } = useAuth();
   const [checklists, setChecklists] = useState<ChecklistData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [limitReached, setLimitReached] = useState(false);
 
   const fetchChecklists = async () => {
     if (!user) {
@@ -34,6 +37,7 @@ export const useChecklists = () => {
       }));
 
       setChecklists(parsed);
+      setLimitReached(false);
     } catch (error) {
       console.error("Error fetching checklists:", error);
       toast.error("Erro ao carregar checklists");
@@ -46,6 +50,8 @@ export const useChecklists = () => {
     fetchChecklists();
   }, [user]);
 
+  const canAddChecklist = () => true;
+
   const addChecklist = async (data: ChecklistData): Promise<boolean> => {
     if (!user) {
       toast.error("Usuário não autenticado");
@@ -57,11 +63,10 @@ export const useChecklists = () => {
       return false;
     }
 
-
     try {
       const payload: ChecklistData = {
         ...data,
-        vehicle_id: data.vehicle_id, // explícito
+        vehicle_id: data.vehicle_id,
       };
 
       const { data: newRow, error } = await supabase
@@ -75,17 +80,14 @@ export const useChecklists = () => {
 
       if (error) throw error;
 
-      setChecklists((prev) => {
-        const updated = [
-          {
-            ...payload,
-            id: newRow.id,
-            createdAt: new Date(newRow.created_at),
-          },
-          ...prev,
-        ];
-        return updated;
-      });
+      setChecklists((prev) => [
+        {
+          ...payload,
+          id: newRow.id,
+          createdAt: new Date(newRow.created_at),
+        },
+        ...prev,
+      ]);
 
       void trackUserEvent({ userId: user.id, action: "cadastro", resourceType: "checklist", resourceId: newRow.id });
       return true;
@@ -145,10 +147,7 @@ export const useChecklists = () => {
 
       if (error) throw error;
 
-      setChecklists((prev) => {
-        const updated = prev.filter((c) => c.id !== id);
-        return updated;
-      });
+      setChecklists((prev) => prev.filter((c) => c.id !== id));
 
       toast.success("Checklist excluído com sucesso");
       void trackUserEvent({ userId: user.id, action: "delete", resourceType: "checklist", resourceId: id });
@@ -163,9 +162,14 @@ export const useChecklists = () => {
   return {
     checklists,
     loading,
+    limitReached,
+    setLimitReached,
+    canAddChecklist,
     addChecklist,
     updateChecklist,
     deleteChecklist,
     refetch: fetchChecklists,
+    maxChecklists: UNLIMITED_CHECKLISTS,
+    remainingChecklists: UNLIMITED_CHECKLISTS,
   };
 };

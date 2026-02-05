@@ -19,7 +19,7 @@ export const trackUserEvent = async ({
   metadata,
 }: TrackUserEventInput): Promise<void> => {
   try {
-    await supabase.from("event_tracking_events" as never).insert({
+    await (supabase as any).from("event_tracking_events").insert({
       user_id: userId,
       action,
       resource_type: resourceType ?? null,
@@ -31,4 +31,3 @@ export const trackUserEvent = async ({
     console.error("Failed to track user event:", error);
   }
 };
-
