@@ -20,6 +20,15 @@ import {
 } from "@/components/ui/select";
 import type { PopupDefinition, PopupTrigger, TriggerCategory, TriggerConditions } from "@/types/popup";
 
+// Rotas disponíveis para seleção de páginas
+const AVAILABLE_PAGES = [
+  { value: "/", label: "Home / Cockpit" },
+  { value: "/checklist", label: "Checklist" },
+  { value: "/veiculos", label: "Veículos" },
+  { value: "/manutencao", label: "Manutenção" },
+  { value: "/combustivel", label: "Combustível" },
+];
+
 interface TriggerFormData {
   popup_id: string;
   trigger_category: TriggerCategory;
@@ -43,6 +52,8 @@ interface TriggerFormData {
   priority: number;
   max_displays: number | null;
   cooldown_hours: number | null;
+  delay_seconds: number | null;
+  pages: string[];
   is_active: boolean;
 }
 
@@ -97,6 +108,8 @@ export const TriggerFormDialog = ({
       priority: 0,
       max_displays: 3,
       cooldown_hours: 24,
+      delay_seconds: null,
+      pages: [],
       is_active: true,
     },
   });
@@ -129,6 +142,8 @@ export const TriggerFormDialog = ({
         priority: trigger.priority,
         max_displays: trigger.max_displays,
         cooldown_hours: trigger.cooldown_hours,
+        delay_seconds: trigger.delay_seconds,
+        pages: trigger.pages || [],
         is_active: trigger.is_active,
       });
     } else {
@@ -152,6 +167,8 @@ export const TriggerFormDialog = ({
         priority: 0,
         max_displays: 3,
         cooldown_hours: 24,
+        delay_seconds: null,
+        pages: [],
         is_active: true,
       });
     }
@@ -218,11 +235,23 @@ export const TriggerFormDialog = ({
       priority: data.priority,
       max_displays: data.max_displays,
       cooldown_hours: data.cooldown_hours,
-      delay_seconds: null,
-      pages: null,
+      delay_seconds: data.delay_seconds,
+      pages: data.pages.length > 0 ? data.pages : null,
       trigger_event_name: null,
       is_active: data.is_active,
     });
+  };
+
+  const selectedPages = watch("pages");
+  const delaySeconds = watch("delay_seconds");
+
+  const togglePage = (pageValue: string) => {
+    const current = selectedPages || [];
+    if (current.includes(pageValue)) {
+      setValue("pages", current.filter(p => p !== pageValue));
+    } else {
+      setValue("pages", [...current, pageValue]);
+    }
   };
 
   const currentTriggerTypes = triggerCategory === "action" ? ACTION_TRIGGER_TYPES : PROFILE_TRIGGER_TYPES;
@@ -509,6 +538,63 @@ export const TriggerFormDialog = ({
               )}
             </div>
           )}
+
+          {/* Delay Settings */}
+          <div className="space-y-3 p-4 border rounded-lg">
+            <Label className="text-sm font-medium">Atraso para exibição</Label>
+            <p className="text-xs text-muted-foreground">
+              Tempo de espera após o gatilho ser acionado antes de mostrar o popup
+            </p>
+            <div className="flex items-center gap-3">
+              <Select
+                value={delaySeconds?.toString() || "0"}
+                onValueChange={(value) => setValue("delay_seconds", value === "0" ? null : parseInt(value))}
+              >
+                <SelectTrigger className="w-48">
+                  <SelectValue placeholder="Sem atraso" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="0">Imediato (sem atraso)</SelectItem>
+                  <SelectItem value="1">1 segundo</SelectItem>
+                  <SelectItem value="2">2 segundos</SelectItem>
+                  <SelectItem value="3">3 segundos</SelectItem>
+                  <SelectItem value="5">5 segundos</SelectItem>
+                  <SelectItem value="10">10 segundos</SelectItem>
+                  <SelectItem value="15">15 segundos</SelectItem>
+                  <SelectItem value="30">30 segundos</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Page Restriction (especially for profile triggers) */}
+          <div className="space-y-3 p-4 border rounded-lg">
+            <Label className="text-sm font-medium">Páginas para exibição</Label>
+            <p className="text-xs text-muted-foreground">
+              {triggerCategory === "profile" 
+                ? "Selecione em quais páginas o popup deve aparecer quando o perfil do usuário atender às condições"
+                : "Deixe em branco para exibir em qualquer página, ou selecione páginas específicas"
+              }
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {AVAILABLE_PAGES.map((page) => (
+                <Button
+                  key={page.value}
+                  type="button"
+                  variant={selectedPages?.includes(page.value) ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => togglePage(page.value)}
+                >
+                  {page.label}
+                </Button>
+              ))}
+            </div>
+            {selectedPages?.length > 0 && (
+              <p className="text-xs text-muted-foreground">
+                Selecionadas: {selectedPages.length} página(s)
+              </p>
+            )}
+          </div>
 
           {/* Display Settings */}
           <div className="grid grid-cols-3 gap-4">
