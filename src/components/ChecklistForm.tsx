@@ -503,7 +503,11 @@ export const ChecklistForm = ({ vehicles, initialData, onSubmit }: ChecklistForm
 
       {/* Ações */}
       <div className="flex flex-col sm:flex-row gap-4 pt-4">
-        <button type="submit" className="btn-accent-gradient flex-1 flex items-center justify-center gap-2">
+        <button 
+          type="submit" 
+          data-track="salvar_checklist"
+          className="btn-accent-gradient flex-1 flex items-center justify-center gap-2"
+        >
           <Save className="h-5 w-5" />
           Salvar Checklist
         </button>
