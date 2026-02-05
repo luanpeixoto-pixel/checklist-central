@@ -1,78 +1,68 @@
 import { Link } from "react-router-dom";
-import { 
-  Car, 
-  ClipboardCheck, 
-  Wrench, 
-  Fuel, 
-  TrendingUp,
-  DollarSign,
-  Activity,
-  ChevronRight
-} from "lucide-react";
+import { Car, ClipboardCheck, Wrench, Fuel, TrendingUp, DollarSign, Activity, ChevronRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { useVehicles } from "@/hooks/useVehicles";
 import { useMaintenance } from "@/hooks/useMaintenance";
 import { useFuel } from "@/hooks/useFuel";
 import { Loader2 } from "lucide-react";
-
 const Cockpit = () => {
-  const { vehicles, activeVehicles, loading: vehiclesLoading } = useVehicles();
-  const { totalCost: maintenanceCost, topMaintenanceItems, loading: maintenanceLoading } = useMaintenance();
-  const { totalCost: fuelCost, avgKmPerLiter, loading: fuelLoading } = useFuel();
-
+  const {
+    vehicles,
+    activeVehicles,
+    loading: vehiclesLoading
+  } = useVehicles();
+  const {
+    totalCost: maintenanceCost,
+    topMaintenanceItems,
+    loading: maintenanceLoading
+  } = useMaintenance();
+  const {
+    totalCost: fuelCost,
+    avgKmPerLiter,
+    loading: fuelLoading
+  } = useFuel();
   const loading = vehiclesLoading || maintenanceLoading || fuelLoading;
-
-  const modules = [
-    {
-      title: "Checklist de Inspeção",
-      description: "Realizar vistorias e inspeções dos veículos da frota",
-      icon: ClipboardCheck,
-      href: "/checklist",
-      color: "bg-primary",
-      iconBgColor: "bg-primary/10",
-      iconColor: "text-primary",
-    },
-    {
-      title: "Controle de Manutenção",
-      description: "Registrar e acompanhar manutenções preventivas e corretivas",
-      icon: Wrench,
-      href: "/manutencao",
-      color: "bg-accent",
-      iconBgColor: "bg-accent/10",
-      iconColor: "text-accent",
-    },
-    {
-      title: "Controle de Combustível",
-      description: "Registrar abastecimentos e monitorar consumo",
-      icon: Fuel,
-      href: "/combustivel",
-      color: "bg-success",
-      iconBgColor: "bg-success/10",
-      iconColor: "text-success",
-    },
-  ];
-
+  const modules = [{
+    title: "Checklist de Inspeção",
+    description: "Realizar vistorias e inspeções dos veículos da frota",
+    icon: ClipboardCheck,
+    href: "/checklist",
+    color: "bg-primary",
+    iconBgColor: "bg-primary/10",
+    iconColor: "text-primary"
+  }, {
+    title: "Controle de Manutenção",
+    description: "Registrar e acompanhar manutenções preventivas e corretivas",
+    icon: Wrench,
+    href: "/manutencao",
+    color: "bg-accent",
+    iconBgColor: "bg-accent/10",
+    iconColor: "text-accent"
+  }, {
+    title: "Controle de Combustível",
+    description: "Registrar abastecimentos e monitorar consumo",
+    icon: Fuel,
+    href: "/combustivel",
+    color: "bg-success",
+    iconBgColor: "bg-success/10",
+    iconColor: "text-success"
+  }];
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
-      currency: 'BRL',
+      currency: 'BRL'
     }).format(value);
   };
-
   if (loading) {
-    return (
-      <div className="min-h-screen bg-background">
+    return <div className="min-h-screen bg-background">
         <AppHeader />
         <div className="flex items-center justify-center h-[calc(100vh-4rem)]">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
-      </div>
-    );
+      </div>;
   }
-
-  return (
-    <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-background">
       <AppHeader />
       
       <main className="container mx-auto px-4 py-8">
@@ -161,14 +151,13 @@ const Cockpit = () => {
         <div className="mb-8">
           <h2 className="text-xl font-semibold text-foreground mb-4">Módulos</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {modules.map((module) => {
-              const Icon = module.icon;
-              return (
-                <Link key={module.href} to={module.href}>
+            {modules.map(module => {
+            const Icon = module.icon;
+            return <Link key={module.href} to={module.href}>
                   <Card className="card-elevated h-full hover:shadow-lg transition-all duration-200 cursor-pointer group">
                     <CardContent className="p-6">
                       <div className="flex items-start gap-4">
-                        <div className={`p-3 rounded-xl ${module.color} text-white`}>
+                        <div className="">
                           <Icon className="h-6 w-6" />
                         </div>
                         <div className="flex-1">
@@ -183,15 +172,13 @@ const Cockpit = () => {
                       </div>
                     </CardContent>
                   </Card>
-                </Link>
-              );
-            })}
+                </Link>;
+          })}
           </div>
         </div>
 
         {/* Top Maintenance Items */}
-        {topMaintenanceItems.length > 0 && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {topMaintenanceItems.length > 0 && <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card className="card-elevated">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -202,17 +189,13 @@ const Cockpit = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {topMaintenanceItems.slice(0, 5).map((item, index) => (
-                    <div key={index} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+                  {topMaintenanceItems.slice(0, 5).map((item, index) => <div key={index} className="flex items-center justify-between py-2 border-b border-border last:border-0">
                       <span className="text-sm text-foreground">{item.item}</span>
                       <span className="text-sm font-medium text-primary">{item.count}x</span>
-                    </div>
-                  ))}
-                  {topMaintenanceItems.length === 0 && (
-                    <p className="text-sm text-muted-foreground text-center py-4">
+                    </div>)}
+                  {topMaintenanceItems.length === 0 && <p className="text-sm text-muted-foreground text-center py-4">
                       Nenhuma manutenção registrada
-                    </p>
-                  )}
+                    </p>}
                 </div>
               </CardContent>
             </Card>
@@ -227,25 +210,17 @@ const Cockpit = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {[...topMaintenanceItems]
-                    .sort((a, b) => b.cost - a.cost)
-                    .slice(0, 5)
-                    .map((item, index) => (
-                      <div key={index} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+                  {[...topMaintenanceItems].sort((a, b) => b.cost - a.cost).slice(0, 5).map((item, index) => <div key={index} className="flex items-center justify-between py-2 border-b border-border last:border-0">
                         <span className="text-sm text-foreground">{item.item}</span>
                         <span className="text-sm font-medium text-accent">{formatCurrency(item.cost)}</span>
-                      </div>
-                    ))}
-                  {topMaintenanceItems.length === 0 && (
-                    <p className="text-sm text-muted-foreground text-center py-4">
+                      </div>)}
+                  {topMaintenanceItems.length === 0 && <p className="text-sm text-muted-foreground text-center py-4">
                       Nenhuma manutenção registrada
-                    </p>
-                  )}
+                    </p>}
                 </div>
               </CardContent>
             </Card>
-          </div>
-        )}
+          </div>}
       </main>
 
       {/* Footer */}
@@ -256,8 +231,6 @@ const Cockpit = () => {
           </p>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 };
-
 export default Cockpit;
