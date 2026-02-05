@@ -2,109 +2,113 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 @layer base {
   :root {
-    /* Deep Slate Blue - Professional Fleet Management */
-    --background: 210 20% 98%;
-    --foreground: 215 25% 15%;
+    /* Cobli Brand Identity - Navy Blue & Emerald */
+    --background: 200 33% 98%; /* #f9fbfc */
+    --foreground: 240 83% 17%; /* #07074e */
 
-    --card: 0 0% 100%;
-    --card-foreground: 215 25% 15%;
+    --card: 0 0% 100%; /* #ffffff */
+    --card-foreground: 240 83% 17%; /* #07074e */
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 15%;
+    --popover-foreground: 240 83% 17%;
 
-    /* Primary: Deep Petrol Blue */
-    --primary: 205 75% 25%;
+    /* Primary: Deep Navy Blue */
+    --primary: 240 83% 17%; /* #07074e */
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary: Cool Slate */
-    --secondary: 210 15% 92%;
-    --secondary-foreground: 215 25% 25%;
+    /* Secondary: Royal Blue */
+    --secondary: 210 28% 89%; /* #dde5ed */
+    --secondary-foreground: 240 83% 17%;
 
-    --muted: 210 15% 95%;
-    --muted-foreground: 215 15% 50%;
+    --muted: 220 14% 91%; /* #e5e7eb */
+    --muted-foreground: 213 17% 45%; /* #5d7186 */
 
-    /* Accent: Vibrant Amber/Orange */
-    --accent: 32 95% 52%;
+    /* Accent: Emerald Green */
+    --accent: 162 79% 43%; /* #19c397 */
     --accent-foreground: 0 0% 100%;
 
     /* Status Colors */
-    --success: 145 65% 42%;
+    --success: 162 79% 43%; /* #19c397 */
     --success-foreground: 0 0% 100%;
     
-    --warning: 38 92% 50%;
+    --warning: 36 100% 50%; /* Orange */
     --warning-foreground: 0 0% 100%;
     
-    --destructive: 0 72% 51%;
+    --destructive: 6 78% 57%; /* #e74c3c */
     --destructive-foreground: 0 0% 100%;
 
-    --border: 210 20% 88%;
-    --input: 210 20% 88%;
-    --ring: 205 75% 25%;
+    --border: 210 28% 89%; /* #dde5ed */
+    --input: 210 28% 89%;
+    --ring: 231 100% 36%; /* #001bb8 */
 
     --radius: 0.75rem;
 
     /* Custom gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(205 75% 25%) 0%, hsl(215 70% 35%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(32 95% 52%) 0%, hsl(25 95% 45%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(210 20% 98%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(240 83% 17%) 0%, hsl(231 100% 36%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(162 79% 43%) 0%, hsl(162 56% 64%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(200 33% 98%) 100%);
     
     /* Shadows */
-    --shadow-sm: 0 1px 2px 0 hsl(215 25% 15% / 0.05);
-    --shadow-md: 0 4px 6px -1px hsl(215 25% 15% / 0.1), 0 2px 4px -2px hsl(215 25% 15% / 0.1);
-    --shadow-lg: 0 10px 15px -3px hsl(215 25% 15% / 0.1), 0 4px 6px -4px hsl(215 25% 15% / 0.1);
-    --shadow-xl: 0 20px 25px -5px hsl(215 25% 15% / 0.1), 0 8px 10px -6px hsl(215 25% 15% / 0.1);
+    --shadow-sm: 0 1px 2px 0 hsl(240 83% 17% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(240 83% 17% / 0.1), 0 2px 4px -2px hsl(240 83% 17% / 0.1);
+    --shadow-lg: 0 10px 15px -3px hsl(240 83% 17% / 0.1), 0 4px 6px -4px hsl(240 83% 17% / 0.1);
+    --shadow-xl: 0 20px 25px -5px hsl(240 83% 17% / 0.1), 0 8px 10px -6px hsl(240 83% 17% / 0.1);
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Accent variants */
+    --accent-mint: 162 56% 64%; /* #6cd9bd */
+    --accent-blue: 216 89% 52%; /* #1774f0 */
+
+    --sidebar-background: 200 33% 98%;
+    --sidebar-foreground: 240 83% 17%;
+    --sidebar-primary: 240 83% 17%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 162 79% 43%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 210 28% 89%;
+    --sidebar-ring: 216 89% 52%;
   }
 
   .dark {
-    --background: 215 25% 10%;
-    --foreground: 210 20% 95%;
+    --background: 240 83% 10%; /* Dark navy */
+    --foreground: 200 33% 95%;
 
-    --card: 215 25% 13%;
-    --card-foreground: 210 20% 95%;
+    --card: 240 83% 13%;
+    --card-foreground: 200 33% 95%;
 
-    --popover: 215 25% 13%;
-    --popover-foreground: 210 20% 95%;
+    --popover: 240 83% 13%;
+    --popover-foreground: 200 33% 95%;
 
-    --primary: 205 70% 55%;
-    --primary-foreground: 215 25% 10%;
+    --primary: 162 79% 50%; /* Brighter emerald for dark mode */
+    --primary-foreground: 240 83% 10%;
 
-    --secondary: 215 20% 20%;
-    --secondary-foreground: 210 20% 90%;
+    --secondary: 240 50% 20%;
+    --secondary-foreground: 200 33% 90%;
 
-    --muted: 215 20% 18%;
-    --muted-foreground: 210 15% 60%;
+    --muted: 240 40% 18%;
+    --muted-foreground: 213 14% 66%;
 
-    --accent: 32 95% 55%;
-    --accent-foreground: 215 25% 10%;
+    --accent: 162 56% 64%; /* Mint */
+    --accent-foreground: 240 83% 10%;
 
-    --destructive: 0 62.8% 45%;
-    --destructive-foreground: 210 20% 95%;
+    --destructive: 6 70% 50%;
+    --destructive-foreground: 200 33% 95%;
 
-    --border: 215 20% 22%;
-    --input: 215 20% 22%;
-    --ring: 205 70% 55%;
+    --border: 240 40% 22%;
+    --input: 240 40% 22%;
+    --ring: 162 79% 50%;
 
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 240 83% 10%;
+    --sidebar-foreground: 200 33% 95%;
+    --sidebar-primary: 162 79% 50%;
+    --sidebar-primary-foreground: 240 83% 10%;
+    --sidebar-accent: 240 40% 18%;
+    --sidebar-accent-foreground: 200 33% 95%;
+    --sidebar-border: 240 40% 18%;
+    --sidebar-ring: 216 89% 52%;
   }
 }
 
@@ -116,6 +120,25 @@
   body {
     @apply bg-background text-foreground font-sans antialiased;
     font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  h1 {
+    @apply text-[26px] font-medium tracking-tight;
+  }
+
+  h2 {
+    @apply text-base font-medium;
+  }
+
+  h3 {
+    @apply text-sm font-normal;
+  }
+
+  h4 {
+    @apply text-base font-medium;
   }
 }
 

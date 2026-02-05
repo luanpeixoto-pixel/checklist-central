@@ -16,6 +16,13 @@ export default {
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
       },
+      fontSize: {
+        'h1': ['26px', { lineHeight: '1.2', fontWeight: '500' }],
+        'h2': ['16px', { lineHeight: '1.4', fontWeight: '500' }],
+        'h3': ['14px', { lineHeight: '1.4', fontWeight: '400' }],
+        'h4': ['16px', { lineHeight: '1.4', fontWeight: '500' }],
+        'body': ['12px', { lineHeight: '1.5', fontWeight: '400' }],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
