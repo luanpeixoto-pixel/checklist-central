@@ -1,5 +1,7 @@
 import type { ChecklistData, VehicleType } from "@/types/checklist";
 import type { Vehicle } from "@/types/fleet";
+import { supabase } from "@/lib/supabaseClient";
+import { trackUserEvent } from "@/lib/eventTracking";
 
 /* -------------------------------------------------------------------------- */
 /* Labels                                                                      */
@@ -103,4 +105,15 @@ export const exportChecklistsToCSV = (checklists: ChecklistData[], vehicles: Veh
   const csv = generateChecklistCSV(checklists, vehicles);
   const date = new Date().toISOString().split("T")[0];
   downloadCSV(csv, `inspecoes-veiculares-${date}.csv`);
+
+  void supabase.auth.getUser().then(({ data }) => {
+    if (data.user?.id) {
+      void trackUserEvent({
+        userId: data.user.id,
+        action: "exportacao",
+        resourceType: "checklist",
+        metadata: { amount: checklists.length },
+      });
+    }
+  });
 };

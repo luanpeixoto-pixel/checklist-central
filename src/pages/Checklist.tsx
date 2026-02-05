@@ -2,7 +2,6 @@ import { useState } from "react";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { ChecklistForm } from "@/components/ChecklistForm";
 import { HistoryList } from "@/components/HistoryList";
-import { LimitReachedDialog } from "@/components/LimitReachedDialog";
 import { EmptyState } from "@/components/EmptyState";
 import { useChecklists } from "@/hooks/useChecklists";
 import { useVehicles } from "@/hooks/useVehicles";
@@ -19,13 +18,9 @@ const Checklist = () => {
   const {
     checklists,
     loading: checklistsLoading,
-    limitReached,
-    setLimitReached,
-    canAddChecklist,
     addChecklist,
     updateChecklist,
     deleteChecklist,
-    remainingChecklists,
   } = useChecklists();
 
   // Vehicles (DEPENDÊNCIA EXPLÍCITA)
@@ -46,11 +41,6 @@ const Checklist = () => {
         toast.success("Checklist atualizado com sucesso!");
       }
     } else {
-      if (!canAddChecklist()) {
-        setLimitReached(true);
-        return;
-      }
-
       const success = await addChecklist(data);
       if (success) {
         setCurrentView("history");
@@ -60,10 +50,6 @@ const Checklist = () => {
   };
 
   const handleNewChecklist = () => {
-    if (!canAddChecklist()) {
-      setLimitReached(true);
-      return;
-    }
     setEditingChecklist(undefined);
     setCurrentView("form");
   };
@@ -115,7 +101,6 @@ const Checklist = () => {
     <div className="min-h-screen bg-background">
       <AppHeader />
 
-      <LimitReachedDialog open={limitReached} onClose={() => setLimitReached(false)} />
 
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
@@ -134,7 +119,7 @@ const Checklist = () => {
                   ? "Selecione um veículo e preencha as informações da inspeção"
                   : `${checklists.length} registro${
                       checklists.length !== 1 ? "s" : ""
-                    } • ${remainingChecklists} restantes`}
+                    }`}
               </p>
             </div>
 

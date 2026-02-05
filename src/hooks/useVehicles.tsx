@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { useAuth } from "./useAuth";
 import type { Vehicle, VehicleFormData } from "@/types/fleet";
 import { toast } from "sonner";
+import { trackUserEvent } from "@/lib/eventTracking";
 
 export const useVehicles = () => {
   const { user } = useAuth();
@@ -65,6 +66,7 @@ export const useVehicles = () => {
 
       setVehicles((prev) => [newVehicle, ...prev]);
       toast.success("Veículo cadastrado com sucesso!");
+      void trackUserEvent({ userId: user.id, action: "cadastro", resourceType: "veiculo", resourceId: newVehicle.id });
       return true;
     } catch (error) {
       console.error("Error adding vehicle:", error);
@@ -92,6 +94,7 @@ export const useVehicles = () => {
         prev.map((v) => (v.id === id ? { ...v, ...data } : v))
       );
       toast.success("Veículo atualizado com sucesso!");
+      void trackUserEvent({ userId: user.id, action: "edicao", resourceType: "veiculo", resourceId: id });
       return true;
     } catch (error) {
       console.error("Error updating vehicle:", error);
@@ -117,6 +120,7 @@ export const useVehicles = () => {
 
       setVehicles((prev) => prev.filter((v) => v.id !== id));
       toast.success("Veículo excluído com sucesso");
+      void trackUserEvent({ userId: user.id, action: "delete", resourceType: "veiculo", resourceId: id });
       return true;
     } catch (error) {
       console.error("Error deleting vehicle:", error);

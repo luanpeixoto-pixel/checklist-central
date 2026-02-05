@@ -1,7 +1,7 @@
 import { createContext, useContext, type ReactNode } from "react";
 import { useAnalytics } from "@/hooks/useAnalytics";
-import { usePopupTriggers } from "@/hooks/usePopupTriggers";
-import { DynamicPopup } from "./DynamicPopup";
+import { usePopupEngine } from "@/hooks/usePopupEngine";
+import { PopupCenter } from "@/components/popup/PopupCenter";
 
 interface AnalyticsContextValue {
   track: (eventName: string, metadata?: Record<string, unknown>) => void;
@@ -23,18 +23,17 @@ interface AnalyticsProviderProps {
 
 export const AnalyticsProvider = ({ children }: AnalyticsProviderProps) => {
   const { track } = useAnalytics();
-  const { currentPopup, submitResponse, dismissPopup } = usePopupTriggers();
+  const { currentPopup, dismissPopup, clickPopup, submitPopupInput } = usePopupEngine();
 
   return (
     <AnalyticsContext.Provider value={{ track }}>
       {children}
-      {currentPopup && (
-        <DynamicPopup
-          popup={currentPopup.popup}
-          onSubmit={submitResponse}
-          onDismiss={dismissPopup}
-        />
-      )}
+      <PopupCenter
+        popup={currentPopup}
+        onDismiss={dismissPopup}
+        onClick={clickPopup}
+        onInputSubmit={submitPopupInput}
+      />
     </AnalyticsContext.Provider>
   );
 };
