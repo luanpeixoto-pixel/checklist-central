@@ -1,5 +1,4 @@
 import { Navigate } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { Loader2 } from "lucide-react";
 
@@ -8,10 +7,9 @@ interface AdminRouteProps {
 }
 
 export const AdminRoute = ({ children }: AdminRouteProps) => {
-  const { user, loading: authLoading } = useAuth();
-  const { isAdmin, loading: roleLoading } = useUserRole();
+  const { isAdmin, loading, role } = useUserRole();
 
-  if (authLoading || roleLoading) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -19,7 +17,8 @@ export const AdminRoute = ({ children }: AdminRouteProps) => {
     );
   }
 
-  if (!user) {
+  // If no role found, user is not authenticated or not in user_roles
+  if (role === null) {
     return <Navigate to="/auth" replace />;
   }
 
