@@ -503,14 +503,14 @@ export const ChecklistForm = ({ vehicles, initialData, onSubmit }: ChecklistForm
 
       {/* Ações */}
       <div className="flex flex-col sm:flex-row gap-4 pt-4">
-        <button type="submit" className="btn-accent-gradient flex-1 flex items-center justify-center gap-2">
+        <button data-track={initialData ? "update_checklist" : "save_checklist"} type="submit" className="btn-accent-gradient flex-1 flex items-center justify-center gap-2">
           <Save className="h-5 w-5" />
           Salvar Checklist
         </button>
 
         <button
           type="button"
-          onClick={handleReset}
+          data-track="cancel_checklist" onClick={handleReset}
           className="px-6 py-3 rounded-lg border-2 border-border text-muted-foreground font-semibold hover:bg-muted transition flex items-center justify-center gap-2"
         >
           <RotateCcw className="h-5 w-5" />

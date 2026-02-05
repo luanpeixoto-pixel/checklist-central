@@ -93,6 +93,7 @@ const Fuel = () => {
             </div>
             {!showForm && (
               <Button 
+                data-track="click_new_fuel"
                 onClick={() => setShowForm(true)} 
                 className="gap-2"
               >

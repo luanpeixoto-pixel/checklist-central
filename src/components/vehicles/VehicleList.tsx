@@ -101,9 +101,9 @@ export const VehicleList = ({ vehicles, onEdit, onDelete }: VehicleListProps) =>
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
-                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                        <AlertDialogCancel data-track="cancel_delete_vehicle">Cancelar</AlertDialogCancel>
                         <AlertDialogAction
-                          onClick={() => onDelete(vehicle.id)}
+                          data-track="confirm_delete_vehicle" onClick={() => onDelete(vehicle.id)}
                           className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                         >
                           Excluir

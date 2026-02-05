@@ -2,7 +2,6 @@ import { useState } from "react";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { ChecklistForm } from "@/components/ChecklistForm";
 import { HistoryList } from "@/components/HistoryList";
-import { LimitReachedDialog } from "@/components/LimitReachedDialog";
 import { EmptyState } from "@/components/EmptyState";
 import { useChecklists } from "@/hooks/useChecklists";
 import { useVehicles } from "@/hooks/useVehicles";
@@ -15,27 +14,16 @@ const Checklist = () => {
   const [currentView, setCurrentView] = useState<"form" | "history">("history");
   const [editingChecklist, setEditingChecklist] = useState<ChecklistData | undefined>();
 
-  // Checklist data
   const {
     checklists,
     loading: checklistsLoading,
-    limitReached,
-    setLimitReached,
-    canAddChecklist,
     addChecklist,
     updateChecklist,
     deleteChecklist,
-    remainingChecklists,
   } = useChecklists();
 
-  // Vehicles (DEPENDÊNCIA EXPLÍCITA)
   const { vehicles, loading: vehiclesLoading } = useVehicles();
-
   const loading = checklistsLoading || vehiclesLoading;
-
-  /* -----------------------------
-   * Handlers
-   * ----------------------------- */
 
   const handleSubmit = async (data: ChecklistData) => {
     if (editingChecklist) {
@@ -45,25 +33,17 @@ const Checklist = () => {
         setCurrentView("history");
         toast.success("Checklist atualizado com sucesso!");
       }
-    } else {
-      if (!canAddChecklist()) {
-        setLimitReached(true);
-        return;
-      }
+      return;
+    }
 
-      const success = await addChecklist(data);
-      if (success) {
-        setCurrentView("history");
-        toast.success("Checklist salvo com sucesso!");
-      }
+    const success = await addChecklist(data);
+    if (success) {
+      setCurrentView("history");
+      toast.success("Checklist salvo com sucesso!");
     }
   };
 
   const handleNewChecklist = () => {
-    if (!canAddChecklist()) {
-      setLimitReached(true);
-      return;
-    }
     setEditingChecklist(undefined);
     setCurrentView("form");
   };
@@ -77,10 +57,6 @@ const Checklist = () => {
     await deleteChecklist(id);
   };
 
-  /* -----------------------------
-   * Loading state
-   * ----------------------------- */
-
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
@@ -91,10 +67,6 @@ const Checklist = () => {
       </div>
     );
   }
-
-  /* -----------------------------
-   * Empty state — no vehicles
-   * ----------------------------- */
 
   if (vehicles.length === 0) {
     return (
@@ -107,19 +79,12 @@ const Checklist = () => {
     );
   }
 
-  /* -----------------------------
-   * Main render
-   * ----------------------------- */
-
   return (
     <div className="min-h-screen bg-background">
       <AppHeader />
 
-      <LimitReachedDialog open={limitReached} onClose={() => setLimitReached(false)} />
-
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div>
               <h1 className="text-2xl font-bold text-foreground">
@@ -132,21 +97,18 @@ const Checklist = () => {
               <p className="text-muted-foreground mt-1">
                 {currentView === "form"
                   ? "Selecione um veículo e preencha as informações da inspeção"
-                  : `${checklists.length} registro${
-                      checklists.length !== 1 ? "s" : ""
-                    } • ${remainingChecklists} restantes`}
+                  : `${checklists.length} registro${checklists.length !== 1 ? "s" : ""}`}
               </p>
             </div>
 
             {currentView === "history" && (
-              <Button onClick={handleNewChecklist} className="gap-2">
+              <Button data-track="click_new_checklist" onClick={handleNewChecklist} className="gap-2">
                 <Plus className="h-4 w-4" />
                 Novo Checklist
               </Button>
             )}
           </div>
 
-          {/* Content */}
           {currentView === "form" ? (
             <div className="animate-fade-in">
               <ChecklistForm
@@ -157,7 +119,12 @@ const Checklist = () => {
               />
             </div>
           ) : (
-            <HistoryList checklists={checklists} vehicles={vehicles} onSelect={handleEditChecklist} onDelete={handleDeleteChecklist} />
+            <HistoryList
+              checklists={checklists}
+              vehicles={vehicles}
+              onSelect={handleEditChecklist}
+              onDelete={handleDeleteChecklist}
+            />
           )}
         </div>
       </main>

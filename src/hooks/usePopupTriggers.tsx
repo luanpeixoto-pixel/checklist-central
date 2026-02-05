@@ -2,14 +2,15 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useAuth } from "./useAuth";
 import type { Json } from "@/integrations/supabase/types";
-import type { 
-  PopupDefinition, 
-  PopupTrigger, 
+import { subscribeToPopupTriggerEvents } from "@/lib/popupEvents";
+import type {
+  PopupDefinition,
+  PopupTrigger,
   PopupWithTrigger,
   EventCountCondition,
   PageViewCondition,
   TimeOnPageCondition,
-  ScrollDepthCondition 
+  ScrollDepthCondition,
 } from "@/types/popup";
 
 export const usePopupTriggers = () => {
@@ -17,7 +18,9 @@ export const usePopupTriggers = () => {
   const [currentPopup, setCurrentPopup] = useState<PopupWithTrigger | null>(null);
   const [triggers, setTriggers] = useState<(PopupTrigger & { popup: PopupDefinition })[]>([]);
   const [displayCounts, setDisplayCounts] = useState<Record<string, { count: number; lastDisplayed: Date | null }>>({});
-  const timeOnPageRef = useRef<NodeJS.Timeout | null>(null);
+  const [lastTriggerEvent, setLastTriggerEvent] = useState<string | null>(null);
+  const [pendingTrigger, setPendingTrigger] = useState<(PopupTrigger & { popup: PopupDefinition }) | null>(null);
+  const delayTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pageStartTimeRef = useRef<number>(Date.now());
 
   // Fetch triggers and popups
@@ -38,7 +41,15 @@ export const usePopupTriggers = () => {
       }
     };
 
-    fetchTriggers();
+    void fetchTriggers();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = subscribeToPopupTriggerEvents((eventName) => {
+      setLastTriggerEvent(eventName);
+    });
+
+    return unsubscribe;
   }, []);
 
   // Fetch user's display history
@@ -67,7 +78,7 @@ export const usePopupTriggers = () => {
       }
     };
 
-    fetchDisplayHistory();
+    void fetchDisplayHistory();
   }, [user?.id]);
 
   // Check if trigger conditions are met
@@ -77,6 +88,14 @@ export const usePopupTriggers = () => {
 
       const conditions = trigger.conditions;
       const currentPath = window.location.pathname;
+
+      if (trigger.pages?.length && !trigger.pages.includes(currentPath)) {
+        return false;
+      }
+
+      if (trigger.trigger_event_name && trigger.trigger_event_name !== lastTriggerEvent) {
+        return false;
+      }
 
       switch (trigger.trigger_type) {
         case "event_count": {
@@ -131,7 +150,7 @@ export const usePopupTriggers = () => {
           return false;
       }
     },
-    [user?.id]
+    [lastTriggerEvent, user?.id],
   );
 
   // Check if popup can be displayed (respecting max_displays and cooldown)
@@ -156,23 +175,55 @@ export const usePopupTriggers = () => {
 
       return true;
     },
-    [displayCounts]
+    [displayCounts],
   );
 
   // Evaluate all triggers
   const evaluateTriggers = useCallback(async () => {
-    if (!user?.id || currentPopup) return;
+    if (!user?.id || currentPopup || pendingTrigger) return;
 
     for (const trigger of triggers) {
       if (!canDisplayPopup(trigger)) continue;
 
       const conditionsMet = await checkTriggerConditions(trigger);
       if (conditionsMet) {
-        setCurrentPopup({ popup: trigger.popup, trigger });
+        setPendingTrigger(trigger);
         break;
       }
     }
-  }, [user?.id, triggers, currentPopup, canDisplayPopup, checkTriggerConditions]);
+  }, [user?.id, triggers, currentPopup, pendingTrigger, canDisplayPopup, checkTriggerConditions]);
+
+  useEffect(() => {
+    if (!pendingTrigger || currentPopup) return;
+
+    if (delayTimerRef.current) {
+      clearTimeout(delayTimerRef.current);
+      delayTimerRef.current = null;
+    }
+
+    const delayMs = Math.max(0, (pendingTrigger.delay_seconds || 0) * 1000);
+
+    if (!delayMs) {
+      setCurrentPopup({ popup: pendingTrigger.popup, trigger: pendingTrigger });
+      setPendingTrigger(null);
+      setLastTriggerEvent(null);
+      return;
+    }
+
+    delayTimerRef.current = setTimeout(() => {
+      setCurrentPopup({ popup: pendingTrigger.popup, trigger: pendingTrigger });
+      setPendingTrigger(null);
+      setLastTriggerEvent(null);
+      delayTimerRef.current = null;
+    }, delayMs);
+
+    return () => {
+      if (delayTimerRef.current) {
+        clearTimeout(delayTimerRef.current);
+        delayTimerRef.current = null;
+      }
+    };
+  }, [currentPopup, pendingTrigger]);
 
   // Set up periodic evaluation
   useEffect(() => {
@@ -186,15 +237,15 @@ export const usePopupTriggers = () => {
 
     // Also evaluate on scroll
     const handleScroll = () => {
-      evaluateTriggers();
+      void evaluateTriggers();
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
 
     return () => {
       clearInterval(interval);
       window.removeEventListener("scroll", handleScroll);
-      if (timeOnPageRef.current) {
-        clearTimeout(timeOnPageRef.current);
+      if (delayTimerRef.current) {
+        clearTimeout(delayTimerRef.current);
       }
     };
   }, [user?.id, evaluateTriggers]);
@@ -204,11 +255,13 @@ export const usePopupTriggers = () => {
     async (popupId: string, triggerId: string) => {
       if (!user?.id) return;
 
-      await supabase.from("popup_displays").insert([{
-        user_id: user.id,
-        popup_id: popupId,
-        trigger_id: triggerId,
-      }]);
+      await supabase.from("popup_displays").insert([
+        {
+          user_id: user.id,
+          popup_id: popupId,
+          trigger_id: triggerId,
+        },
+      ]);
 
       // Update local state
       setDisplayCounts((prev) => ({
@@ -219,7 +272,7 @@ export const usePopupTriggers = () => {
         },
       }));
     },
-    [user?.id]
+    [user?.id],
   );
 
   // Submit popup response
@@ -227,17 +280,19 @@ export const usePopupTriggers = () => {
     async (responseData: Record<string, Json>) => {
       if (!user?.id || !currentPopup) return;
 
-      await supabase.from("popup_responses").insert([{
-        user_id: user.id,
-        popup_id: currentPopup.popup.id,
-        trigger_id: currentPopup.trigger.id,
-        response_data: responseData,
-      }]);
+      await supabase.from("popup_responses").insert([
+        {
+          user_id: user.id,
+          popup_id: currentPopup.popup.id,
+          trigger_id: currentPopup.trigger.id,
+          response_data: responseData,
+        },
+      ]);
 
       await recordDisplay(currentPopup.popup.id, currentPopup.trigger.id);
       setCurrentPopup(null);
     },
-    [user?.id, currentPopup, recordDisplay]
+    [user?.id, currentPopup, recordDisplay],
   );
 
   // Dismiss popup
