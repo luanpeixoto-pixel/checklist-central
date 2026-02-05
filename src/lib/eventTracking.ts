@@ -1,3 +1,4 @@
+import { supabase } from "@/lib/supabaseClient";
 import type { Json } from "@/integrations/supabase/types";
 
 export type EventAction = "acesso" | "clique" | "cadastro" | "edicao" | "delete" | "exportacao";
@@ -10,12 +11,23 @@ interface TrackUserEventInput {
   metadata?: Record<string, Json>;
 }
 
-/**
- * Legacy event tracking function.
- * The event_tracking_events table no longer exists - analytics are now tracked
- * via analytics_events table in useAnalytics hook.
- * This function is kept as a no-op to avoid breaking existing code.
- */
-export const trackUserEvent = async (_input: TrackUserEventInput): Promise<void> => {
-  // No-op: analytics are now handled by useAnalytics via analytics_events table
+export const trackUserEvent = async ({
+  userId,
+  action,
+  resourceType,
+  resourceId,
+  metadata,
+}: TrackUserEventInput): Promise<void> => {
+  try {
+    await supabase.from("event_tracking_events" as never).insert({
+      user_id: userId,
+      action,
+      resource_type: resourceType ?? null,
+      resource_id: resourceId ?? null,
+      page_path: typeof window !== "undefined" ? window.location.pathname : null,
+      metadata: metadata ?? {},
+    } as never);
+  } catch (error) {
+    console.error("Failed to track user event:", error);
+  }
 };

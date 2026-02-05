@@ -5,6 +5,7 @@ import type { ChecklistData } from "@/types/checklist";
 import { toast } from "sonner";
 import type { Json } from "@/integrations/supabase/types";
 import { trackUserEvent } from "@/lib/eventTracking";
+import { emitPopupTriggerEvent } from "@/lib/popupEvents";
 
 export const useChecklists = () => {
   const { user } = useAuth();
@@ -84,6 +85,7 @@ export const useChecklists = () => {
       ]);
 
       void trackUserEvent({ userId: user.id, action: "cadastro", resourceType: "checklist", resourceId: newRow.id });
+      emitPopupTriggerEvent("save_checklist");
       return true;
     } catch (error) {
       console.error("Error adding checklist:", error);

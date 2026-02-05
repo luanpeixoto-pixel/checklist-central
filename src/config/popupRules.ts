@@ -21,6 +21,9 @@ export interface PopupRule {
   };
   maxDisplays?: number;
   cooldownHours?: number;
+  delaySeconds?: number;
+  pages?: string[];
+  triggerEventName?: string;
 }
 
 // Editar este array é suficiente para criar/ajustar popups.
@@ -42,6 +45,9 @@ export const POPUP_RULES: PopupRule[] = [
     },
     maxDisplays: 3,
     cooldownHours: 24,
+    delaySeconds: 15,
+    pages: ["/checklist"],
+    triggerEventName: "save_checklist",
   },
   {
     id: "upsell_fleet_growth",
@@ -57,5 +63,6 @@ export const POPUP_RULES: PopupRule[] = [
     },
     maxDisplays: 2,
     cooldownHours: 48,
+    pages: ["/", "/veiculos", "/manutencao"],
   },
 ];

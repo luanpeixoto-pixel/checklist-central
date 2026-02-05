@@ -49,6 +49,9 @@ export interface PopupTrigger {
   priority: number;
   max_displays: number | null;
   cooldown_hours: number | null;
+  delay_seconds: number | null;
+  pages: string[] | null;
+  trigger_event_name: string | null;
   is_active: boolean;
   created_at: string;
 }

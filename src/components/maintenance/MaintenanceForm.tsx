@@ -11,14 +11,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { 
-  MAINTENANCE_TYPE_OPTIONS, 
+import {
+  MAINTENANCE_TYPE_OPTIONS,
   MAINTENANCE_GROUP_OPTIONS,
   MAINTENANCE_ITEMS,
-  type Vehicle, 
+  type Vehicle,
   type MaintenanceRecord,
   type MaintenanceFormData,
-  type MaintenanceGroup
+  type MaintenanceGroup,
 } from "@/types/fleet";
 import { Wrench, Save, X } from "lucide-react";
 import { toast } from "sonner";
@@ -30,22 +30,24 @@ interface MaintenanceFormProps {
   onCancel: () => void;
 }
 
+const isBlank = (value: string | null | undefined) => !value?.trim();
+
 export const MaintenanceForm = ({ vehicles, initialData, onSubmit, onCancel }: MaintenanceFormProps) => {
   const [formData, setFormData] = useState<MaintenanceFormData>({
-    vehicle_id: initialData?.vehicle_id || '',
-    tipo_manutencao: initialData?.tipo_manutencao || 'preventiva',
+    vehicle_id: initialData?.vehicle_id || "",
+    tipo_manutencao: initialData?.tipo_manutencao || "preventiva",
     grupo: initialData?.grupo || undefined,
-    item: initialData?.item || '',
-    descricao: initialData?.descricao || '',
+    item: initialData?.item || "",
+    descricao: initialData?.descricao || "",
     custo: initialData?.custo || 0,
     quilometragem_atual: initialData?.quilometragem_atual || undefined,
     quilometragem_proxima: initialData?.quilometragem_proxima || undefined,
-    data_manutencao: initialData?.data_manutencao || new Date().toISOString().split('T')[0],
+    data_manutencao: initialData?.data_manutencao || new Date().toISOString().split("T")[0],
     data_proxima: initialData?.data_proxima || undefined,
-    fornecedor: initialData?.fornecedor || '',
-    nota_fiscal: initialData?.nota_fiscal || '',
-    status: initialData?.status || 'realizada',
-    observacoes: initialData?.observacoes || '',
+    fornecedor: initialData?.fornecedor || "",
+    nota_fiscal: initialData?.nota_fiscal || "",
+    status: initialData?.status || "realizada",
+    observacoes: initialData?.observacoes || "",
   });
 
   const [submitting, setSubmitting] = useState(false);
@@ -55,9 +57,27 @@ export const MaintenanceForm = ({ vehicles, initialData, onSubmit, onCancel }: M
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!formData.vehicle_id || !formData.item || !formData.data_manutencao) {
-      toast.error("Preencha os campos obrigatórios: Veículo, Item e Data");
+
+    const missingFields: string[] = [];
+    if (isBlank(formData.vehicle_id)) missingFields.push("Veículo");
+    if (isBlank(formData.tipo_manutencao)) missingFields.push("Tipo de Manutenção");
+    if (isBlank(formData.grupo ?? "")) missingFields.push("Grupo");
+    if (isBlank(formData.item)) missingFields.push("Item");
+    if (!formData.data_manutencao) missingFields.push("Data da Manutenção");
+    if (formData.custo <= 0) missingFields.push("Custo");
+    if (formData.quilometragem_atual === null || formData.quilometragem_atual === undefined || formData.quilometragem_atual < 0) {
+      missingFields.push("Quilometragem Atual");
+    }
+    if (formData.quilometragem_proxima === null || formData.quilometragem_proxima === undefined || formData.quilometragem_proxima < 0) {
+      missingFields.push("Próxima Troca (km)");
+    }
+    if (!formData.data_proxima) missingFields.push("Próxima Revisão");
+    if (isBlank(formData.fornecedor ?? "")) missingFields.push("Fornecedor/Oficina");
+    if (isBlank(formData.nota_fiscal ?? "")) missingFields.push("Nota Fiscal");
+    if (isBlank(formData.status)) missingFields.push("Status");
+
+    if (missingFields.length > 0) {
+      toast.error(`Preencha os campos obrigatórios: ${missingFields.join(", ")}`);
       return;
     }
 
@@ -69,30 +89,29 @@ export const MaintenanceForm = ({ vehicles, initialData, onSubmit, onCancel }: M
     }
   };
 
-  const selectedVehicle = vehicles.find(v => v.id === formData.vehicle_id);
+  const selectedVehicle = vehicles.find((v) => v.id === formData.vehicle_id);
 
   return (
     <Card className="card-elevated animate-fade-in">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Wrench className="h-5 w-5 text-primary" />
-          {initialData ? 'Editar Manutenção' : 'Registrar Manutenção'}
+          {initialData ? "Editar Manutenção" : "Registrar Manutenção"}
         </CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {/* Veículo */}
             <div className="space-y-2">
               <Label>Veículo *</Label>
               <Select
                 value={formData.vehicle_id}
                 onValueChange={(value) => {
-                  const vehicle = vehicles.find(v => v.id === value);
-                  setFormData({ 
-                    ...formData, 
+                  const vehicle = vehicles.find((v) => v.id === value);
+                  setFormData({
+                    ...formData,
                     vehicle_id: value,
-                    quilometragem_atual: vehicle?.quilometragem_atual
+                    quilometragem_atual: vehicle?.quilometragem_atual,
                   });
                 }}
               >
@@ -109,13 +128,9 @@ export const MaintenanceForm = ({ vehicles, initialData, onSubmit, onCancel }: M
               </Select>
             </div>
 
-            {/* Tipo */}
             <div className="space-y-2">
               <Label>Tipo de Manutenção *</Label>
-              <Select
-                value={formData.tipo_manutencao}
-                onValueChange={(value) => setFormData({ ...formData, tipo_manutencao: value })}
-              >
+              <Select value={formData.tipo_manutencao} onValueChange={(value) => setFormData({ ...formData, tipo_manutencao: value })}>
                 <SelectTrigger>
                   <SelectValue placeholder="Selecione o tipo" />
                 </SelectTrigger>
@@ -129,13 +144,9 @@ export const MaintenanceForm = ({ vehicles, initialData, onSubmit, onCancel }: M
               </Select>
             </div>
 
-            {/* Grupo */}
             <div className="space-y-2">
-              <Label>Grupo</Label>
-              <Select
-                value={formData.grupo || ''}
-                onValueChange={(value) => setFormData({ ...formData, grupo: value || undefined, item: '' })}
-              >
+              <Label>Grupo *</Label>
+              <Select value={formData.grupo || ""} onValueChange={(value) => setFormData({ ...formData, grupo: value || undefined, item: "" })}>
                 <SelectTrigger>
                   <SelectValue placeholder="Selecione o grupo" />
                 </SelectTrigger>
@@ -149,14 +160,10 @@ export const MaintenanceForm = ({ vehicles, initialData, onSubmit, onCancel }: M
               </Select>
             </div>
 
-            {/* Item */}
             <div className="space-y-2">
               <Label>Item *</Label>
               {itemOptions.length > 0 ? (
-                <Select
-                  value={formData.item}
-                  onValueChange={(value) => setFormData({ ...formData, item: value })}
-                >
+                <Select value={formData.item} onValueChange={(value) => setFormData({ ...formData, item: value })}>
                   <SelectTrigger>
                     <SelectValue placeholder="Selecione o item" />
                   </SelectTrigger>
@@ -178,7 +185,6 @@ export const MaintenanceForm = ({ vehicles, initialData, onSubmit, onCancel }: M
               )}
             </div>
 
-            {/* Data */}
             <div className="space-y-2">
               <Label>Data da Manutenção *</Label>
               <Input
@@ -189,78 +195,74 @@ export const MaintenanceForm = ({ vehicles, initialData, onSubmit, onCancel }: M
               />
             </div>
 
-            {/* Custo */}
             <div className="space-y-2">
-              <Label>Custo (R$)</Label>
+              <Label>Custo (R$) *</Label>
               <Input
                 type="number"
                 step="0.01"
                 min="0"
-                value={formData.custo || ''}
+                value={formData.custo || ""}
                 onChange={(e) => setFormData({ ...formData, custo: parseFloat(e.target.value) || 0 })}
                 placeholder="0,00"
+                required
               />
             </div>
 
-            {/* Km Atual */}
             <div className="space-y-2">
-              <Label>Quilometragem Atual</Label>
+              <Label>Quilometragem Atual *</Label>
               <Input
                 type="number"
-                value={formData.quilometragem_atual || ''}
-                onChange={(e) => setFormData({ ...formData, quilometragem_atual: parseInt(e.target.value) || undefined })}
-                placeholder={selectedVehicle ? `Atual: ${selectedVehicle.quilometragem_atual}` : 'km'}
+                value={formData.quilometragem_atual || ""}
+                onChange={(e) => setFormData({ ...formData, quilometragem_atual: parseInt(e.target.value, 10) || undefined })}
+                placeholder={selectedVehicle ? `Atual: ${selectedVehicle.quilometragem_atual}` : "km"}
+                required
               />
             </div>
 
-            {/* Km Próxima */}
             <div className="space-y-2">
-              <Label>Próxima Troca (km)</Label>
+              <Label>Próxima Troca (km) *</Label>
               <Input
                 type="number"
-                value={formData.quilometragem_proxima || ''}
-                onChange={(e) => setFormData({ ...formData, quilometragem_proxima: parseInt(e.target.value) || undefined })}
+                value={formData.quilometragem_proxima || ""}
+                onChange={(e) => setFormData({ ...formData, quilometragem_proxima: parseInt(e.target.value, 10) || undefined })}
                 placeholder="km para próxima manutenção"
+                required
               />
             </div>
 
-            {/* Data Próxima */}
             <div className="space-y-2">
-              <Label>Próxima Revisão</Label>
+              <Label>Próxima Revisão *</Label>
               <Input
                 type="date"
-                value={formData.data_proxima || ''}
+                value={formData.data_proxima || ""}
                 onChange={(e) => setFormData({ ...formData, data_proxima: e.target.value || undefined })}
+                required
               />
             </div>
 
-            {/* Fornecedor */}
             <div className="space-y-2">
-              <Label>Fornecedor/Oficina</Label>
+              <Label>Fornecedor/Oficina *</Label>
               <Input
-                value={formData.fornecedor || ''}
+                value={formData.fornecedor || ""}
                 onChange={(e) => setFormData({ ...formData, fornecedor: e.target.value })}
                 placeholder="Nome do fornecedor"
+                required
               />
             </div>
 
-            {/* Nota Fiscal */}
             <div className="space-y-2">
-              <Label>Nota Fiscal</Label>
+              <Label>Nota Fiscal *</Label>
               <Input
-                value={formData.nota_fiscal || ''}
+                value={formData.nota_fiscal || ""}
                 onChange={(e) => setFormData({ ...formData, nota_fiscal: e.target.value })}
                 placeholder="Número da NF"
+                required
               />
             </div>
 
-            {/* Status */}
             <div className="space-y-2">
-              <Label>Status</Label>
-              <Select
-                value={formData.status}
-                onValueChange={(value) => setFormData({ ...formData, status: value })}
-              >
+              <Label>Status *</Label>
+              <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
                 <SelectTrigger>
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
@@ -273,40 +275,32 @@ export const MaintenanceForm = ({ vehicles, initialData, onSubmit, onCancel }: M
             </div>
           </div>
 
-          {/* Descrição */}
           <div className="space-y-2">
             <Label>Descrição</Label>
             <Textarea
-              value={formData.descricao || ''}
+              value={formData.descricao || ""}
               onChange={(e) => setFormData({ ...formData, descricao: e.target.value })}
               placeholder="Detalhes da manutenção..."
               rows={2}
             />
           </div>
 
-          {/* Observações */}
           <div className="space-y-2">
             <Label>Observações</Label>
             <Textarea
-              value={formData.observacoes || ''}
+              value={formData.observacoes || ""}
               onChange={(e) => setFormData({ ...formData, observacoes: e.target.value })}
               placeholder="Observações adicionais..."
               rows={2}
             />
           </div>
 
-          {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
-            <Button 
-              type="submit" 
-              disabled={submitting} 
-              className="flex-1 gap-2"
-              data-track={initialData ? "update_manutencao" : "salvar_manutencao"}
-            >
+            <Button data-track={initialData ? "update_maintenance" : "save_maintenance"} type="submit" disabled={submitting} className="flex-1 gap-2">
               <Save className="h-4 w-4" />
-              {submitting ? 'Salvando...' : (initialData ? 'Atualizar' : 'Registrar')}
+              {submitting ? "Salvando..." : initialData ? "Atualizar" : "Registrar"}
             </Button>
-            <Button type="button" variant="outline" onClick={onCancel} className="gap-2">
+            <Button data-track="cancel_maintenance" type="button" variant="outline" onClick={onCancel} className="gap-2">
               <X className="h-4 w-4" />
               Cancelar
             </Button>

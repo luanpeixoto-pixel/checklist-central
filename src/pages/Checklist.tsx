@@ -102,7 +102,7 @@ const Checklist = () => {
             </div>
 
             {currentView === "history" && (
-              <Button onClick={handleNewChecklist} className="gap-2">
+              <Button data-track="click_new_checklist" onClick={handleNewChecklist} className="gap-2">
                 <Plus className="h-4 w-4" />
                 Novo Checklist
               </Button>

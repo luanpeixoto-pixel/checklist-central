@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/lib/supabaseClient";
 import { POPUP_RULES, type PopupRule } from "@/config/popupRules";
+import { subscribeToPopupTriggerEvents } from "@/lib/popupEvents";
 
 interface PopupUserState {
   popup_id: string;
@@ -50,6 +51,9 @@ export const usePopupEngine = () => {
     dataInputs: 0,
     summary: EMPTY_SUMMARY,
   });
+  const [lastTriggerEvent, setLastTriggerEvent] = useState<string | null>(null);
+  const [timerReadyPopupId, setTimerReadyPopupId] = useState<string | null>(null);
+  const delayTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const loadPopupData = useCallback(async () => {
     if (!user?.id) {
@@ -101,9 +105,19 @@ export const usePopupEngine = () => {
     void loadPopupData();
   }, [loadPopupData]);
 
+  useEffect(() => {
+    const unsubscribe = subscribeToPopupTriggerEvents((eventName) => {
+      setLastTriggerEvent(eventName);
+      void loadPopupData();
+    });
+
+    return unsubscribe;
+  }, [loadPopupData]);
+
   const eligiblePopup = useMemo(() => {
     if (!user?.id || loading) return null;
 
+    const currentPath = window.location.pathname;
     const sorted = [...POPUP_RULES].sort((a, b) => b.priority - a.priority);
 
     for (const rule of sorted) {
@@ -112,6 +126,9 @@ export const usePopupEngine = () => {
 
       if (rule.maxDisplays && displayCount >= rule.maxDisplays) continue;
       if (isInCooldown(state?.last_displayed_at || null, rule.cooldownHours ?? 24)) continue;
+
+      if (rule.pages?.length && !rule.pages.includes(currentPath)) continue;
+      if (rule.triggerEventName && lastTriggerEvent !== rule.triggerEventName) continue;
 
       const c = rule.conditions;
       if (c.minVisits && metrics.visits < c.minVisits) continue;
@@ -127,7 +144,36 @@ export const usePopupEngine = () => {
     }
 
     return null;
-  }, [loading, metrics, popupState, user?.id]);
+  }, [lastTriggerEvent, loading, metrics, popupState, user?.id]);
+
+  useEffect(() => {
+    if (delayTimerRef.current) {
+      clearTimeout(delayTimerRef.current);
+      delayTimerRef.current = null;
+    }
+
+    setTimerReadyPopupId(null);
+
+    if (!eligiblePopup) return;
+
+    const delayMs = Math.max(0, (eligiblePopup.delaySeconds ?? 0) * 1000);
+    if (!delayMs) {
+      setTimerReadyPopupId(eligiblePopup.id);
+      return;
+    }
+
+    delayTimerRef.current = setTimeout(() => {
+      setTimerReadyPopupId(eligiblePopup.id);
+      delayTimerRef.current = null;
+    }, delayMs);
+
+    return () => {
+      if (delayTimerRef.current) {
+        clearTimeout(delayTimerRef.current);
+        delayTimerRef.current = null;
+      }
+    };
+  }, [eligiblePopup]);
 
   const trackPopupEvent = useCallback(
     async (popupId: string, eventType: "shown" | "clicked" | "input" | "closed", inputValue?: string) => {
@@ -177,25 +223,27 @@ export const usePopupEngine = () => {
         },
       }));
     },
-    [popupState, user?.id]
+    [popupState, user?.id],
   );
 
   useEffect(() => {
-    if (!eligiblePopup || currentPopup?.id === eligiblePopup.id) return;
+    if (!eligiblePopup || timerReadyPopupId !== eligiblePopup.id || currentPopup?.id === eligiblePopup.id) return;
     setCurrentPopup(eligiblePopup);
     void trackPopupEvent(eligiblePopup.id, "shown");
-  }, [currentPopup?.id, eligiblePopup, trackPopupEvent]);
+  }, [currentPopup?.id, eligiblePopup, timerReadyPopupId, trackPopupEvent]);
 
   const dismissPopup = useCallback(async () => {
     if (!currentPopup) return;
     await trackPopupEvent(currentPopup.id, "closed");
     setCurrentPopup(null);
+    setLastTriggerEvent(null);
   }, [currentPopup, trackPopupEvent]);
 
   const clickPopup = useCallback(async () => {
     if (!currentPopup) return;
     await trackPopupEvent(currentPopup.id, "clicked");
     setCurrentPopup(null);
+    setLastTriggerEvent(null);
   }, [currentPopup, trackPopupEvent]);
 
   const submitPopupInput = useCallback(
@@ -203,8 +251,9 @@ export const usePopupEngine = () => {
       if (!currentPopup) return;
       await trackPopupEvent(currentPopup.id, "input", value);
       setCurrentPopup(null);
+      setLastTriggerEvent(null);
     },
-    [currentPopup, trackPopupEvent]
+    [currentPopup, trackPopupEvent],
   );
 
   return {

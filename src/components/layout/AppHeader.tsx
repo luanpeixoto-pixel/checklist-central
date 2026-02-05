@@ -48,7 +48,7 @@ export const AppHeader = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+          <Link to="/" data-track="click_logo_home" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             <div className="p-2 rounded-xl bg-primary text-primary-foreground">
               <Car className="h-6 w-6" />
             </div>
@@ -66,6 +66,8 @@ export const AppHeader = () => {
                 <Link
                   key={item.path}
                   to={item.path}
+                  data-track={`click_header_${item.label.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/\s+/g, "_")}`}
+                  data-track-meta={JSON.stringify({ area: "header_desktop", target: item.path })}
                   className={cn(
                     "flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all duration-200 text-sm",
                     isActive(item.path)
@@ -84,7 +86,7 @@ export const AppHeader = () => {
           <div className="hidden md:flex items-center gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center gap-2">
+                <Button variant="ghost" data-track="click_header_user_menu" className="flex items-center gap-2">
                   <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
                     <User className="h-4 w-4 text-primary" />
                   </div>
@@ -96,7 +98,7 @@ export const AppHeader = () => {
                   {user?.email}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={signOut} className="text-destructive">
+                <DropdownMenuItem data-track="click_logout" data-track-meta={JSON.stringify({ area: "header_desktop" })} onClick={signOut} className="text-destructive">
                   <LogOut className="h-4 w-4 mr-2" />
                   Sair
                 </DropdownMenuItem>
@@ -106,6 +108,7 @@ export const AppHeader = () => {
 
           {/* Mobile Menu Button */}
           <button
+            data-track="click_mobile_menu_toggle"
             className="lg:hidden p-2 rounded-lg hover:bg-muted transition-colors"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
@@ -129,6 +132,8 @@ export const AppHeader = () => {
                 <Link
                   key={item.path}
                   to={item.path}
+                  data-track={`click_mobile_header_${item.label.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/\s+/g, "_")}`}
+                  data-track-meta={JSON.stringify({ area: "header_mobile", target: item.path })}
                   onClick={() => setMobileMenuOpen(false)}
                   className={cn(
                     "flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all duration-200",
@@ -148,6 +153,8 @@ export const AppHeader = () => {
                 {user?.email}
               </div>
               <button
+                data-track="click_logout"
+                data-track-meta={JSON.stringify({ area: "header_mobile" })}
                 onClick={() => {
                   signOut();
                   setMobileMenuOpen(false);

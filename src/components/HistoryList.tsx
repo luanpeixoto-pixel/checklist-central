@@ -142,6 +142,7 @@ export const HistoryList = ({ checklists, vehicles, onSelect, onDelete }: Histor
                 {/* Actions */}
                 <div className="flex items-center gap-2">
                   <button
+                    data-track="confirm_delete_checklist"
                     onClick={(e) => {
                       e.stopPropagation();
                       if (checklist.id) onDelete(checklist.id);
