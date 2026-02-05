@@ -93,10 +93,9 @@ const Maintenance = () => {
             </div>
             {!showForm && (
               <Button 
-                data-track="click_new_maintenance"
+                data-track="nova_manutencao"
                 onClick={() => setShowForm(true)} 
                 className="gap-2"
-                data-track="nova_manutencao"
               >
                 <Plus className="h-4 w-4" />
                 Nova Manutenção

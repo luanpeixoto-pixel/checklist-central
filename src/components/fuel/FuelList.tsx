@@ -149,9 +149,9 @@ export const FuelList = ({ records, onEdit, onDelete }: FuelListProps) => {
                       <AlertDialogFooter>
                         <AlertDialogCancel data-track="cancel_delete_fuel">Cancelar</AlertDialogCancel>
                         <AlertDialogAction
-                          data-track="confirm_delete_fuel" onClick={() => onDelete(record.id)}
-                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                           data-track="delete_abastecimento"
+                          onClick={() => onDelete(record.id)}
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                         >
                           Excluir
                         </AlertDialogAction>
