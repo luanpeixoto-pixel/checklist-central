@@ -186,6 +186,9 @@ export const usePopupAdmin = () => {
         priority: trigger.priority,
         max_displays: trigger.max_displays,
         cooldown_hours: trigger.cooldown_hours,
+        delay_seconds: trigger.delay_seconds,
+        pages: trigger.pages,
+        trigger_event_name: trigger.trigger_event_name,
         is_active: trigger.is_active,
       })
       .select()
@@ -209,6 +212,9 @@ export const usePopupAdmin = () => {
     if (trigger.priority !== undefined) updateData.priority = trigger.priority;
     if (trigger.max_displays !== undefined) updateData.max_displays = trigger.max_displays;
     if (trigger.cooldown_hours !== undefined) updateData.cooldown_hours = trigger.cooldown_hours;
+    if (trigger.delay_seconds !== undefined) updateData.delay_seconds = trigger.delay_seconds;
+    if (trigger.pages !== undefined) updateData.pages = trigger.pages;
+    if (trigger.trigger_event_name !== undefined) updateData.trigger_event_name = trigger.trigger_event_name;
     if (trigger.is_active !== undefined) updateData.is_active = trigger.is_active;
 
     const { error } = await supabase
