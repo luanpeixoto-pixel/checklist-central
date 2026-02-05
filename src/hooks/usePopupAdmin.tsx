@@ -41,16 +41,23 @@ export const usePopupAdmin = () => {
 
       if (error) throw error;
       
-      const mapped = (data as PopupDefinitionRow[] || []).map((row): PopupDefinition => ({
-        id: row.id,
-        name: row.name,
-        title: row.title,
-        description: row.description || undefined,
-        form_schema: row.form_schema as unknown as FormSchema,
-        is_active: row.is_active,
-        created_at: row.created_at,
-        updated_at: row.updated_at,
-      }));
+      const mapped = (data as PopupDefinitionRow[] || []).map((row): PopupDefinition => {
+        const schema = row.form_schema as unknown as FormSchema;
+        return {
+          id: row.id,
+          name: row.name,
+          title: row.title,
+          description: row.description || undefined,
+          popup_type: (schema as Record<string, unknown>)?.popup_type as PopupDefinition["popup_type"] || "submit",
+          message: (schema as Record<string, unknown>)?.message as string || row.description || "",
+          cta_text: schema?.submitButtonText || "Enviar",
+          redirect_url: (schema as Record<string, unknown>)?.redirect_url as string || undefined,
+          form_schema: schema,
+          is_active: row.is_active,
+          created_at: row.created_at,
+          updated_at: row.updated_at,
+        };
+      });
       
       setPopups(mapped);
     } catch (error) {
@@ -74,17 +81,22 @@ export const usePopupAdmin = () => {
       const { data, error } = await query;
       if (error) throw error;
       
-      const mapped = (data as PopupTriggerRow[] || []).map((row): PopupTrigger => ({
-        id: row.id,
-        popup_id: row.popup_id,
-        trigger_type: row.trigger_type as PopupTrigger["trigger_type"],
-        conditions: row.conditions as unknown as PopupTrigger["conditions"],
-        priority: row.priority,
-        max_displays: row.max_displays,
-        cooldown_hours: row.cooldown_hours,
-        is_active: row.is_active,
-        created_at: row.created_at,
-      }));
+      const mapped = (data as PopupTriggerRow[] || []).map((row): PopupTrigger => {
+        const conditions = row.conditions as unknown as Record<string, unknown>;
+        const triggerCategory = (conditions?.trigger_category as PopupTrigger["trigger_category"]) || "action";
+        return {
+          id: row.id,
+          popup_id: row.popup_id,
+          trigger_category: triggerCategory,
+          trigger_type: row.trigger_type as PopupTrigger["trigger_type"],
+          conditions: row.conditions as unknown as PopupTrigger["conditions"],
+          priority: row.priority,
+          max_displays: row.max_displays,
+          cooldown_hours: row.cooldown_hours,
+          is_active: row.is_active,
+          created_at: row.created_at,
+        };
+      });
       
       setTriggers(mapped);
     } catch (error) {
@@ -98,13 +110,19 @@ export const usePopupAdmin = () => {
   }, [fetchPopups, fetchTriggers]);
 
   const createPopup = useCallback(async (popup: Omit<PopupDefinition, "id" | "created_at" | "updated_at">) => {
+    const enrichedSchema = {
+      ...popup.form_schema,
+      popup_type: popup.popup_type,
+      message: popup.message,
+      redirect_url: popup.redirect_url,
+    };
     const { data, error } = await supabase
       .from("popup_definitions")
       .insert({
         name: popup.name,
         title: popup.title,
-        description: popup.description || null,
-        form_schema: popup.form_schema as unknown as Json,
+        description: popup.message || popup.description || null,
+        form_schema: enrichedSchema as unknown as Json,
         is_active: popup.is_active,
       })
       .select()
@@ -119,8 +137,16 @@ export const usePopupAdmin = () => {
     const updateData: Record<string, unknown> = {};
     if (popup.name !== undefined) updateData.name = popup.name;
     if (popup.title !== undefined) updateData.title = popup.title;
-    if (popup.description !== undefined) updateData.description = popup.description || null;
-    if (popup.form_schema !== undefined) updateData.form_schema = popup.form_schema as unknown as Json;
+    if (popup.message !== undefined) updateData.description = popup.message || null;
+    if (popup.form_schema !== undefined) {
+      const enrichedSchema = {
+        ...popup.form_schema,
+        popup_type: popup.popup_type,
+        message: popup.message,
+        redirect_url: popup.redirect_url,
+      };
+      updateData.form_schema = enrichedSchema as unknown as Json;
+    }
     if (popup.is_active !== undefined) updateData.is_active = popup.is_active;
 
     const { error } = await supabase
@@ -143,12 +169,16 @@ export const usePopupAdmin = () => {
   }, [fetchPopups]);
 
   const createTrigger = useCallback(async (trigger: Omit<PopupTrigger, "id" | "created_at">) => {
+    const enrichedConditions = {
+      ...trigger.conditions,
+      trigger_category: trigger.trigger_category,
+    };
     const { data, error } = await supabase
       .from("popup_triggers")
       .insert({
         popup_id: trigger.popup_id,
         trigger_type: trigger.trigger_type,
-        conditions: trigger.conditions as unknown as Json,
+        conditions: enrichedConditions as unknown as Json,
         priority: trigger.priority,
         max_displays: trigger.max_displays,
         cooldown_hours: trigger.cooldown_hours,
@@ -165,7 +195,13 @@ export const usePopupAdmin = () => {
   const updateTrigger = useCallback(async (id: string, trigger: Partial<PopupTrigger>) => {
     const updateData: Record<string, unknown> = {};
     if (trigger.trigger_type !== undefined) updateData.trigger_type = trigger.trigger_type;
-    if (trigger.conditions !== undefined) updateData.conditions = trigger.conditions as unknown as Json;
+    if (trigger.conditions !== undefined) {
+      const enrichedConditions = {
+        ...trigger.conditions,
+        trigger_category: trigger.trigger_category,
+      };
+      updateData.conditions = enrichedConditions as unknown as Json;
+    }
     if (trigger.priority !== undefined) updateData.priority = trigger.priority;
     if (trigger.max_displays !== undefined) updateData.max_displays = trigger.max_displays;
     if (trigger.cooldown_hours !== undefined) updateData.cooldown_hours = trigger.cooldown_hours;
