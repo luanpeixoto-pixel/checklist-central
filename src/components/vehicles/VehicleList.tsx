@@ -82,7 +82,7 @@ export const VehicleList = ({ vehicles, onEdit, onDelete }: VehicleListProps) =>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => onEdit(vehicle)}>
+                  <DropdownMenuItem onClick={() => onEdit(vehicle)} data-track="edit_veiculo">
                     <Edit2 className="h-4 w-4 mr-2" />
                     Editar
                   </DropdownMenuItem>
@@ -105,6 +105,7 @@ export const VehicleList = ({ vehicles, onEdit, onDelete }: VehicleListProps) =>
                         <AlertDialogAction
                           data-track="confirm_delete_vehicle" onClick={() => onDelete(vehicle.id)}
                           className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          data-track="delete_veiculo"
                         >
                           Excluir
                         </AlertDialogAction>

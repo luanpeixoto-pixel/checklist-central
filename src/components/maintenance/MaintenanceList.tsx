@@ -128,7 +128,7 @@ export const MaintenanceList = ({ records, onEdit, onDelete }: MaintenanceListPr
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => onEdit(record)}>
+                    <DropdownMenuItem onClick={() => onEdit(record)} data-track="edit_manutencao">
                       <Edit2 className="h-4 w-4 mr-2" />
                       Editar
                     </DropdownMenuItem>

@@ -96,6 +96,7 @@ const Fuel = () => {
                 data-track="click_new_fuel"
                 onClick={() => setShowForm(true)} 
                 className="gap-2"
+                data-track="novo_abastecimento"
               >
                 <Plus className="h-4 w-4" />
                 Novo Abastecimento

@@ -128,7 +128,7 @@ export const FuelList = ({ records, onEdit, onDelete }: FuelListProps) => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => onEdit(record)}>
+                  <DropdownMenuItem onClick={() => onEdit(record)} data-track="edit_abastecimento">
                     <Edit2 className="h-4 w-4 mr-2" />
                     Editar
                   </DropdownMenuItem>
@@ -151,6 +151,7 @@ export const FuelList = ({ records, onEdit, onDelete }: FuelListProps) => {
                         <AlertDialogAction
                           data-track="confirm_delete_fuel" onClick={() => onDelete(record.id)}
                           className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          data-track="delete_abastecimento"
                         >
                           Excluir
                         </AlertDialogAction>

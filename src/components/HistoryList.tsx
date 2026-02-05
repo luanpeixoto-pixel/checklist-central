@@ -85,6 +85,7 @@ export const HistoryList = ({ checklists, vehicles, onSelect, onDelete }: Histor
               className="card-elevated p-4 hover:shadow-elevated-lg transition-all duration-200 cursor-pointer group animate-slide-up"
               style={{ animationDelay: `${index * 50}ms` }}
               onClick={() => onSelect(checklist)}
+              data-track="edit_checklist"
             >
               <div className="flex items-start gap-4">
                 {/* Status indicator */}
@@ -148,6 +149,7 @@ export const HistoryList = ({ checklists, vehicles, onSelect, onDelete }: Histor
                     }}
                     className="p-2 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors opacity-0 group-hover:opacity-100"
                     title="Excluir"
+                    data-track="delete_checklist"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
