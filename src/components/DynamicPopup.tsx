@@ -45,10 +45,12 @@ export const DynamicPopup = ({ popup, onSubmit, onDismiss }: DynamicPopupProps) 
     }
   };
 
+  const fields = popup.form_schema?.fields ?? [];
+
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
     
-    popup.form_schema.fields.forEach((field) => {
+    fields.forEach((field) => {
       if (field.required) {
         const value = formData[field.id];
         if (value === undefined || value === null || value === "") {
@@ -194,27 +196,29 @@ export const DynamicPopup = ({ popup, onSubmit, onDismiss }: DynamicPopupProps) 
           )}
         </DialogHeader>
 
-        <div className="space-y-4 py-4">
-          {popup.form_schema.fields.map((field) => (
-            <div key={field.id} className="space-y-2">
-              <Label htmlFor={field.id}>
-                {field.label}
-                {field.required && <span className="text-destructive ml-1">*</span>}
-              </Label>
-              {renderField(field)}
-              {errors[field.id] && (
-                <p className="text-sm text-destructive">{errors[field.id]}</p>
-              )}
-            </div>
-          ))}
-        </div>
+        {fields.length > 0 && (
+          <div className="space-y-4 py-4">
+            {fields.map((field) => (
+              <div key={field.id} className="space-y-2">
+                <Label htmlFor={field.id}>
+                  {field.label}
+                  {field.required && <span className="text-destructive ml-1">*</span>}
+                </Label>
+                {renderField(field)}
+                {errors[field.id] && (
+                  <p className="text-sm text-destructive">{errors[field.id]}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
 
         <DialogFooter className="flex gap-2">
           <Button variant="outline" onClick={onDismiss}>
             Agora não
           </Button>
           <Button onClick={handleSubmit}>
-            {popup.form_schema.submitButtonText || "Enviar"}
+            {popup.form_schema?.submitButtonText || "Enviar"}
           </Button>
         </DialogFooter>
       </DialogContent>

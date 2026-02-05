@@ -1,15 +1,16 @@
-import { PopupCenter } from "@/components/popup/PopupCenter";
-import { usePopupEngine } from "@/hooks/usePopupEngine";
+import { DynamicPopup } from "@/components/DynamicPopup";
+import { usePopupTriggers } from "@/hooks/usePopupTriggers";
 
 export const PopupHost = () => {
-  const { currentPopup, dismissPopup, clickPopup, submitPopupInput } = usePopupEngine();
+  const { currentPopup, submitResponse, dismissPopup } = usePopupTriggers();
+
+  if (!currentPopup) return null;
 
   return (
-    <PopupCenter
-      popup={currentPopup}
+    <DynamicPopup
+      popup={currentPopup.popup}
+      onSubmit={submitResponse}
       onDismiss={dismissPopup}
-      onClick={clickPopup}
-      onInputSubmit={submitPopupInput}
     />
   );
 };
