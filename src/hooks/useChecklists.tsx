@@ -57,11 +57,10 @@ export const useChecklists = () => {
       return false;
     }
 
-
     try {
       const payload: ChecklistData = {
         ...data,
-        vehicle_id: data.vehicle_id, // explícito
+        vehicle_id: data.vehicle_id,
       };
 
       const { data: newRow, error } = await supabase
@@ -75,17 +74,6 @@ export const useChecklists = () => {
 
       if (error) throw error;
 
-      setChecklists((prev) => {
-        const updated = [
-          {
-            ...payload,
-            id: newRow.id,
-            createdAt: new Date(newRow.created_at),
-          },
-          ...prev,
-        ];
-        return updated;
-      });
 
       void trackUserEvent({ userId: user.id, action: "cadastro", resourceType: "checklist", resourceId: newRow.id });
       return true;
@@ -145,10 +133,6 @@ export const useChecklists = () => {
 
       if (error) throw error;
 
-      setChecklists((prev) => {
-        const updated = prev.filter((c) => c.id !== id);
-        return updated;
-      });
 
       toast.success("Checklist excluído com sucesso");
       void trackUserEvent({ userId: user.id, action: "delete", resourceType: "checklist", resourceId: id });

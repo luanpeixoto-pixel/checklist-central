@@ -21,9 +21,7 @@ interface AnalyticsProviderProps {
 
 export const AnalyticsProvider = ({ children }: AnalyticsProviderProps) => {
   const { track } = useAnalytics();
-  return (
-    <AnalyticsContext.Provider value={{ track }}>
-      {children}
+
     </AnalyticsContext.Provider>
   );
 };
