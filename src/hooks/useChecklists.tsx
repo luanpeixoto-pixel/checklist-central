@@ -6,13 +6,10 @@ import { toast } from "sonner";
 import type { Json } from "@/integrations/supabase/types";
 import { trackUserEvent } from "@/lib/eventTracking";
 
-const UNLIMITED_CHECKLISTS = Number.POSITIVE_INFINITY;
-
 export const useChecklists = () => {
   const { user } = useAuth();
   const [checklists, setChecklists] = useState<ChecklistData[]>([]);
   const [loading, setLoading] = useState(true);
-  const [limitReached, setLimitReached] = useState(false);
 
   const fetchChecklists = async () => {
     if (!user) {
@@ -37,7 +34,6 @@ export const useChecklists = () => {
       }));
 
       setChecklists(parsed);
-      setLimitReached(false);
     } catch (error) {
       console.error("Error fetching checklists:", error);
       toast.error("Erro ao carregar checklists");
@@ -49,8 +45,6 @@ export const useChecklists = () => {
   useEffect(() => {
     fetchChecklists();
   }, [user]);
-
-  const canAddChecklist = () => true;
 
   const addChecklist = async (data: ChecklistData): Promise<boolean> => {
     if (!user) {
@@ -162,14 +156,9 @@ export const useChecklists = () => {
   return {
     checklists,
     loading,
-    limitReached,
-    setLimitReached,
-    canAddChecklist,
     addChecklist,
     updateChecklist,
     deleteChecklist,
     refetch: fetchChecklists,
-    maxChecklists: UNLIMITED_CHECKLISTS,
-    remainingChecklists: UNLIMITED_CHECKLISTS,
   };
 };

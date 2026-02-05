@@ -5,7 +5,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { AnalyticsProvider } from "@/components/AnalyticsProvider";
-import { PopupHost } from "@/components/popup/PopupHost";
 
 // Pages
 import Cockpit from "./pages/Cockpit";
@@ -70,7 +69,6 @@ const App = () => (
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
-          <PopupHost />
         </AnalyticsProvider>
       </BrowserRouter>
     </TooltipProvider>

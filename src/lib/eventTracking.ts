@@ -19,14 +19,14 @@ export const trackUserEvent = async ({
   metadata,
 }: TrackUserEventInput): Promise<void> => {
   try {
-    await (supabase as any).from("event_tracking_events").insert({
+    await supabase.from("event_tracking_events" as never).insert({
       user_id: userId,
       action,
       resource_type: resourceType ?? null,
       resource_id: resourceId ?? null,
       page_path: typeof window !== "undefined" ? window.location.pathname : null,
       metadata: metadata ?? {},
-    });
+    } as never);
   } catch (error) {
     console.error("Failed to track user event:", error);
   }
