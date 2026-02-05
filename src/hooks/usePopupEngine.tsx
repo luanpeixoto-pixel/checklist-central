@@ -90,6 +90,8 @@ export const usePopupEngine = () => {
         dataInputs,
         summary: (summaryRes.data as PopupSummary) || EMPTY_SUMMARY,
       });
+    } catch (error) {
+      console.error("Failed loading popup data:", error);
     } finally {
       setLoading(false);
     }

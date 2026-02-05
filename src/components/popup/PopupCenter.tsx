@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -20,6 +20,10 @@ interface PopupCenterProps {
 
 export const PopupCenter = ({ popup, onDismiss, onClick, onInputSubmit }: PopupCenterProps) => {
   const [inputValue, setInputValue] = useState("");
+
+  useEffect(() => {
+    setInputValue("");
+  }, [popup?.id]);
 
   if (!popup) return null;
 

@@ -28,6 +28,7 @@ export const useAnalytics = () => {
   const sessionId = useRef(getSessionId());
   const lastScrollDepth = useRef(0);
   const scrollThrottleTimeout = useRef<NodeJS.Timeout | null>(null);
+  const lastPathRef = useRef<string>(window.location.pathname);
 
   const trackEvent = useCallback(
     async (
@@ -144,15 +145,24 @@ export const useAnalytics = () => {
     window.addEventListener("scroll", handleScroll, { passive: true });
     document.addEventListener("submit", handleFormSubmit, true);
 
-    // Track page views on route changes
+    // Track page views on route changes (browser nav + SPA push/replace)
     const handlePopState = () => trackPageView();
     window.addEventListener("popstate", handlePopState);
+
+    const pathWatcher = window.setInterval(() => {
+      const currentPath = window.location.pathname;
+      if (currentPath !== lastPathRef.current) {
+        lastPathRef.current = currentPath;
+        trackPageView();
+      }
+    }, 500);
 
     return () => {
       document.removeEventListener("click", handleClick, true);
       window.removeEventListener("scroll", handleScroll);
       document.removeEventListener("submit", handleFormSubmit, true);
       window.removeEventListener("popstate", handlePopState);
+      window.clearInterval(pathWatcher);
       if (scrollThrottleTimeout.current) {
         clearTimeout(scrollThrottleTimeout.current);
       }

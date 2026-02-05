@@ -1,5 +1,6 @@
 import { createContext, useContext, type ReactNode } from "react";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { PopupHost } from "@/components/popup/PopupHost";
 
 interface AnalyticsContextValue {
   track: (eventName: string, metadata?: Record<string, unknown>) => void;
@@ -22,6 +23,10 @@ interface AnalyticsProviderProps {
 export const AnalyticsProvider = ({ children }: AnalyticsProviderProps) => {
   const { track } = useAnalytics();
 
+  return (
+    <AnalyticsContext.Provider value={{ track }}>
+      {children}
+      <PopupHost />
     </AnalyticsContext.Provider>
   );
 };

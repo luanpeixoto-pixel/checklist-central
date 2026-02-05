@@ -74,6 +74,14 @@ export const useChecklists = () => {
 
       if (error) throw error;
 
+      setChecklists((prev) => [
+        {
+          ...payload,
+          id: newRow.id,
+          createdAt: new Date(newRow.created_at),
+        },
+        ...prev,
+      ]);
 
       void trackUserEvent({ userId: user.id, action: "cadastro", resourceType: "checklist", resourceId: newRow.id });
       return true;
@@ -133,6 +141,7 @@ export const useChecklists = () => {
 
       if (error) throw error;
 
+      setChecklists((prev) => prev.filter((c) => c.id !== id));
 
       toast.success("Checklist excluído com sucesso");
       void trackUserEvent({ userId: user.id, action: "delete", resourceType: "checklist", resourceId: id });
