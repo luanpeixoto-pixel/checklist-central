@@ -33,13 +33,7 @@ const Checklist = () => {
         setCurrentView("history");
         toast.success("Checklist atualizado com sucesso!");
       }
-      return;
-    }
 
-    const success = await addChecklist(data);
-    if (success) {
-      setCurrentView("history");
-      toast.success("Checklist salvo com sucesso!");
     }
   };
 
@@ -97,7 +91,7 @@ const Checklist = () => {
               <p className="text-muted-foreground mt-1">
                 {currentView === "form"
                   ? "Selecione um veículo e preencha as informações da inspeção"
-                  : `${checklists.length} registro${checklists.length !== 1 ? "s" : ""}`}
+
               </p>
             </div>
 
