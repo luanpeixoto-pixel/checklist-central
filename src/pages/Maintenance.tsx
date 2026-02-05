@@ -2,6 +2,7 @@ import { useState } from "react";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { MaintenanceForm } from "@/components/maintenance/MaintenanceForm";
 import { MaintenanceList } from "@/components/maintenance/MaintenanceList";
+import { EmptyState } from "@/components/EmptyState";
 import { useMaintenance } from "@/hooks/useMaintenance";
 import { useVehicles } from "@/hooks/useVehicles";
 import { Loader2, Plus } from "lucide-react";
@@ -59,6 +60,18 @@ const Maintenance = () => {
     }).format(value);
   };
 
+  // Se não há veículos, mostra estado vazio centralizado
+  if (vehicles.length === 0) {
+    return (
+      <div className="min-h-screen bg-background">
+        <AppHeader />
+        <main className="container mx-auto px-4 py-12">
+          <EmptyState variant="no-vehicles" toolName="manutenção" />
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <AppHeader />
@@ -82,22 +95,12 @@ const Maintenance = () => {
               <Button 
                 onClick={() => setShowForm(true)} 
                 className="gap-2"
-                disabled={vehicles.length === 0}
               >
                 <Plus className="h-4 w-4" />
                 Nova Manutenção
               </Button>
             )}
           </div>
-
-          {/* Alert for no vehicles */}
-          {vehicles.length === 0 && !showForm && (
-            <div className="bg-warning/10 border border-warning/30 rounded-lg p-4 mb-6">
-              <p className="text-warning font-medium">
-                Você precisa cadastrar veículos primeiro antes de registrar manutenções.
-              </p>
-            </div>
-          )}
 
           {/* Content */}
           {showForm ? (
