@@ -304,14 +304,22 @@ export const usePopupTriggers = () => {
   // Click popup CTA
   const clickPopup = useCallback(async () => {
     if (!currentPopup) return;
-    await recordDisplay(currentPopup.popup.id, currentPopup.trigger.id);
-
+    
     const { popup, trigger } = currentPopup;
-
-    if (popup.popup_type === "redirect" && popup.redirect_url) {
-      const redirectUrl = popup.redirect_url.trim();
-      const hasProtocol = /^https?:\/\//i.test(redirectUrl);
-      const targetUrl = hasProtocol ? redirectUrl : `https://${redirectUrl}`;
+    const formSchema = popup.form_schema || {};
+    
+    // Check for redirect URL in form_schema (where admin stores it) or popup level
+    const redirectUrl = (formSchema.redirect_url || popup.redirect_url || "").trim();
+    const popupType = formSchema.popup_type || popup.popup_type;
+    
+    if (popupType === "redirect" && redirectUrl) {
+      // Fix common URL issues (missing //, wrong protocol format)
+      let targetUrl = redirectUrl;
+      if (!/^https?:\/\//i.test(targetUrl)) {
+        // Handle cases like "https:www.example.com" or just "www.example.com"
+        targetUrl = targetUrl.replace(/^https?:/, "");
+        targetUrl = `https://${targetUrl.replace(/^\/+/, "")}`;
+      }
       window.open(targetUrl, "_blank", "noopener,noreferrer");
     }
 
