@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { useAuth } from "./useAuth";
 import type { Json } from "@/integrations/supabase/types";
 import { trackUserEvent } from "@/lib/eventTracking";
+import { emitPopupTriggerEvent } from "@/lib/popupEvents";
 
 interface TrackEventOptions {
   eventName?: string;
@@ -94,8 +95,10 @@ export const useAnalytics = () => {
       const parsedMeta = safeParseJson(clickedElement.dataset.trackMeta);
       const fallbackElementId = clickedElement.id || clickedElement.getAttribute("name") || `${tag}:${clickedElement.className || "no-class"}`;
 
+      const eventName = clickedElement.dataset.track || `click:${tag}`;
+
       trackEvent("click", {
-        eventName: clickedElement.dataset.track || `click:${tag}`,
+        eventName,
         elementId: fallbackElementId,
         elementClass: clickedElement.className || undefined,
         elementText: clickedElement.textContent?.trim() || undefined,
@@ -105,6 +108,14 @@ export const useAnalytics = () => {
           hasDataTrack: Boolean(clickedElement.dataset.track),
         },
       });
+
+      // Emit popup trigger event for data-track elements
+      if (clickedElement.dataset.track) {
+        // Small delay to ensure analytics event is recorded first
+        setTimeout(() => {
+          emitPopupTriggerEvent(eventName);
+        }, 100);
+      }
 
       if (user?.id) {
         void trackUserEvent({
