@@ -21,6 +21,9 @@ export interface FormSchema {
   fields?: FormField[];
   dropdownOptions?: DropdownOption[];
   submitButtonText?: string;
+  popup_type?: PopupType;
+  message?: string;
+  redirect_url?: string;
 }
 
 export interface PopupDefinition {
