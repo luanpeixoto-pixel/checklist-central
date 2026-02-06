@@ -275,8 +275,8 @@ export const usePopupTriggers = () => {
   );
 
   // Submit popup response
-  const submitResponse = useCallback(
-    async (responseData: Record<string, Json>) => {
+  const submitPopupInput = useCallback(
+    async (inputValue: string) => {
       if (!user?.id || !currentPopup) return;
 
       await supabase.from("popup_responses").insert([
@@ -284,7 +284,7 @@ export const usePopupTriggers = () => {
           user_id: user.id,
           popup_id: currentPopup.popup.id,
           trigger_id: currentPopup.trigger.id,
-          response_data: { input: value },
+          response_data: { input: inputValue },
         },
       ]);
 
@@ -321,10 +321,8 @@ export const usePopupTriggers = () => {
 
   return {
     currentPopup,
-    loading,
     dismissPopup,
     clickPopup,
     submitPopupInput,
-    reloadPopupData: loadDisplayHistory,
   };
 };
