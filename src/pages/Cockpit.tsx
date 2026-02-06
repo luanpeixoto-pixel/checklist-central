@@ -1,11 +1,14 @@
 import { Link } from "react-router-dom";
-import { Car, ClipboardCheck, Wrench, Fuel, TrendingUp, DollarSign, Activity, ChevronRight } from "lucide-react";
+import { Car, ClipboardCheck, Wrench, Fuel, TrendingUp, DollarSign, Activity, ChevronRight, AlertTriangle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { useVehicles } from "@/hooks/useVehicles";
 import { useMaintenance } from "@/hooks/useMaintenance";
 import { useFuel } from "@/hooks/useFuel";
+import { useChecklists } from "@/hooks/useChecklists";
 import { Loader2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+
 const Cockpit = () => {
   const {
     vehicles,
@@ -22,7 +25,12 @@ const Cockpit = () => {
     avgKmPerLiter,
     loading: fuelLoading
   } = useFuel();
-  const loading = vehiclesLoading || maintenanceLoading || fuelLoading;
+  const {
+    checklists,
+    loading: checklistsLoading
+  } = useChecklists();
+  
+  const loading = vehiclesLoading || maintenanceLoading || fuelLoading || checklistsLoading;
   const modules = [{
     title: "Checklist de Inspeção",
     description: "Realizar vistorias e inspeções dos veículos da frota",
@@ -177,50 +185,118 @@ const Cockpit = () => {
           </div>
         </div>
 
-        {/* Top Maintenance Items */}
-        {topMaintenanceItems.length > 0 && <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card className="card-elevated">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Activity className="h-5 w-5 text-primary" />
-                  Top 5 Manutenções (Volume)
-                </CardTitle>
-                <CardDescription>Itens mais frequentes</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {topMaintenanceItems.slice(0, 5).map((item, index) => <div key={index} className="flex items-center justify-between py-2 border-b border-border last:border-0">
-                      <span className="text-sm text-foreground">{item.item}</span>
-                      <span className="text-sm font-medium text-primary">{item.count}x</span>
-                    </div>)}
-                  {topMaintenanceItems.length === 0 && <p className="text-sm text-muted-foreground text-center py-4">
-                      Nenhuma manutenção registrada
-                    </p>}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="card-elevated">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <DollarSign className="h-5 w-5 text-accent" />
-                  Top 5 Manutenções (Custo)
-                </CardTitle>
-                <CardDescription>Itens mais caros</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {[...topMaintenanceItems].sort((a, b) => b.cost - a.cost).slice(0, 5).map((item, index) => <div key={index} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+        {/* Data Sections */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Manutenções Section - Ordenado por valor, depois volume */}
+          <Card className="card-elevated">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Wrench className="h-5 w-5 text-accent" />
+                Manutenções
+              </CardTitle>
+              <CardDescription>Top 5 itens por custo e frequência</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {topMaintenanceItems.length > 0 ? (
+                  [...topMaintenanceItems]
+                    .sort((a, b) => {
+                      // Ordenar primeiro por custo (desc), depois por volume (desc)
+                      if (b.cost !== a.cost) return b.cost - a.cost;
+                      return b.count - a.count;
+                    })
+                    .slice(0, 5)
+                    .map((item, index) => (
+                      <div key={index} className="flex items-center justify-between py-2 border-b border-border last:border-0">
                         <span className="text-sm text-foreground">{item.item}</span>
-                        <span className="text-sm font-medium text-accent">{formatCurrency(item.cost)}</span>
-                      </div>)}
-                  {topMaintenanceItems.length === 0 && <p className="text-sm text-muted-foreground text-center py-4">
-                      Nenhuma manutenção registrada
-                    </p>}
-                </div>
-              </CardContent>
-            </Card>
-          </div>}
+                        <div className="flex items-center gap-3">
+                          <span className="text-xs text-muted-foreground">{item.count}x</span>
+                          <span className="text-sm font-medium text-accent">{formatCurrency(item.cost)}</span>
+                        </div>
+                      </div>
+                    ))
+                ) : (
+                  <p className="text-sm text-muted-foreground text-center py-4">
+                    Nenhuma manutenção registrada
+                  </p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Inspeções Section */}
+          <Card className="card-elevated">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <ClipboardCheck className="h-5 w-5 text-primary" />
+                Inspeções Recentes
+              </CardTitle>
+              <CardDescription>Últimas vistorias realizadas</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {checklists.length > 0 ? (
+                  checklists.slice(0, 5).map((checklist, index) => {
+                    const vehicle = vehicles.find(v => v.id === checklist.vehicle_id);
+                    const areasAfetadas = checklist.areaMarkers?.length || 0;
+                    
+                    // Determinar status geral do veículo
+                    const conditions = checklist.vehicleCondition;
+                    const hasBad = conditions && (
+                      conditions.limpezaExterna === 'bad' ||
+                      conditions.limpezaInterna === 'bad' ||
+                      conditions.pneus === 'bad' ||
+                      conditions.estepe === 'bad'
+                    );
+                    const hasMedium = conditions && (
+                      conditions.limpezaExterna === 'medium' ||
+                      conditions.limpezaInterna === 'medium' ||
+                      conditions.pneus === 'medium' ||
+                      conditions.estepe === 'medium'
+                    );
+                    
+                    let statusVariant: "default" | "destructive" | "outline" | "secondary" = "default";
+                    let statusLabel = "Bom";
+                    
+                    if (hasBad || areasAfetadas > 2) {
+                      statusVariant = "destructive";
+                      statusLabel = "Ruim";
+                    } else if (hasMedium || areasAfetadas > 0) {
+                      statusVariant = "secondary";
+                      statusLabel = "Regular";
+                    }
+
+                    return (
+                      <div key={checklist.id || index} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+                        <div className="flex flex-col">
+                          <span className="text-sm font-medium text-foreground">
+                            {vehicle?.placa || "Sem placa"}
+                          </span>
+                          <span className="text-xs text-muted-foreground">
+                            {new Date(checklist.data).toLocaleDateString("pt-BR")}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {areasAfetadas > 0 && (
+                            <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                              <AlertTriangle className="h-3 w-3" />
+                              {areasAfetadas}
+                            </div>
+                          )}
+                          <Badge variant={statusVariant}>{statusLabel}</Badge>
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <p className="text-sm text-muted-foreground text-center py-4">
+                    Nenhuma inspeção registrada
+                  </p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </main>
 
       {/* Footer */}

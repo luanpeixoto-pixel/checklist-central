@@ -7,8 +7,9 @@ import { useChecklists } from "@/hooks/useChecklists";
 import { useVehicles } from "@/hooks/useVehicles";
 import type { ChecklistData } from "@/types/checklist";
 import { toast } from "sonner";
-import { Loader2, Plus } from "lucide-react";
+import { Loader2, Plus, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { exportChecklistsToCSV } from "@/lib/exportChecklist";
 
 const Checklist = () => {
   const [currentView, setCurrentView] = useState<"form" | "history">("history");
@@ -102,10 +103,22 @@ const Checklist = () => {
             </div>
 
             {currentView === "history" && (
-              <Button data-track="click_new_checklist" onClick={handleNewChecklist} className="gap-2">
-                <Plus className="h-4 w-4" />
-                Novo Checklist
-              </Button>
+              <div className="flex gap-2">
+                {checklists.length > 0 && (
+                  <Button
+                    variant="outline"
+                    onClick={() => exportChecklistsToCSV(checklists, vehicles)}
+                    className="gap-2"
+                  >
+                    <Download className="h-4 w-4" />
+                    Exportar
+                  </Button>
+                )}
+                <Button data-track="click_new_checklist" onClick={handleNewChecklist} className="gap-2">
+                  <Plus className="h-4 w-4" />
+                  Novo Checklist
+                </Button>
+              </div>
             )}
           </div>
 

@@ -5,9 +5,10 @@ import { FuelList } from "@/components/fuel/FuelList";
 import { EmptyState } from "@/components/EmptyState";
 import { useFuel } from "@/hooks/useFuel";
 import { useVehicles } from "@/hooks/useVehicles";
-import { Loader2, Plus } from "lucide-react";
+import { Loader2, Plus, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { FuelRecord, FuelFormData } from "@/types/fleet";
+import { exportFuelToCSV } from "@/lib/exportFuel";
 
 const Fuel = () => {
   const { records, loading, addRecord, updateRecord, deleteRecord, totalCost, totalLiters, avgKmPerLiter } = useFuel();
@@ -92,14 +93,26 @@ const Fuel = () => {
               </p>
             </div>
             {!showForm && (
-              <Button 
-                data-track="novo_abastecimento"
-                onClick={() => setShowForm(true)} 
-                className="gap-2"
-              >
-                <Plus className="h-4 w-4" />
-                Novo Abastecimento
-              </Button>
+              <div className="flex gap-2">
+                {records.length > 0 && (
+                  <Button 
+                    variant="outline"
+                    onClick={() => exportFuelToCSV(records, vehicles)}
+                    className="gap-2"
+                  >
+                    <Download className="h-4 w-4" />
+                    Exportar
+                  </Button>
+                )}
+                <Button 
+                  data-track="novo_abastecimento"
+                  onClick={() => setShowForm(true)} 
+                  className="gap-2"
+                >
+                  <Plus className="h-4 w-4" />
+                  Novo Abastecimento
+                </Button>
+              </div>
             )}
           </div>
 
