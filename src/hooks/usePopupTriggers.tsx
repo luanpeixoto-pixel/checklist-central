@@ -28,10 +28,12 @@ export const usePopupTriggers = () => {
     const fetchTriggers = async () => {
       const { data: triggersData } = await supabase
         .from("popup_triggers")
-        .select(`
+        .select(
+          `
           *,
           popup:popup_definitions(*)
-        `)
+        `,
+        )
         .eq("is_active", true)
         .order("priority", { ascending: false });
 
@@ -57,10 +59,7 @@ export const usePopupTriggers = () => {
     if (!user?.id) return;
 
     const fetchDisplayHistory = async () => {
-      const { data } = await supabase
-        .from("popup_displays")
-        .select("popup_id, displayed_at")
-        .eq("user_id", user.id);
+      const { data } = await supabase.from("popup_displays").select("popup_id, displayed_at").eq("user_id", user.id);
 
       if (data) {
         const counts: Record<string, { count: number; lastDisplayed: Date | null }> = {};
@@ -285,7 +284,7 @@ export const usePopupTriggers = () => {
           user_id: user.id,
           popup_id: currentPopup.popup.id,
           trigger_id: currentPopup.trigger.id,
-          response_data: responseData,
+          response_data: { input: value },
         },
       ]);
 
@@ -302,10 +301,30 @@ export const usePopupTriggers = () => {
     setCurrentPopup(null);
   }, [currentPopup, recordDisplay]);
 
+  // Click popup CTA
+  const clickPopup = useCallback(async () => {
+    if (!currentPopup) return;
+    await recordDisplay(currentPopup.popup.id, currentPopup.trigger.id);
+
+    const { popup, trigger } = currentPopup;
+
+    if (popup.popup_type === "redirect" && popup.redirect_url) {
+      const redirectUrl = popup.redirect_url.trim();
+      const hasProtocol = /^https?:\/\//i.test(redirectUrl);
+      const targetUrl = hasProtocol ? redirectUrl : `https://${redirectUrl}`;
+      window.open(targetUrl, "_blank", "noopener,noreferrer");
+    }
+
+    await recordDisplay(popup.id, trigger.id);
+    setCurrentPopup(null);
+  }, [currentPopup, recordDisplay]);
+
   return {
     currentPopup,
-    submitResponse,
+    loading,
     dismissPopup,
-    evaluateTriggers,
+    clickPopup,
+    submitPopupInput,
+    reloadPopupData: loadDisplayHistory,
   };
 };
