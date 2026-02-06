@@ -248,15 +248,16 @@ export const usePopupEngine = () => {
   useEffect(() => {
     if (!lastTriggerEvent || currentPopup || pendingTrigger) return;
 
-    const evaluate = async () => {
+    // Delay evaluation slightly to allow analytics event to be inserted first
+    const timeoutId = setTimeout(async () => {
       const eligible = await findEligiblePopup();
       if (eligible) {
         console.log("[PopupEngine] Setting pending trigger:", eligible.id);
         setPendingTrigger(eligible);
       }
-    };
+    }, 300);
 
-    void evaluate();
+    return () => clearTimeout(timeoutId);
   }, [lastTriggerEvent, currentPopup, pendingTrigger, findEligiblePopup]);
 
   // Handle delay timer for pending trigger
