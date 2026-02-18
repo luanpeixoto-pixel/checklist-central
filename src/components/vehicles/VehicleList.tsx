@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Car, Edit2, Trash2, MoreVertical, Power } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -29,6 +30,7 @@ interface VehicleListProps {
 }
 
 export const VehicleList = ({ vehicles, onEdit, onDelete, onToggleStatus }: VehicleListProps) => {
+  const navigate = useNavigate();
   const getTypeName = (tipo: string) => {
     return VEHICLE_TYPE_OPTIONS.find(o => o.value === tipo)?.label || tipo;
   };
@@ -64,7 +66,7 @@ export const VehicleList = ({ vehicles, onEdit, onDelete, onToggleStatus }: Vehi
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {vehicles.map((vehicle) => (
-        <Card key={vehicle.id} className={cn("card-elevated hover:shadow-lg transition-shadow", vehicle.status === 'inativo' && "opacity-60")}>
+        <Card key={vehicle.id} className={cn("card-elevated hover:shadow-lg transition-shadow cursor-pointer", vehicle.status === 'inativo' && "opacity-60")} onClick={() => navigate(`/veiculos/${vehicle.id}`)}>
           <CardContent className="p-4">
             <div className="flex items-start justify-between mb-3">
               <div className="flex items-center gap-3">
@@ -78,7 +80,7 @@ export const VehicleList = ({ vehicles, onEdit, onDelete, onToggleStatus }: Vehi
               </div>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={(e) => e.stopPropagation()}>
                     <MoreVertical className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
