@@ -110,9 +110,25 @@ export const useVehicles = () => {
     }
 
     try {
-      // Delete related records first
+      // Delete related records first (cascade)
       await supabase.from("fuel_records").delete().eq("vehicle_id", id).eq("user_id", user.id);
       await supabase.from("maintenance_records").delete().eq("vehicle_id", id).eq("user_id", user.id);
+      
+      // Delete checklists that reference this vehicle (stored in JSONB data)
+      const { data: allChecklists } = await supabase
+        .from("checklists")
+        .select("id, data")
+        .eq("user_id", user.id);
+      
+      if (allChecklists) {
+        const checklistIdsToDelete = allChecklists
+          .filter((c) => (c.data as any)?.vehicle_id === id)
+          .map((c) => c.id);
+        
+        if (checklistIdsToDelete.length > 0) {
+          await supabase.from("checklists").delete().in("id", checklistIdsToDelete);
+        }
+      }
 
       const { error } = await supabase
         .from("vehicles")

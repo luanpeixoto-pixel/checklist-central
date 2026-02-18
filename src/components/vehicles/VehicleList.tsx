@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Car, Edit2, Trash2, MoreVertical, Power } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -17,7 +18,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { VEHICLE_TYPE_OPTIONS, type Vehicle } from "@/types/fleet";
 import { cn } from "@/lib/utils";
@@ -31,6 +31,8 @@ interface VehicleListProps {
 
 export const VehicleList = ({ vehicles, onEdit, onDelete, onToggleStatus }: VehicleListProps) => {
   const navigate = useNavigate();
+  const [deleteTarget, setDeleteTarget] = useState<Vehicle | null>(null);
+
   const getTypeName = (tipo: string) => {
     return VEHICLE_TYPE_OPTIONS.find(o => o.value === tipo)?.label || tipo;
   };
@@ -64,100 +66,105 @@ export const VehicleList = ({ vehicles, onEdit, onDelete, onToggleStatus }: Vehi
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {vehicles.map((vehicle) => (
-        <Card key={vehicle.id} className={cn("card-elevated hover:shadow-lg transition-shadow cursor-pointer", vehicle.status === 'inativo' && "opacity-60")} onClick={() => navigate(`/veiculos/${vehicle.id}`)}>
-          <CardContent className="p-4">
-            <div className="flex items-start justify-between mb-3">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-primary/10">
-                  <Car className="h-5 w-5 text-primary" />
+    <>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {vehicles.map((vehicle) => (
+          <Card key={vehicle.id} className={cn("card-elevated hover:shadow-lg transition-shadow cursor-pointer", vehicle.status === 'inativo' && "opacity-60")} onClick={() => navigate(`/veiculos/${vehicle.id}`)}>
+            <CardContent className="p-4">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-primary/10">
+                    <Car className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-foreground">{vehicle.placa}</p>
+                    <p className="text-sm text-muted-foreground">{vehicle.modelo}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="font-bold text-foreground">{vehicle.placa}</p>
-                  <p className="text-sm text-muted-foreground">{vehicle.modelo}</p>
-                </div>
-              </div>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={(e) => e.stopPropagation()}>
-                    <MoreVertical className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => onEdit(vehicle)} data-track="edit_veiculo">
-                    <Edit2 className="h-4 w-4 mr-2" />
-                    Editar
-                  </DropdownMenuItem>
-                  {onToggleStatus && (
-                    <DropdownMenuItem onClick={() => onToggleStatus(vehicle.id, vehicle.status)}>
-                      <Power className="h-4 w-4 mr-2" />
-                      {vehicle.status === 'ativo' ? 'Desativar' : 'Ativar'}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={(e) => e.stopPropagation()}>
+                      <MoreVertical className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onEdit(vehicle); }} data-track="edit_veiculo">
+                      <Edit2 className="h-4 w-4 mr-2" />
+                      Editar
                     </DropdownMenuItem>
-                  )}
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="text-destructive">
-                        <Trash2 className="h-4 w-4 mr-2" />
-                        Excluir
+                    {onToggleStatus && (
+                      <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onToggleStatus(vehicle.id, vehicle.status); }}>
+                        <Power className="h-4 w-4 mr-2" />
+                        {vehicle.status === 'ativo' ? 'Desativar' : 'Ativar'}
                       </DropdownMenuItem>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Tem certeza que deseja excluir este veículo?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          Esta ação não pode ser desfeita. <strong>Todos os registros de manutenção, abastecimento e checklists</strong> associados a este veículo também serão excluídos permanentemente.
-                          {"\n\n"}Considere desativar o veículo ao invés de excluí-lo, para manter o histórico.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel data-track="cancel_delete_vehicle">Cancelar</AlertDialogCancel>
-                        <AlertDialogAction
-                          data-track="delete_veiculo"
-                          onClick={() => onDelete(vehicle.id)}
-                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                        >
-                          Excluir permanentemente
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Tipo:</span>
-                <span className="text-foreground">{getTypeName(vehicle.tipo)}</span>
+                    )}
+                    <DropdownMenuItem
+                      className="text-destructive"
+                      onClick={(e) => { e.stopPropagation(); setDeleteTarget(vehicle); }}
+                    >
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Excluir
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
-              {vehicle.marca && (
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Marca:</span>
-                  <span className="text-foreground">{vehicle.marca}</span>
-                </div>
-              )}
-              {vehicle.ano && (
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Ano:</span>
-                  <span className="text-foreground">{vehicle.ano}</span>
-                </div>
-              )}
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Km:</span>
-                <span className="text-foreground">{vehicle.quilometragem_atual.toLocaleString('pt-BR')} km</span>
-              </div>
-            </div>
 
-            <div className="mt-4 pt-3 border-t border-border flex justify-between items-center">
-              {getStatusBadge(vehicle.status)}
-              {vehicle.empresa && (
-                <span className="text-xs text-muted-foreground">{vehicle.empresa}</span>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Tipo:</span>
+                  <span className="text-foreground">{getTypeName(vehicle.tipo)}</span>
+                </div>
+                {vehicle.marca && (
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Marca:</span>
+                    <span className="text-foreground">{vehicle.marca}</span>
+                  </div>
+                )}
+                {vehicle.ano && (
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Ano:</span>
+                    <span className="text-foreground">{vehicle.ano}</span>
+                  </div>
+                )}
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Km:</span>
+                  <span className="text-foreground">{vehicle.quilometragem_atual.toLocaleString('pt-BR')} km</span>
+                </div>
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-border flex justify-between items-center">
+                {getStatusBadge(vehicle.status)}
+                {vehicle.empresa && (
+                  <span className="text-xs text-muted-foreground">{vehicle.empresa}</span>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Confirmation dialog rendered outside dropdown */}
+      <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Tem certeza que deseja excluir este veículo?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta ação não pode ser desfeita. <strong>Todos os registros de manutenção, abastecimento e inspeções (checklists)</strong> associados ao veículo <strong>{deleteTarget?.placa}</strong> também serão excluídos permanentemente.
+              {"\n\n"}Considere desativar o veículo ao invés de excluí-lo, para manter o histórico.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel data-track="cancel_delete_vehicle">Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              data-track="delete_veiculo"
+              onClick={() => { if (deleteTarget) onDelete(deleteTarget.id); setDeleteTarget(null); }}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Excluir permanentemente
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 };

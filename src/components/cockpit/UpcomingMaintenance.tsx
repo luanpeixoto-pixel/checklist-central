@@ -14,10 +14,11 @@ export const UpcomingMaintenance = ({ records, vehicles }: UpcomingMaintenancePr
   today.setHours(0, 0, 0, 0);
 
   const upcoming = records
-    .filter((r) => r.status === "agendada" && r.data_proxima)
+    .filter((r) => r.status === "agendada")
     .map((r) => {
       const vehicle = vehicles.find((v) => v.id === r.vehicle_id);
-      const dueDate = new Date(r.data_proxima!);
+      const dateStr = r.data_proxima || r.data_manutencao;
+      const dueDate = new Date(dateStr);
       const diffDays = Math.ceil((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
       return { ...r, vehicle, dueDate, diffDays };
     })

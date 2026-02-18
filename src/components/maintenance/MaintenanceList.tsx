@@ -1,4 +1,4 @@
-import { Wrench, Edit2, Trash2, MoreVertical, Calendar, DollarSign } from "lucide-react";
+import { Wrench, Edit2, Trash2, MoreVertical, Calendar, DollarSign, CheckCircle2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,9 +27,10 @@ interface MaintenanceListProps {
   records: MaintenanceRecord[];
   onEdit: (record: MaintenanceRecord) => void;
   onDelete: (id: string) => void;
+  onMarkCompleted?: (id: string) => void;
 }
 
-export const MaintenanceList = ({ records, onEdit, onDelete }: MaintenanceListProps) => {
+export const MaintenanceList = ({ records, onEdit, onDelete, onMarkCompleted }: MaintenanceListProps) => {
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
@@ -120,6 +121,17 @@ export const MaintenanceList = ({ records, onEdit, onDelete }: MaintenanceListPr
               </div>
 
               <div className="flex items-center gap-2">
+                {record.status === "agendada" && onMarkCompleted && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-1 text-success border-success/30 hover:bg-success/10 hover:text-success"
+                    onClick={() => onMarkCompleted(record.id)}
+                  >
+                    <CheckCircle2 className="h-4 w-4" />
+                    Realizada
+                  </Button>
+                )}
                 {getStatusBadge(record.status)}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
