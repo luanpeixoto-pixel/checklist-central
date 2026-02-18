@@ -25,13 +25,13 @@ export const useUserRole = () => {
         .maybeSingle();
 
       if (error) {
-        console.error("Error fetching user role:", error);
+        if (import.meta.env.DEV) console.error("Error fetching user role:", error);
         setRole(null);
       } else {
         setRole((data?.role as AppRole) || null);
       }
     } catch (err) {
-      console.error("Error fetching user role:", err);
+      if (import.meta.env.DEV) console.error("Error fetching user role:", err);
       setRole(null);
     } finally {
       setLoading(false);

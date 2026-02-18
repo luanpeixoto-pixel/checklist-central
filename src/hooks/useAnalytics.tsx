@@ -67,7 +67,7 @@ export const useAnalytics = () => {
           metadata: mergedMetadata,
         }]);
       } catch (error) {
-        console.error("Failed to track event:", error);
+        if (import.meta.env.DEV) console.error("Failed to track event:", error);
       }
     },
     [user?.id]

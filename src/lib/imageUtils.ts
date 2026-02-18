@@ -57,8 +57,23 @@ export const convertToWebP = (file: File): Promise<Blob> => {
 };
 
 /**
+ * Extract the storage path from a stored reference.
+ * Handles both full public URLs (legacy) and plain paths.
+ */
+const extractStoragePath = (ref: string): string | null => {
+  if (ref.includes("/fleet-images/")) {
+    return ref.split("/fleet-images/")[1] ?? null;
+  }
+  // Already a plain path
+  if (ref && !ref.startsWith("http")) {
+    return ref;
+  }
+  return null;
+};
+
+/**
  * Upload a file to the fleet-images bucket after converting to WebP.
- * Returns the public URL.
+ * Returns the storage path (NOT a public URL).
  */
 export const uploadFleetImage = async (
   file: File,
@@ -77,17 +92,58 @@ export const uploadFleetImage = async (
 
   if (error) throw error;
 
-  const { data } = supabase.storage.from("fleet-images").getPublicUrl(fileName);
-  return data.publicUrl;
+  // Return the storage path instead of a public URL
+  return fileName;
 };
 
 /**
- * Delete an image from fleet-images bucket by its public URL.
+ * Get a signed URL for a fleet image (valid for 1 hour).
  */
-export const deleteFleetImage = async (publicUrl: string): Promise<void> => {
-  const bucketPath = publicUrl.split("/fleet-images/")[1];
+export const getFleetImageUrl = async (ref: string): Promise<string | null> => {
+  const path = extractStoragePath(ref);
+  if (!path) return null;
+
+  const { data, error } = await supabase.storage
+    .from("fleet-images")
+    .createSignedUrl(path, 3600); // 1 hour
+
+  if (error || !data?.signedUrl) return null;
+  return data.signedUrl;
+};
+
+/**
+ * Get signed URLs for multiple fleet images.
+ */
+export const getFleetImageUrls = async (refs: string[]): Promise<Record<string, string>> => {
+  const results: Record<string, string> = {};
+  const paths = refs.map((ref) => extractStoragePath(ref)).filter(Boolean) as string[];
+
+  if (paths.length === 0) return results;
+
+  const { data, error } = await supabase.storage
+    .from("fleet-images")
+    .createSignedUrls(paths, 3600);
+
+  if (error || !data) return results;
+
+  data.forEach((item, index) => {
+    if (item.signedUrl) {
+      results[refs[index]] = item.signedUrl;
+    }
+  });
+
+  return results;
+};
+
+/**
+ * Delete an image from fleet-images bucket by its stored reference.
+ */
+export const deleteFleetImage = async (ref: string): Promise<void> => {
+  const bucketPath = extractStoragePath(ref);
   if (!bucketPath) return;
 
   const { error } = await supabase.storage.from("fleet-images").remove([bucketPath]);
-  if (error) console.error("Error deleting image:", error);
+  if (error && import.meta.env.DEV) {
+    console.error("Error deleting image:", error);
+  }
 };

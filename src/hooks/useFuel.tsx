@@ -31,7 +31,7 @@ export const useFuel = () => {
       if (error) throw error;
       setRecords(data || []);
     } catch (error) {
-      console.error("Error fetching fuel records:", error);
+      if (import.meta.env.DEV) console.error("Error fetching fuel records:", error);
       toast.error("Erro ao carregar registros de abastecimento");
     } finally {
       setLoading(false);
@@ -93,7 +93,7 @@ export const useFuel = () => {
       void trackUserEvent({ userId: user.id, action: "cadastro", resourceType: "abastecimento", resourceId: newRecord.id });
       return true;
     } catch (error) {
-      console.error("Error adding fuel record:", error);
+      if (import.meta.env.DEV) console.error("Error adding fuel record:", error);
       toast.error("Erro ao registrar abastecimento");
       return false;
     }
@@ -127,7 +127,7 @@ export const useFuel = () => {
       void trackUserEvent({ userId: user.id, action: "edicao", resourceType: "abastecimento", resourceId: id });
       return true;
     } catch (error) {
-      console.error("Error updating fuel record:", error);
+      if (import.meta.env.DEV) console.error("Error updating fuel record:", error);
       toast.error("Erro ao atualizar registro");
       return false;
     }
@@ -153,7 +153,7 @@ export const useFuel = () => {
       void trackUserEvent({ userId: user.id, action: "delete", resourceType: "abastecimento", resourceId: id });
       return true;
     } catch (error) {
-      console.error("Error deleting fuel record:", error);
+      if (import.meta.env.DEV) console.error("Error deleting fuel record:", error);
       toast.error("Erro ao excluir registro");
       return false;
     }

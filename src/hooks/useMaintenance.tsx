@@ -31,7 +31,7 @@ export const useMaintenance = () => {
       if (error) throw error;
       setRecords(data || []);
     } catch (error) {
-      console.error("Error fetching maintenance records:", error);
+      if (import.meta.env.DEV) console.error("Error fetching maintenance records:", error);
       toast.error("Erro ao carregar registros de manutenção");
     } finally {
       setLoading(false);
@@ -68,7 +68,7 @@ export const useMaintenance = () => {
       void trackUserEvent({ userId: user.id, action: "cadastro", resourceType: "manutencao", resourceId: newRecord.id });
       return true;
     } catch (error) {
-      console.error("Error adding maintenance record:", error);
+      if (import.meta.env.DEV) console.error("Error adding maintenance record:", error);
       toast.error("Erro ao registrar manutenção");
       return false;
     }
@@ -96,7 +96,7 @@ export const useMaintenance = () => {
       void trackUserEvent({ userId: user.id, action: "edicao", resourceType: "manutencao", resourceId: id });
       return true;
     } catch (error) {
-      console.error("Error updating maintenance record:", error);
+      if (import.meta.env.DEV) console.error("Error updating maintenance record:", error);
       toast.error("Erro ao atualizar registro");
       return false;
     }
@@ -122,7 +122,7 @@ export const useMaintenance = () => {
       void trackUserEvent({ userId: user.id, action: "delete", resourceType: "manutencao", resourceId: id });
       return true;
     } catch (error) {
-      console.error("Error deleting maintenance record:", error);
+      if (import.meta.env.DEV) console.error("Error deleting maintenance record:", error);
       toast.error("Erro ao excluir registro");
       return false;
     }

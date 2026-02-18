@@ -61,7 +61,7 @@ export const usePopupAdmin = () => {
       
       setPopups(mapped);
     } catch (error) {
-      console.error("Error fetching popups:", error);
+      if (import.meta.env.DEV) console.error("Error fetching popups:", error);
     } finally {
       setLoading(false);
     }
@@ -104,7 +104,7 @@ export const usePopupAdmin = () => {
       
       setTriggers(mapped);
     } catch (error) {
-      console.error("Error fetching triggers:", error);
+      if (import.meta.env.DEV) console.error("Error fetching triggers:", error);
     }
   }, []);
 
