@@ -391,26 +391,50 @@ export type Database = {
       }
       profiles: {
         Row: {
+          cargo: string | null
+          cidade: string | null
           created_at: string
           email: string
+          empresa: string | null
+          estado: string | null
           id: string
           nome: string
+          profile_completed: boolean
+          setor: string | null
+          tamanho_frota: string | null
+          telefone: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          cargo?: string | null
+          cidade?: string | null
           created_at?: string
           email: string
+          empresa?: string | null
+          estado?: string | null
           id?: string
           nome: string
+          profile_completed?: boolean
+          setor?: string | null
+          tamanho_frota?: string | null
+          telefone?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          cargo?: string | null
+          cidade?: string | null
           created_at?: string
           email?: string
+          empresa?: string | null
+          estado?: string | null
           id?: string
           nome?: string
+          profile_completed?: boolean
+          setor?: string | null
+          tamanho_frota?: string | null
+          telefone?: string | null
           updated_at?: string
           user_id?: string
         }
