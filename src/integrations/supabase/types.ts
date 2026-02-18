@@ -89,6 +89,7 @@ export type Database = {
           created_at: string
           data_abastecimento: string
           id: string
+          imagens: string[] | null
           km_por_litro: number | null
           km_rodados: number | null
           litros: number
@@ -108,6 +109,7 @@ export type Database = {
           created_at?: string
           data_abastecimento: string
           id?: string
+          imagens?: string[] | null
           km_por_litro?: number | null
           km_rodados?: number | null
           litros: number
@@ -127,6 +129,7 @@ export type Database = {
           created_at?: string
           data_abastecimento?: string
           id?: string
+          imagens?: string[] | null
           km_por_litro?: number | null
           km_rodados?: number | null
           litros?: number
@@ -161,6 +164,7 @@ export type Database = {
           fornecedor: string | null
           grupo: string | null
           id: string
+          imagens: string[] | null
           item: string
           nota_fiscal: string | null
           observacoes: string | null
@@ -181,6 +185,7 @@ export type Database = {
           fornecedor?: string | null
           grupo?: string | null
           id?: string
+          imagens?: string[] | null
           item: string
           nota_fiscal?: string | null
           observacoes?: string | null
@@ -201,6 +206,7 @@ export type Database = {
           fornecedor?: string | null
           grupo?: string | null
           id?: string
+          imagens?: string[] | null
           item?: string
           nota_fiscal?: string | null
           observacoes?: string | null

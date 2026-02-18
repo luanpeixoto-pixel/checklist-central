@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ImageUpload } from "@/components/ImageUpload";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -55,6 +56,8 @@ export const FuelForm = ({ vehicles, initialData, onSubmit, onCancel }: FuelForm
     observacoes: initialData?.observacoes || "",
   });
 
+  const [imagens, setImagens] = useState<string[]>(initialData?.imagens || []);
+
   const [submitting, setSubmitting] = useState(false);
 
   const valorPorLitro = formData.litros > 0 ? formData.valor_total / formData.litros : 0;
@@ -81,7 +84,7 @@ export const FuelForm = ({ vehicles, initialData, onSubmit, onCancel }: FuelForm
 
     setSubmitting(true);
     try {
-      await onSubmit(formData);
+      await onSubmit({ ...formData, imagens } as any);
     } finally {
       setSubmitting(false);
     }
@@ -235,6 +238,11 @@ export const FuelForm = ({ vehicles, initialData, onSubmit, onCancel }: FuelForm
               placeholder="Observações adicionais..."
               rows={2}
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Imagens</Label>
+            <ImageUpload images={imagens} onChange={setImagens} folder="fuel" />
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
