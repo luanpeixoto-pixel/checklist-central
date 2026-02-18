@@ -16,6 +16,7 @@ import Fuel from "./pages/Fuel";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import PopupAdmin from "./pages/PopupAdmin";
+import Profile from "./pages/Profile";
 
 const queryClient = new QueryClient();
 
@@ -65,6 +66,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <Fuel />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/profile" 
+              element={
+                <ProtectedRoute>
+                  <Profile />
                 </ProtectedRoute>
               } 
             />

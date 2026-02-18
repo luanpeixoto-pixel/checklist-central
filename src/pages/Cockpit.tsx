@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Car, ClipboardCheck, Wrench, Fuel, TrendingUp, DollarSign, Activity, ChevronRight, AlertTriangle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { AppHeader } from "@/components/layout/AppHeader";
+import { OnboardingPopup } from "@/components/OnboardingPopup";
 import { useVehicles } from "@/hooks/useVehicles";
 import { useMaintenance } from "@/hooks/useMaintenance";
 import { useFuel } from "@/hooks/useFuel";
@@ -72,6 +73,7 @@ const Cockpit = () => {
   }
   return <div className="min-h-screen bg-background">
       <AppHeader />
+      <OnboardingPopup />
       
       <main className="container mx-auto px-4 py-8">
         {/* Welcome Section */}
