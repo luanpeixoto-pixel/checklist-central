@@ -5,6 +5,7 @@ import { MaintenanceList } from "@/components/maintenance/MaintenanceList";
 import { EmptyState } from "@/components/EmptyState";
 import { useMaintenance } from "@/hooks/useMaintenance";
 import { useVehicles } from "@/hooks/useVehicles";
+import { useChecklists } from "@/hooks/useChecklists";
 import { Loader2, Plus, Download, Filter, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -15,10 +16,12 @@ import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import type { MaintenanceRecord, MaintenanceFormData } from "@/types/fleet";
 import { exportMaintenanceToCSV } from "@/lib/exportMaintenance";
+import { DamagedVehiclesAlert } from "@/components/cockpit/DamagedVehiclesAlert";
 
 const Maintenance = () => {
   const { records, loading, addRecord, updateRecord, deleteRecord, totalCost } = useMaintenance();
   const { vehicles, activeVehicles, loading: vehiclesLoading } = useVehicles();
+  const { checklists, loading: checklistsLoading } = useChecklists();
   const [showForm, setShowForm] = useState(false);
   const [editingRecord, setEditingRecord] = useState<MaintenanceRecord | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -65,8 +68,11 @@ const Maintenance = () => {
 
   const handleEdit = (record: MaintenanceRecord) => { setEditingRecord(record); setShowForm(true); };
   const handleCancel = () => { setEditingRecord(null); setShowForm(false); };
+  const handleMarkCompleted = async (id: string) => {
+    await updateRecord(id, { status: "realizada", data_manutencao: new Date().toISOString().split("T")[0] });
+  };
 
-  const isLoading = loading || vehiclesLoading;
+  const isLoading = loading || vehiclesLoading || checklistsLoading;
 
   if (isLoading) {
     return (
@@ -186,7 +192,10 @@ const Maintenance = () => {
           {showForm ? (
             <MaintenanceForm vehicles={activeVehicles} initialData={editingRecord} onSubmit={handleSubmit} onCancel={handleCancel} />
           ) : (
-            <MaintenanceList records={filteredRecords} onEdit={handleEdit} onDelete={deleteRecord} />
+            <>
+              <DamagedVehiclesAlert checklists={checklists} vehicles={vehicles} />
+              <MaintenanceList records={filteredRecords} onEdit={handleEdit} onDelete={deleteRecord} onMarkCompleted={handleMarkCompleted} />
+            </>
           )}
         </div>
       </main>

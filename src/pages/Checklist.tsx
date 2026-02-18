@@ -16,6 +16,7 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { exportChecklistsToCSV } from "@/lib/exportChecklist";
+import { DamagedVehiclesAlert } from "@/components/cockpit/DamagedVehiclesAlert";
 
 type StatusFilter = "all" | "good" | "warning" | "critical";
 
@@ -205,7 +206,10 @@ const Checklist = () => {
               <ChecklistForm vehicles={vehicles} initialData={editingChecklist} onSubmit={handleSubmit} key={editingChecklist?.id || "new"} />
             </div>
           ) : (
-            <HistoryList checklists={filteredChecklists} vehicles={vehicles} onSelect={handleEditChecklist} onDelete={handleDeleteChecklist} />
+            <>
+              <DamagedVehiclesAlert checklists={checklists} vehicles={vehicles} />
+              <HistoryList checklists={filteredChecklists} vehicles={vehicles} onSelect={handleEditChecklist} onDelete={handleDeleteChecklist} />
+            </>
           )}
         </div>
       </main>
