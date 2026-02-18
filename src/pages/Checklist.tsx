@@ -5,6 +5,7 @@ import { HistoryList } from "@/components/HistoryList";
 import { EmptyState } from "@/components/EmptyState";
 import { useChecklists } from "@/hooks/useChecklists";
 import { useVehicles } from "@/hooks/useVehicles";
+import { useMaintenance } from "@/hooks/useMaintenance";
 import type { ChecklistData } from "@/types/checklist";
 import { toast } from "sonner";
 import { Loader2, Plus, Download, Filter, X } from "lucide-react";
@@ -39,6 +40,7 @@ const Checklist = () => {
 
   const { checklists, loading: checklistsLoading, addChecklist, updateChecklist, deleteChecklist } = useChecklists();
   const { vehicles, loading: vehiclesLoading } = useVehicles();
+  const { records: maintenanceRecords } = useMaintenance();
   const loading = checklistsLoading || vehiclesLoading;
 
   const filteredChecklists = useMemo(() => {
@@ -207,7 +209,7 @@ const Checklist = () => {
             </div>
           ) : (
             <>
-              <DamagedVehiclesAlert checklists={checklists} vehicles={vehicles} />
+              <DamagedVehiclesAlert checklists={checklists} vehicles={vehicles} maintenanceRecords={maintenanceRecords} />
               <HistoryList checklists={filteredChecklists} vehicles={vehicles} onSelect={handleEditChecklist} onDelete={handleDeleteChecklist} />
             </>
           )}
