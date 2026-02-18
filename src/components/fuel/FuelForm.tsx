@@ -31,11 +31,20 @@ interface FuelFormProps {
 const isBlank = (value: string | null | undefined) => !value?.trim();
 
 export const FuelForm = ({ vehicles, initialData, onSubmit, onCancel }: FuelFormProps) => {
+  const getBrazilNow = () => {
+    const now = new Date();
+    const offset = now.getTimezoneOffset();
+    const brazilOffset = 180; // UTC-3 in minutes
+    const diff = offset - brazilOffset;
+    const brazilTime = new Date(now.getTime() - diff * 60000);
+    return brazilTime.toISOString().slice(0, 16);
+  };
+
   const [formData, setFormData] = useState<FuelFormData>({
     vehicle_id: initialData?.vehicle_id || "",
     data_abastecimento: initialData?.data_abastecimento
       ? new Date(initialData.data_abastecimento).toISOString().slice(0, 16)
-      : new Date().toISOString().slice(0, 16),
+      : getBrazilNow(),
     posto: initialData?.posto || "",
     tipo_combustivel: initialData?.tipo_combustivel || "gasolina_comum",
     litros: initialData?.litros || 0,
@@ -147,11 +156,11 @@ export const FuelForm = ({ vehicles, initialData, onSubmit, onCancel }: FuelForm
               <Label>Litros *</Label>
               <Input
                 type="number"
-                step="0.001"
+                step="0.01"
                 min="0"
                 value={formData.litros || ""}
                 onChange={(e) => setFormData({ ...formData, litros: parseFloat(e.target.value) || 0 })}
-                placeholder="0,000"
+                placeholder="0,00"
                 required
               />
             </div>
@@ -171,7 +180,7 @@ export const FuelForm = ({ vehicles, initialData, onSubmit, onCancel }: FuelForm
 
             <div className="space-y-2">
               <Label>R$/Litro</Label>
-              <Input type="text" value={valorPorLitro > 0 ? `R$ ${valorPorLitro.toFixed(3)}` : "-"} disabled className="bg-muted" />
+              <Input type="text" value={valorPorLitro > 0 ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valorPorLitro) : "-"} disabled className="bg-muted" />
             </div>
 
             <div className="space-y-2">

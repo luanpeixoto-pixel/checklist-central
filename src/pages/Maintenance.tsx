@@ -12,7 +12,7 @@ import { exportMaintenanceToCSV } from "@/lib/exportMaintenance";
 
 const Maintenance = () => {
   const { records, loading, addRecord, updateRecord, deleteRecord, totalCost } = useMaintenance();
-  const { vehicles, loading: vehiclesLoading } = useVehicles();
+  const { vehicles, activeVehicles, loading: vehiclesLoading } = useVehicles();
   const [showForm, setShowForm] = useState(false);
   const [editingRecord, setEditingRecord] = useState<MaintenanceRecord | null>(null);
 
@@ -119,7 +119,7 @@ const Maintenance = () => {
           {/* Content */}
           {showForm ? (
             <MaintenanceForm
-              vehicles={vehicles}
+              vehicles={activeVehicles}
               initialData={editingRecord}
               onSubmit={handleSubmit}
               onCancel={handleCancel}

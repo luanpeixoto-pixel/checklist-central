@@ -1,4 +1,4 @@
-import { Car, Edit2, Trash2, MoreVertical } from "lucide-react";
+import { Car, Edit2, Trash2, MoreVertical, Power } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,9 +25,10 @@ interface VehicleListProps {
   vehicles: Vehicle[];
   onEdit: (vehicle: Vehicle) => void;
   onDelete: (id: string) => void;
+  onToggleStatus?: (id: string, currentStatus: string) => void;
 }
 
-export const VehicleList = ({ vehicles, onEdit, onDelete }: VehicleListProps) => {
+export const VehicleList = ({ vehicles, onEdit, onDelete, onToggleStatus }: VehicleListProps) => {
   const getTypeName = (tipo: string) => {
     return VEHICLE_TYPE_OPTIONS.find(o => o.value === tipo)?.label || tipo;
   };
@@ -63,7 +64,7 @@ export const VehicleList = ({ vehicles, onEdit, onDelete }: VehicleListProps) =>
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {vehicles.map((vehicle) => (
-        <Card key={vehicle.id} className="card-elevated hover:shadow-lg transition-shadow">
+        <Card key={vehicle.id} className={cn("card-elevated hover:shadow-lg transition-shadow", vehicle.status === 'inativo' && "opacity-60")}>
           <CardContent className="p-4">
             <div className="flex items-start justify-between mb-3">
               <div className="flex items-center gap-3">
@@ -86,6 +87,12 @@ export const VehicleList = ({ vehicles, onEdit, onDelete }: VehicleListProps) =>
                     <Edit2 className="h-4 w-4 mr-2" />
                     Editar
                   </DropdownMenuItem>
+                  {onToggleStatus && (
+                    <DropdownMenuItem onClick={() => onToggleStatus(vehicle.id, vehicle.status)}>
+                      <Power className="h-4 w-4 mr-2" />
+                      {vehicle.status === 'ativo' ? 'Desativar' : 'Ativar'}
+                    </DropdownMenuItem>
+                  )}
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="text-destructive">
@@ -95,9 +102,10 @@ export const VehicleList = ({ vehicles, onEdit, onDelete }: VehicleListProps) =>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
-                        <AlertDialogTitle>Excluir veículo?</AlertDialogTitle>
+                        <AlertDialogTitle>Tem certeza que deseja excluir este veículo?</AlertDialogTitle>
                         <AlertDialogDescription>
-                          Esta ação não pode ser desfeita. Todos os registros de manutenção e abastecimento associados a este veículo também serão excluídos.
+                          Esta ação não pode ser desfeita. <strong>Todos os registros de manutenção, abastecimento e checklists</strong> associados a este veículo também serão excluídos permanentemente.
+                          {"\n\n"}Considere desativar o veículo ao invés de excluí-lo, para manter o histórico.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
@@ -107,7 +115,7 @@ export const VehicleList = ({ vehicles, onEdit, onDelete }: VehicleListProps) =>
                           onClick={() => onDelete(vehicle.id)}
                           className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                         >
-                          Excluir
+                          Excluir permanentemente
                         </AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
