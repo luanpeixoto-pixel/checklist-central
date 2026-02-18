@@ -49,7 +49,7 @@ const PopupAdmin = () => {
       setPopupDialogOpen(false);
       setEditingPopup(null);
     } catch (error) {
-      console.error("Error saving popup:", error);
+      if (import.meta.env.DEV) console.error("Error saving popup:", error);
     }
   };
 
@@ -82,7 +82,7 @@ const PopupAdmin = () => {
       setEditingTrigger(null);
       setSelectedPopupId(null);
     } catch (error) {
-      console.error("Error saving trigger:", error);
+      if (import.meta.env.DEV) console.error("Error saving trigger:", error);
     }
   };
 

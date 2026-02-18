@@ -1,4 +1,5 @@
 import { Wrench, Edit2, Trash2, MoreVertical, Calendar, DollarSign, CheckCircle2 } from "lucide-react";
+import { FleetImage } from "@/components/FleetImage";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -120,8 +121,8 @@ export const MaintenanceList = ({ records, onEdit, onDelete, onMarkCompleted }: 
 
                   {record.imagens && record.imagens.length > 0 && (
                     <div className="flex gap-2 mt-2 flex-wrap">
-                      {record.imagens.map((url, i) => (
-                        <img key={i} src={url} alt="" className="w-12 h-12 rounded object-cover border border-border" />
+                      {record.imagens.map((ref, i) => (
+                        <FleetImage key={i} src={ref} className="w-12 h-12 rounded object-cover border border-border" />
                       ))}
                     </div>
                   )}

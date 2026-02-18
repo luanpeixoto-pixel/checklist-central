@@ -1,7 +1,6 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { ImagePlus, X, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { uploadFleetImage, deleteFleetImage } from "@/lib/imageUtils";
+import { uploadFleetImage, deleteFleetImage, getFleetImageUrls } from "@/lib/imageUtils";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 
@@ -15,7 +14,24 @@ interface ImageUploadProps {
 export const ImageUpload = ({ images, onChange, folder, maxImages = 5 }: ImageUploadProps) => {
   const { user } = useAuth();
   const [uploading, setUploading] = useState(false);
+  const [signedUrls, setSignedUrls] = useState<Record<string, string>>({});
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Resolve signed URLs for display
+  useEffect(() => {
+    if (images.length === 0) {
+      setSignedUrls({});
+      return;
+    }
+
+    let cancelled = false;
+    const resolve = async () => {
+      const urls = await getFleetImageUrls(images);
+      if (!cancelled) setSignedUrls(urls);
+    };
+    void resolve();
+    return () => { cancelled = true; };
+  }, [images]);
 
   const handleFiles = async (files: FileList | null) => {
     if (!files || !user) return;
@@ -30,22 +46,21 @@ export const ImageUpload = ({ images, onChange, folder, maxImages = 5 }: ImageUp
     setUploading(true);
 
     try {
-      const urls: string[] = [];
+      const paths: string[] = [];
       for (const file of filesToUpload) {
         if (!file.type.startsWith("image/")) {
           toast.error(`${file.name} não é uma imagem`);
           continue;
         }
-        const url = await uploadFleetImage(file, user.id, folder);
-        urls.push(url);
+        const path = await uploadFleetImage(file, user.id, folder);
+        paths.push(path);
       }
 
-      if (urls.length > 0) {
-        onChange([...images, ...urls]);
-        toast.success(`${urls.length} imagen${urls.length > 1 ? "s" : ""} enviada${urls.length > 1 ? "s" : ""}`);
+      if (paths.length > 0) {
+        onChange([...images, ...paths]);
+        toast.success(`${paths.length} imagen${paths.length > 1 ? "s" : ""} enviada${paths.length > 1 ? "s" : ""}`);
       }
-    } catch (error) {
-      console.error("Upload error:", error);
+    } catch {
       toast.error("Erro ao enviar imagem");
     } finally {
       setUploading(false);
@@ -53,10 +68,10 @@ export const ImageUpload = ({ images, onChange, folder, maxImages = 5 }: ImageUp
     }
   };
 
-  const handleRemove = async (url: string) => {
+  const handleRemove = async (ref: string) => {
     try {
-      await deleteFleetImage(url);
-      onChange(images.filter((img) => img !== url));
+      await deleteFleetImage(ref);
+      onChange(images.filter((img) => img !== ref));
     } catch {
       toast.error("Erro ao remover imagem");
     }
@@ -65,12 +80,18 @@ export const ImageUpload = ({ images, onChange, folder, maxImages = 5 }: ImageUp
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap gap-3">
-        {images.map((url) => (
-          <div key={url} className="relative group w-24 h-24 rounded-lg overflow-hidden border border-border">
-            <img src={url} alt="" className="w-full h-full object-cover" />
+        {images.map((ref) => (
+          <div key={ref} className="relative group w-24 h-24 rounded-lg overflow-hidden border border-border">
+            {signedUrls[ref] ? (
+              <img src={signedUrls[ref]} alt="" className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-muted">
+                <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+              </div>
+            )}
             <button
               type="button"
-              onClick={() => handleRemove(url)}
+              onClick={() => handleRemove(ref)}
               className="absolute top-1 right-1 p-0.5 rounded-full bg-destructive text-destructive-foreground opacity-0 group-hover:opacity-100 transition-opacity"
             >
               <X className="h-3.5 w-3.5" />

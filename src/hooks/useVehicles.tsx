@@ -28,7 +28,7 @@ export const useVehicles = () => {
       if (error) throw error;
       setVehicles(data || []);
     } catch (error) {
-      console.error("Error fetching vehicles:", error);
+      if (import.meta.env.DEV) console.error("Error fetching vehicles:", error);
       toast.error("Erro ao carregar veículos");
     } finally {
       setLoading(false);
@@ -69,7 +69,7 @@ export const useVehicles = () => {
       void trackUserEvent({ userId: user.id, action: "cadastro", resourceType: "veiculo", resourceId: newVehicle.id });
       return true;
     } catch (error) {
-      console.error("Error adding vehicle:", error);
+      if (import.meta.env.DEV) console.error("Error adding vehicle:", error);
       toast.error("Erro ao cadastrar veículo");
       return false;
     }
@@ -97,7 +97,7 @@ export const useVehicles = () => {
       void trackUserEvent({ userId: user.id, action: "edicao", resourceType: "veiculo", resourceId: id });
       return true;
     } catch (error) {
-      console.error("Error updating vehicle:", error);
+      if (import.meta.env.DEV) console.error("Error updating vehicle:", error);
       toast.error("Erro ao atualizar veículo");
       return false;
     }
@@ -143,7 +143,7 @@ export const useVehicles = () => {
       void trackUserEvent({ userId: user.id, action: "delete", resourceType: "veiculo", resourceId: id });
       return true;
     } catch (error) {
-      console.error("Error deleting vehicle:", error);
+      if (import.meta.env.DEV) console.error("Error deleting vehicle:", error);
       toast.error("Erro ao excluir veículo");
       return false;
     }

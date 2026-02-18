@@ -36,7 +36,7 @@ export const useChecklists = () => {
 
       setChecklists(parsed);
     } catch (error) {
-      console.error("Error fetching checklists:", error);
+      if (import.meta.env.DEV) console.error("Error fetching checklists:", error);
       toast.error("Erro ao carregar checklists");
     } finally {
       setLoading(false);
@@ -88,7 +88,7 @@ export const useChecklists = () => {
       emitPopupTriggerEvent("save_checklist");
       return true;
     } catch (error) {
-      console.error("Error adding checklist:", error);
+      if (import.meta.env.DEV) console.error("Error adding checklist:", error);
       toast.error("Erro ao salvar checklist");
       return false;
     }
@@ -126,7 +126,7 @@ export const useChecklists = () => {
 
       return true;
     } catch (error) {
-      console.error("Error updating checklist:", error);
+      if (import.meta.env.DEV) console.error("Error updating checklist:", error);
       toast.error("Erro ao atualizar checklist");
       return false;
     }
@@ -149,7 +149,7 @@ export const useChecklists = () => {
       void trackUserEvent({ userId: user.id, action: "delete", resourceType: "checklist", resourceId: id });
       return true;
     } catch (error) {
-      console.error("Error deleting checklist:", error);
+      if (import.meta.env.DEV) console.error("Error deleting checklist:", error);
       toast.error("Erro ao excluir checklist");
       return false;
     }

@@ -75,7 +75,6 @@ export const usePopupEngine = () => {
   // Subscribe to trigger events
   useEffect(() => {
     const unsubscribe = subscribeToPopupTriggerEvents((eventName) => {
-      console.log("[PopupEngine] Received trigger event:", eventName);
       setLastTriggerEvent(eventName);
     });
 
@@ -103,7 +102,6 @@ export const usePopupEngine = () => {
           }
 
           const { count } = await query;
-          console.log(`[PopupEngine] event_count check: ${count || 0} >= ${cond.count}`, { trigger_id: trigger.id });
           return (count || 0) >= cond.count;
         }
 
@@ -188,7 +186,6 @@ export const usePopupEngine = () => {
 
       // Check max displays
       if (trigger.max_displays && display.count >= trigger.max_displays) {
-        console.log(`[PopupEngine] Max displays reached for popup ${trigger.popup_id}`);
         return false;
       }
 
@@ -197,7 +194,6 @@ export const usePopupEngine = () => {
         const cooldownMs = trigger.cooldown_hours * 60 * 60 * 1000;
         const timeSinceLastDisplay = Date.now() - display.lastDisplayed.getTime();
         if (timeSinceLastDisplay < cooldownMs) {
-          console.log(`[PopupEngine] Still in cooldown for popup ${trigger.popup_id}`);
           return false;
         }
       }
@@ -212,8 +208,6 @@ export const usePopupEngine = () => {
     if (!user?.id || loading) return null;
 
     const currentPath = window.location.pathname;
-    console.log("[PopupEngine] Evaluating triggers for path:", currentPath, "lastEvent:", lastTriggerEvent);
-
     for (const trigger of triggers) {
       // Check if popup definition is active
       if (!trigger.popup?.is_active) continue;
@@ -223,20 +217,17 @@ export const usePopupEngine = () => {
 
       // Check page restriction
       if (trigger.pages?.length && !trigger.pages.includes(currentPath)) {
-        console.log(`[PopupEngine] Trigger ${trigger.id} not on allowed page`);
         continue;
       }
 
       // Check event name restriction
       if (trigger.trigger_event_name && trigger.trigger_event_name !== lastTriggerEvent) {
-        console.log(`[PopupEngine] Trigger ${trigger.id} waiting for event ${trigger.trigger_event_name}, got ${lastTriggerEvent}`);
         continue;
       }
 
       // Check conditions
       const conditionsMet = await checkTriggerConditions(trigger);
       if (conditionsMet) {
-        console.log(`[PopupEngine] Found eligible trigger:`, trigger.id);
         return trigger;
       }
     }
@@ -252,7 +243,6 @@ export const usePopupEngine = () => {
     const timeoutId = setTimeout(async () => {
       const eligible = await findEligiblePopup();
       if (eligible) {
-        console.log("[PopupEngine] Setting pending trigger:", eligible.id);
         setPendingTrigger(eligible);
       }
     }, 300);
@@ -270,8 +260,6 @@ export const usePopupEngine = () => {
     }
 
     const delayMs = Math.max(0, (pendingTrigger.delay_seconds || 0) * 1000);
-    console.log(`[PopupEngine] Waiting ${delayMs}ms before showing popup`);
-
     if (!delayMs) {
       setCurrentPopup({ popup: pendingTrigger.popup, trigger: pendingTrigger });
       setPendingTrigger(null);
@@ -280,7 +268,6 @@ export const usePopupEngine = () => {
     }
 
     delayTimerRef.current = setTimeout(() => {
-      console.log("[PopupEngine] Delay complete, showing popup");
       setCurrentPopup({ popup: pendingTrigger.popup, trigger: pendingTrigger });
       setPendingTrigger(null);
       setLastTriggerEvent(null);
