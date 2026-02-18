@@ -120,6 +120,7 @@ export interface ChecklistData {
   mechanicalChecks: MechanicalChecks;
   areaMarkers: VehicleAreaMarker[];
   observacoes: string;
+  imagens?: string[];
 
   createdAt?: Date;
 }
@@ -148,4 +149,5 @@ export const createEmptyChecklist = (): ChecklistData => ({
   mechanicalChecks: createEmptyMechanicalChecks(),
   areaMarkers: [],
   observacoes: "",
+  imagens: [],
 });

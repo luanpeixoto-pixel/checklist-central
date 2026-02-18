@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ImageUpload } from "@/components/ImageUpload";
 import {
   Car,
   Lightbulb,
@@ -493,12 +494,20 @@ export const ChecklistForm = ({ vehicles, initialData, onSubmit }: ChecklistForm
       </CollapsibleSection>
 
       {/* Observações */}
-      <CollapsibleSection title="Observações" icon={<MessageSquare className="h-5 w-5" />} defaultOpen={false}>
+      <CollapsibleSection title="Observações e Imagens" icon={<MessageSquare className="h-5 w-5" />} defaultOpen={false}>
         <textarea
           value={formData.observacoes}
           onChange={(e) => updateField("observacoes", e.target.value)}
           className="input-field w-full min-h-[120px] mt-4"
         />
+        <div className="mt-4">
+          <label className="text-sm font-medium mb-2 block">Imagens</label>
+          <ImageUpload
+            images={formData.imagens || []}
+            onChange={(imgs) => updateField("imagens", imgs)}
+            folder="checklist"
+          />
+        </div>
       </CollapsibleSection>
 
       {/* Ações */}

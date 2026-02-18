@@ -118,6 +118,14 @@ export const FuelList = ({ records, onEdit, onDelete }: FuelListProps) => {
                       {record.condutor && ` • ${record.condutor}`}
                     </p>
                   )}
+
+                  {record.imagens && record.imagens.length > 0 && (
+                    <div className="flex gap-2 mt-2 flex-wrap">
+                      {record.imagens.map((url, i) => (
+                        <img key={i} src={url} alt="" className="w-12 h-12 rounded object-cover border border-border" />
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
 

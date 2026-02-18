@@ -96,6 +96,7 @@ export interface MaintenanceRecord {
   observacoes?: string | null;
   created_at: string;
   updated_at: string;
+  imagens?: string[] | null;
   // Joined data
   vehicle?: Vehicle | null;
 }
@@ -118,6 +119,7 @@ export interface FuelRecord {
   observacoes?: string | null;
   created_at: string;
   updated_at: string;
+  imagens?: string[] | null;
   // Joined data
   vehicle?: Vehicle | null;
 }

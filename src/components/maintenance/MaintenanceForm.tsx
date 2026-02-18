@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ImageUpload } from "@/components/ImageUpload";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -59,6 +60,8 @@ export const MaintenanceForm = ({ vehicles, initialData, onSubmit, onCancel }: M
     observacoes: initialData?.observacoes || "",
   });
 
+  const [imagens, setImagens] = useState<string[]>(initialData?.imagens || []);
+
   const [submitting, setSubmitting] = useState(false);
 
   const selectedGroup = formData.grupo as MaintenanceGroup | undefined;
@@ -82,7 +85,7 @@ export const MaintenanceForm = ({ vehicles, initialData, onSubmit, onCancel }: M
 
     setSubmitting(true);
     try {
-      await onSubmit(formData);
+      await onSubmit({ ...formData, imagens });
     } finally {
       setSubmitting(false);
     }
@@ -285,6 +288,11 @@ export const MaintenanceForm = ({ vehicles, initialData, onSubmit, onCancel }: M
               placeholder="Observações adicionais..."
               rows={2}
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Imagens</Label>
+            <ImageUpload images={imagens} onChange={setImagens} folder="maintenance" />
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
