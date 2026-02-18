@@ -43,8 +43,8 @@ export const ModulesGrid = () => {
               <Card className="card-elevated h-full hover:shadow-lg transition-all duration-200 cursor-pointer group">
                 <CardContent className="p-6">
                   <div className="flex items-start gap-4">
-                    <div>
-                      <Icon className="h-6 w-6" />
+                    <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-accent/10">
+                      <Icon className="h-5 w-5 text-accent" />
                     </div>
                     <div className="flex-1">
                       <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">

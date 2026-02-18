@@ -56,6 +56,11 @@ const Cockpit = () => {
 
         <ModulesGrid />
 
+        <div className="mb-4">
+          <h2 className="text-xl font-semibold text-foreground">Informações Importantes</h2>
+          <p className="text-sm text-muted-foreground">Resumo e alertas da sua frota</p>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <TopMaintenance topItems={topMaintenanceItems} formatCurrency={formatCurrency} />
           <UpcomingMaintenance records={maintenanceRecords} vehicles={vehicles} />
