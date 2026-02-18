@@ -193,7 +193,7 @@ const Maintenance = () => {
             <MaintenanceForm vehicles={activeVehicles} initialData={editingRecord} onSubmit={handleSubmit} onCancel={handleCancel} />
           ) : (
             <>
-              <DamagedVehiclesAlert checklists={checklists} vehicles={vehicles} />
+              <DamagedVehiclesAlert checklists={checklists} vehicles={vehicles} maintenanceRecords={records} />
               <MaintenanceList records={filteredRecords} onEdit={handleEdit} onDelete={deleteRecord} onMarkCompleted={handleMarkCompleted} />
             </>
           )}
