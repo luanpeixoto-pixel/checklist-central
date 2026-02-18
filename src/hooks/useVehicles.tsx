@@ -110,6 +110,10 @@ export const useVehicles = () => {
     }
 
     try {
+      // Delete related records first
+      await supabase.from("fuel_records").delete().eq("vehicle_id", id).eq("user_id", user.id);
+      await supabase.from("maintenance_records").delete().eq("vehicle_id", id).eq("user_id", user.id);
+
       const { error } = await supabase
         .from("vehicles")
         .delete()
@@ -119,7 +123,7 @@ export const useVehicles = () => {
       if (error) throw error;
 
       setVehicles((prev) => prev.filter((v) => v.id !== id));
-      toast.success("Veículo excluído com sucesso");
+      toast.success("Veículo e registros associados excluídos com sucesso");
       void trackUserEvent({ userId: user.id, action: "delete", resourceType: "veiculo", resourceId: id });
       return true;
     } catch (error) {
@@ -129,12 +133,18 @@ export const useVehicles = () => {
     }
   };
 
+  const toggleVehicleStatus = async (id: string, currentStatus: string): Promise<boolean> => {
+    const newStatus = currentStatus === 'ativo' ? 'inativo' : 'ativo';
+    return updateVehicle(id, { status: newStatus });
+  };
+
   return {
     vehicles,
     loading,
     addVehicle,
     updateVehicle,
     deleteVehicle,
+    toggleVehicleStatus,
     refetch: fetchVehicles,
     activeVehicles: vehicles.filter(v => v.status === 'ativo'),
   };

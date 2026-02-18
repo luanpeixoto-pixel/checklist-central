@@ -12,7 +12,7 @@ import { exportFuelToCSV } from "@/lib/exportFuel";
 
 const Fuel = () => {
   const { records, loading, addRecord, updateRecord, deleteRecord, totalCost, totalLiters, avgKmPerLiter } = useFuel();
-  const { vehicles, loading: vehiclesLoading } = useVehicles();
+  const { vehicles, activeVehicles, loading: vehiclesLoading } = useVehicles();
   const [showForm, setShowForm] = useState(false);
   const [editingRecord, setEditingRecord] = useState<FuelRecord | null>(null);
 
@@ -128,7 +128,7 @@ const Fuel = () => {
           {/* Content */}
           {showForm ? (
             <FuelForm
-              vehicles={vehicles}
+              vehicles={activeVehicles}
               initialData={editingRecord}
               onSubmit={handleSubmit}
               onCancel={handleCancel}

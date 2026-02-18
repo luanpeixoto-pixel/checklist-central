@@ -33,6 +33,15 @@ interface MaintenanceFormProps {
 const isBlank = (value: string | null | undefined) => !value?.trim();
 
 export const MaintenanceForm = ({ vehicles, initialData, onSubmit, onCancel }: MaintenanceFormProps) => {
+  const getBrazilDate = () => {
+    const now = new Date();
+    const offset = now.getTimezoneOffset();
+    const brazilOffset = 180;
+    const diff = offset - brazilOffset;
+    const brazilTime = new Date(now.getTime() - diff * 60000);
+    return brazilTime.toISOString().split("T")[0];
+  };
+
   const [formData, setFormData] = useState<MaintenanceFormData>({
     vehicle_id: initialData?.vehicle_id || "",
     tipo_manutencao: initialData?.tipo_manutencao || "preventiva",
@@ -42,7 +51,7 @@ export const MaintenanceForm = ({ vehicles, initialData, onSubmit, onCancel }: M
     custo: initialData?.custo || 0,
     quilometragem_atual: initialData?.quilometragem_atual || undefined,
     quilometragem_proxima: initialData?.quilometragem_proxima || undefined,
-    data_manutencao: initialData?.data_manutencao || new Date().toISOString().split("T")[0],
+    data_manutencao: initialData?.data_manutencao || getBrazilDate(),
     data_proxima: initialData?.data_proxima || undefined,
     fornecedor: initialData?.fornecedor || "",
     nota_fiscal: initialData?.nota_fiscal || "",
@@ -61,19 +70,9 @@ export const MaintenanceForm = ({ vehicles, initialData, onSubmit, onCancel }: M
     const missingFields: string[] = [];
     if (isBlank(formData.vehicle_id)) missingFields.push("Veículo");
     if (isBlank(formData.tipo_manutencao)) missingFields.push("Tipo de Manutenção");
-    if (isBlank(formData.grupo ?? "")) missingFields.push("Grupo");
     if (isBlank(formData.item)) missingFields.push("Item");
     if (!formData.data_manutencao) missingFields.push("Data da Manutenção");
-    if (formData.custo <= 0) missingFields.push("Custo");
-    if (formData.quilometragem_atual === null || formData.quilometragem_atual === undefined || formData.quilometragem_atual < 0) {
-      missingFields.push("Quilometragem Atual");
-    }
-    if (formData.quilometragem_proxima === null || formData.quilometragem_proxima === undefined || formData.quilometragem_proxima < 0) {
-      missingFields.push("Próxima Troca (km)");
-    }
-    if (!formData.data_proxima) missingFields.push("Próxima Revisão");
-    if (isBlank(formData.fornecedor ?? "")) missingFields.push("Fornecedor/Oficina");
-    if (isBlank(formData.nota_fiscal ?? "")) missingFields.push("Nota Fiscal");
+    if (formData.custo < 0) missingFields.push("Custo");
     if (isBlank(formData.status)) missingFields.push("Status");
 
     if (missingFields.length > 0) {
@@ -145,7 +144,7 @@ export const MaintenanceForm = ({ vehicles, initialData, onSubmit, onCancel }: M
             </div>
 
             <div className="space-y-2">
-              <Label>Grupo *</Label>
+              <Label>Grupo</Label>
               <Select value={formData.grupo || ""} onValueChange={(value) => setFormData({ ...formData, grupo: value || undefined, item: "" })}>
                 <SelectTrigger>
                   <SelectValue placeholder="Selecione o grupo" />
@@ -162,26 +161,25 @@ export const MaintenanceForm = ({ vehicles, initialData, onSubmit, onCancel }: M
 
             <div className="space-y-2">
               <Label>Item *</Label>
-              {itemOptions.length > 0 ? (
-                <Select value={formData.item} onValueChange={(value) => setFormData({ ...formData, item: value })}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione o item" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {itemOptions.map((item) => (
-                      <SelectItem key={item} value={item}>
-                        {item}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              ) : (
-                <Input
-                  value={formData.item}
-                  onChange={(e) => setFormData({ ...formData, item: e.target.value })}
-                  placeholder="Ex: Troca de óleo"
-                  required
-                />
+              <Input
+                value={formData.item}
+                onChange={(e) => setFormData({ ...formData, item: e.target.value })}
+                placeholder="Ex: Troca de óleo"
+                required
+              />
+              {itemOptions.length > 0 && (
+                <div className="flex flex-wrap gap-1 mt-1">
+                  {itemOptions.map((item) => (
+                    <button
+                      key={item}
+                      type="button"
+                      onClick={() => setFormData({ ...formData, item })}
+                      className="text-xs px-2 py-1 rounded bg-muted hover:bg-primary/10 text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      {item}
+                    </button>
+                  ))}
+                </div>
               )}
             </div>
 
@@ -196,7 +194,7 @@ export const MaintenanceForm = ({ vehicles, initialData, onSubmit, onCancel }: M
             </div>
 
             <div className="space-y-2">
-              <Label>Custo (R$) *</Label>
+              <Label>Custo (R$)</Label>
               <Input
                 type="number"
                 step="0.01"
@@ -204,59 +202,53 @@ export const MaintenanceForm = ({ vehicles, initialData, onSubmit, onCancel }: M
                 value={formData.custo || ""}
                 onChange={(e) => setFormData({ ...formData, custo: parseFloat(e.target.value) || 0 })}
                 placeholder="0,00"
-                required
               />
             </div>
 
             <div className="space-y-2">
-              <Label>Quilometragem Atual *</Label>
+              <Label>Quilometragem Atual</Label>
               <Input
                 type="number"
                 value={formData.quilometragem_atual || ""}
                 onChange={(e) => setFormData({ ...formData, quilometragem_atual: parseInt(e.target.value, 10) || undefined })}
                 placeholder={selectedVehicle ? `Atual: ${selectedVehicle.quilometragem_atual}` : "km"}
-                required
               />
             </div>
 
             <div className="space-y-2">
-              <Label>Próxima Troca (km) *</Label>
+              <Label>Próxima Troca (km)</Label>
               <Input
                 type="number"
                 value={formData.quilometragem_proxima || ""}
                 onChange={(e) => setFormData({ ...formData, quilometragem_proxima: parseInt(e.target.value, 10) || undefined })}
                 placeholder="km para próxima manutenção"
-                required
               />
             </div>
 
             <div className="space-y-2">
-              <Label>Próxima Revisão *</Label>
+              <Label>Próxima Revisão</Label>
               <Input
                 type="date"
                 value={formData.data_proxima || ""}
                 onChange={(e) => setFormData({ ...formData, data_proxima: e.target.value || undefined })}
-                required
               />
             </div>
 
             <div className="space-y-2">
-              <Label>Fornecedor/Oficina *</Label>
+              <Label>Fornecedor/Oficina</Label>
               <Input
                 value={formData.fornecedor || ""}
                 onChange={(e) => setFormData({ ...formData, fornecedor: e.target.value })}
                 placeholder="Nome do fornecedor"
-                required
               />
             </div>
 
             <div className="space-y-2">
-              <Label>Nota Fiscal *</Label>
+              <Label>Nota Fiscal</Label>
               <Input
                 value={formData.nota_fiscal || ""}
                 onChange={(e) => setFormData({ ...formData, nota_fiscal: e.target.value })}
                 placeholder="Número da NF"
-                required
               />
             </div>
 

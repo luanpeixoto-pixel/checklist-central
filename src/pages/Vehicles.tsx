@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import type { Vehicle, VehicleFormData } from "@/types/fleet";
 
 const Vehicles = () => {
-  const { vehicles, loading, addVehicle, updateVehicle, deleteVehicle } = useVehicles();
+  const { vehicles, loading, addVehicle, updateVehicle, deleteVehicle, toggleVehicleStatus } = useVehicles();
   const [showForm, setShowForm] = useState(false);
   const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
 
@@ -87,6 +87,7 @@ const Vehicles = () => {
               vehicles={vehicles}
               onEdit={handleEdit}
               onDelete={deleteVehicle}
+              onToggleStatus={toggleVehicleStatus}
             />
           )}
         </div>

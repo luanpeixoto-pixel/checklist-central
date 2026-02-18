@@ -32,10 +32,10 @@ export const AppHeader = () => {
 
   const navItems = [
     { path: '/', label: 'Cockpit', icon: LayoutDashboard },
+    { path: '/veiculos', label: 'Veículos', icon: Truck },
     { path: '/checklist', label: 'Checklist', icon: ClipboardList },
     { path: '/manutencao', label: 'Manutenção', icon: Wrench },
     { path: '/combustivel', label: 'Combustível', icon: Fuel },
-    { path: '/veiculos', label: 'Veículos', icon: Truck },
   ];
 
   const userName = user?.user_metadata?.nome || user?.email?.split('@')[0] || 'Usuário';
