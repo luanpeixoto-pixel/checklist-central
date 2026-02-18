@@ -17,6 +17,7 @@ import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import PopupAdmin from "./pages/PopupAdmin";
 import Profile from "./pages/Profile";
+import VehicleProfile from "./pages/VehicleProfile";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +51,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <Vehicles />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/veiculos/:id" 
+              element={
+                <ProtectedRoute>
+                  <VehicleProfile />
                 </ProtectedRoute>
               } 
             />
