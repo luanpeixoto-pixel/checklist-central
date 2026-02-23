@@ -67,6 +67,9 @@ export const SliderAdmin = () => {
           <p className="text-sm text-muted-foreground">
             Configure até 5 imagens para o carrossel ({slides.length}/5)
           </p>
+          <p className="text-xs text-muted-foreground mt-1">
+            Tamanho ideal: <strong>1200 × 525 px</strong> (proporção 16:7)
+          </p>
         </div>
         <Button
           onClick={() => fileInputRef.current?.click()}
