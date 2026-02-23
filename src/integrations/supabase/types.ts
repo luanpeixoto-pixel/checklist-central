@@ -154,6 +154,36 @@ export type Database = {
           },
         ]
       }
+      home_slides: {
+        Row: {
+          created_at: string
+          display_order: number
+          id: string
+          image_url: string
+          is_active: boolean
+          redirect_url: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          image_url: string
+          is_active?: boolean
+          redirect_url?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          image_url?: string
+          is_active?: boolean
+          redirect_url?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       maintenance_records: {
         Row: {
           created_at: string

@@ -9,6 +9,7 @@ import { PopupFormDialog } from "@/components/admin/popup/PopupFormDialog";
 import { TriggerList } from "@/components/admin/popup/TriggerList";
 import { TriggerFormDialog } from "@/components/admin/popup/TriggerFormDialog";
 import type { PopupDefinition, PopupTrigger } from "@/types/popup";
+import { SliderAdmin } from "@/components/admin/slider/SliderAdmin";
 
 const PopupAdmin = () => {
   const {
@@ -117,11 +118,16 @@ const PopupAdmin = () => {
           </p>
         </div>
 
-        <Tabs defaultValue="popups" className="space-y-6">
+        <Tabs defaultValue="slider" className="space-y-6">
           <TabsList>
+            <TabsTrigger value="slider">Slider</TabsTrigger>
             <TabsTrigger value="popups">Popups ({popups.length})</TabsTrigger>
             <TabsTrigger value="triggers">Gatilhos ({triggers.length})</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="slider">
+            <SliderAdmin />
+          </TabsContent>
 
           <TabsContent value="popups" className="space-y-4">
             <div className="flex justify-end">
