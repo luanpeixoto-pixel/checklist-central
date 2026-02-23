@@ -11,6 +11,7 @@ import { TopMaintenance } from "@/components/cockpit/TopMaintenance";
 import { UpcomingMaintenance } from "@/components/cockpit/UpcomingMaintenance";
 import { RecentInspections } from "@/components/cockpit/RecentInspections";
 import { FuelByVehicle } from "@/components/cockpit/FuelByVehicle";
+import { HomeSlider } from "@/components/cockpit/HomeSlider";
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
@@ -44,6 +45,8 @@ const Cockpit = () => {
           <h1 className="text-3xl font-bold text-foreground mb-2">Painel de Controle</h1>
           <p className="text-muted-foreground">Gerencie sua frota de veículos de forma integrada</p>
         </div>
+
+        <HomeSlider />
 
         <MetricCards
           totalVehicles={vehicles.length}
