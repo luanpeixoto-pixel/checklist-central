@@ -46,8 +46,6 @@ const Cockpit = () => {
           <p className="text-muted-foreground">Gerencie sua frota de veículos de forma integrada</p>
         </div>
 
-        <HomeSlider />
-
         <MetricCards
           totalVehicles={vehicles.length}
           activeVehicles={activeVehicles.length}
@@ -58,6 +56,8 @@ const Cockpit = () => {
         />
 
         <ModulesGrid />
+
+        <HomeSlider />
 
         <div className="mb-4">
           <h2 className="text-xl font-semibold text-foreground">Informações Importantes</h2>
