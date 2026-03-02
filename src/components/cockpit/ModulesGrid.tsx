@@ -40,7 +40,7 @@ export const ModulesGrid = () => {
           const Icon = module.icon;
           return (
             <Link key={module.href} to={module.href}>
-              <Card className="card-elevated h-full hover:shadow-lg transition-all duration-200 cursor-pointer group">
+              <Card className="card-elevated h-full hover:shadow-md transition-all duration-200 cursor-pointer group">
                 <CardContent className="p-6">
                   <div className="flex items-start gap-4">
                     <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-accent/10">

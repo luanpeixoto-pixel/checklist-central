@@ -19,12 +19,12 @@ export const TopMaintenance = ({ topItems, formatCurrency }: TopMaintenanceProps
           <div>
             <CardTitle className="flex items-center gap-2">
               <Wrench className="h-5 w-5 text-accent" />
-              Top Manutenções
+              Top manutenções
             </CardTitle>
             <CardDescription>Por custo e frequência</CardDescription>
           </div>
-          <Link to="/manutencao" className="text-xs text-primary hover:underline flex items-center gap-1">
-            Ver todas <ChevronRight className="h-3 w-3" />
+          <Link to="/manutencao" className="text-sm font-semibold text-primary hover:underline flex items-center gap-1">
+            Ver todas <ChevronRight className="h-4 w-4" />
           </Link>
         </div>
       </CardHeader>

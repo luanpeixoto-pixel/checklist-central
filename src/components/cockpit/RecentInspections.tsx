@@ -17,13 +17,13 @@ export const RecentInspections = ({ checklists, vehicles }: RecentInspectionsPro
         <div className="flex items-center justify-between">
           <div>
             <CardTitle className="flex items-center gap-2">
-              <ClipboardCheck className="h-5 w-5 text-primary" />
-              Inspeções Recentes
+              <ClipboardCheck className="h-5 w-5 text-accent" />
+              Inspeções recentes
             </CardTitle>
             <CardDescription>Últimas vistorias realizadas</CardDescription>
           </div>
-          <Link to="/checklist" className="text-xs text-primary hover:underline flex items-center gap-1">
-            Ver todas <ChevronRight className="h-3 w-3" />
+          <Link to="/checklist" className="text-sm font-semibold text-primary hover:underline flex items-center gap-1">
+            Ver todas <ChevronRight className="h-4 w-4" />
           </Link>
         </div>
       </CardHeader>

@@ -31,13 +31,13 @@ export const UpcomingMaintenance = ({ records, vehicles }: UpcomingMaintenancePr
         <div className="flex items-center justify-between">
           <div>
             <CardTitle className="flex items-center gap-2">
-              <Calendar className="h-5 w-5 text-primary" />
-              Próximas Manutenções
+              <Calendar className="h-5 w-5 text-accent" />
+              Próximas manutenções
             </CardTitle>
             <CardDescription>Agendamentos futuros</CardDescription>
           </div>
-          <Link to="/manutencao" className="text-xs text-primary hover:underline flex items-center gap-1">
-            Ver todas <ChevronRight className="h-3 w-3" />
+          <Link to="/manutencao" className="text-sm font-semibold text-primary hover:underline flex items-center gap-1">
+            Ver todas <ChevronRight className="h-4 w-4" />
           </Link>
         </div>
       </CardHeader>

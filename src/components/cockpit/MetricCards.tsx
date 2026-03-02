@@ -22,11 +22,11 @@ export const MetricCards = ({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
       <Link to="/veiculos">
-        <Card className="card-elevated hover:shadow-lg transition-all duration-200 cursor-pointer group">
+        <Card className="card-elevated hover:shadow-md transition-all duration-200 cursor-pointer group">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Total de Veículos</p>
+                <p className="text-sm text-muted-foreground">Total de veículos</p>
                 <p className="text-3xl font-bold text-foreground group-hover:text-primary transition-colors">
                   {totalVehicles}
                 </p>
@@ -43,11 +43,11 @@ export const MetricCards = ({
       </Link>
 
       <Link to="/combustivel">
-        <Card className="card-elevated hover:shadow-lg transition-all duration-200 cursor-pointer group">
+        <Card className="card-elevated hover:shadow-md transition-all duration-200 cursor-pointer group">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Gasto com Combustível</p>
+                <p className="text-sm text-muted-foreground">Gasto com combustível</p>
                 <p className="text-3xl font-bold text-foreground group-hover:text-primary transition-colors">
                   {formatCurrency(fuelCost)}
                 </p>
@@ -62,11 +62,11 @@ export const MetricCards = ({
       </Link>
 
       <Link to="/manutencao">
-        <Card className="card-elevated hover:shadow-lg transition-all duration-200 cursor-pointer group">
+        <Card className="card-elevated hover:shadow-md transition-all duration-200 cursor-pointer group">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Gasto com Manutenção</p>
+                <p className="text-sm text-muted-foreground">Gasto com manutenção</p>
                 <p className="text-3xl font-bold text-foreground group-hover:text-primary transition-colors">
                   {formatCurrency(maintenanceCost)}
                 </p>
@@ -81,11 +81,11 @@ export const MetricCards = ({
       </Link>
 
       <Link to="/combustivel">
-        <Card className="card-elevated hover:shadow-lg transition-all duration-200 cursor-pointer group">
+        <Card className="card-elevated hover:shadow-md transition-all duration-200 cursor-pointer group">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Média km/L</p>
+                <p className="text-sm text-muted-foreground">Média km/l</p>
                 <p className="text-3xl font-bold text-foreground group-hover:text-primary transition-colors">
                   {avgKmPerLiter > 0 ? avgKmPerLiter.toFixed(1) : '-'}
                 </p>
