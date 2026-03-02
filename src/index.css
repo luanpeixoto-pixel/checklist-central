@@ -145,12 +145,7 @@
 @layer components {
   .card-elevated {
     @apply bg-card rounded-xl border border-border;
-    box-shadow: var(--shadow-md);
     background: var(--gradient-card);
-  }
-
-  .card-elevated:hover {
-    box-shadow: var(--shadow-lg);
   }
 
   .btn-primary-gradient {

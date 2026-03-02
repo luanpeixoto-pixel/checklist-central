@@ -60,7 +60,7 @@ const Cockpit = () => {
         <HomeSlider />
 
         <div className="mb-4">
-          <h2 className="text-xl font-semibold text-foreground">Informações Importantes</h2>
+          <h2 className="text-xl font-semibold text-foreground">Informações importantes</h2>
           <p className="text-sm text-muted-foreground">Resumo e alertas da sua frota</p>
         </div>
 

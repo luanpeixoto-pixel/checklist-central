@@ -57,13 +57,13 @@ export const FuelByVehicle = ({ records, vehicles, formatCurrency }: FuelByVehic
         <div className="flex items-center justify-between">
           <div>
             <CardTitle className="flex items-center gap-2">
-              <Fuel className="h-5 w-5 text-success" />
-              Consumo por Veículo
+              <Fuel className="h-5 w-5 text-accent" />
+              Consumo por veículo
             </CardTitle>
             <CardDescription>Custo e km/L por veículo</CardDescription>
           </div>
-          <Link to="/combustivel" className="text-xs text-primary hover:underline flex items-center gap-1">
-            Ver todos <ChevronRight className="h-3 w-3" />
+          <Link to="/combustivel" className="text-sm font-semibold text-primary hover:underline flex items-center gap-1">
+            Ver todos <ChevronRight className="h-4 w-4" />
           </Link>
         </div>
       </CardHeader>

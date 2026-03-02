@@ -18,9 +18,9 @@ interface NoRecordsStateProps {
 type EmptyStateProps = NoVehiclesStateProps | NoRecordsStateProps;
 
 const toolMessages: Record<string, string> = {
-  checklist: "Para criar um checklist de inspeção, você precisa cadastrar pelo menos um veículo primeiro.",
-  manutenção: "Para registrar uma manutenção, você precisa cadastrar pelo menos um veículo primeiro.",
-  abastecimento: "Para registrar um abastecimento, você precisa cadastrar pelo menos um veículo primeiro.",
+  checklist: "Quase lá! Adicione seu primeiro veículo para liberar a criação de checklists.",
+  manutenção: "Sua frota ainda está vazia. Adicione seu primeiro veículo para registrar uma manutenção.",
+  abastecimento: "Tudo pronto para abastecer? Primeiro, precisamos dos dados do seu veículo.",
 };
 
 export const EmptyState = (props: EmptyStateProps) => {

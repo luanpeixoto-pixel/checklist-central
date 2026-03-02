@@ -31,7 +31,7 @@ export const AppHeader = () => {
   const navigate = useNavigate();
 
   const navItems = [
-    { path: '/', label: 'Cockpit', icon: LayoutDashboard },
+    { path: '/', label: 'Painel', icon: LayoutDashboard },
     { path: '/veiculos', label: 'Veículos', icon: Truck },
     { path: '/checklist', label: 'Checklist', icon: ClipboardList },
     { path: '/manutencao', label: 'Manutenção', icon: Wrench },

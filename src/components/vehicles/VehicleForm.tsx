@@ -16,7 +16,7 @@ import {
   type Vehicle,
   type VehicleFormData,
 } from "@/types/fleet";
-import { Car, Save, X } from "lucide-react";
+import { Save, X } from "lucide-react";
 import { toast } from "sonner";
 
 interface VehicleFormProps {
@@ -74,9 +74,8 @@ export const VehicleForm = ({ initialData, onSubmit, onCancel }: VehicleFormProp
   return (
     <Card className="card-elevated animate-fade-in">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Car className="h-5 w-5 text-primary" />
-          {initialData ? "Editar Veículo" : "Cadastrar Veículo"}
+        <CardTitle>
+          {initialData ? "Editar veículo" : "Cadastrar veículo"}
         </CardTitle>
       </CardHeader>
       <CardContent>
