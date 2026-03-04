@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Car, Eye, EyeOff, Loader2 } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 
 const Auth = () => {
@@ -18,6 +19,7 @@ const Auth = () => {
     nome: "",
     email: "",
     password: "",
+    aceite_marketing: false,
   });
 
   const [errors, setErrors] = useState({
@@ -107,6 +109,7 @@ const Auth = () => {
             emailRedirectTo: window.location.origin,
             data: {
               nome: formData.nome,
+              aceite_marketing: formData.aceite_marketing,
             },
           },
         });
@@ -210,6 +213,22 @@ const Auth = () => {
               )}
             </div>
 
+            {!isLogin && (
+              <div className="flex items-start space-x-2">
+                <Checkbox
+                  id="aceite_marketing"
+                  checked={formData.aceite_marketing}
+                  onCheckedChange={(checked) =>
+                    setFormData((prev) => ({ ...prev, aceite_marketing: checked === true }))
+                  }
+                  className="mt-0.5"
+                />
+                <Label htmlFor="aceite_marketing" className="text-xs text-muted-foreground leading-tight cursor-pointer font-normal">
+                  Aceito receber comunicações e novidades por e-mail e WhatsApp. Você pode cancelar a qualquer momento.
+                </Label>
+              </div>
+            )}
+
             <Button type="submit" className="w-full" disabled={loading}>
               {loading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
               {isLogin ? "Entrar" : "Cadastrar"}
@@ -224,7 +243,7 @@ const Auth = () => {
                 onClick={() => {
                   setIsLogin(!isLogin);
                   setErrors({ nome: "", email: "", password: "" });
-                  setFormData({ nome: "", email: "", password: "" });
+                  setFormData({ nome: "", email: "", password: "", aceite_marketing: false });
                 }}
                 className="ml-1 text-primary hover:underline font-medium"
               >
