@@ -427,6 +427,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          aceite_marketing: boolean
           cargo: string | null
           cidade: string | null
           created_at: string
@@ -443,6 +444,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          aceite_marketing?: boolean
           cargo?: string | null
           cidade?: string | null
           created_at?: string
@@ -459,6 +461,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          aceite_marketing?: boolean
           cargo?: string | null
           cidade?: string | null
           created_at?: string

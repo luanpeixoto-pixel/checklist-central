@@ -1,0 +1,1 @@
+ALTER TABLE public.profiles ADD COLUMN aceite_marketing boolean NOT NULL DEFAULT false;
