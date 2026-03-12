@@ -306,6 +306,7 @@ const SectionMaintenance = () => (
 const SectionFuel = () => (
   <div>
     <h2 className="text-xl font-bold text-foreground border-b-2 border-primary pb-2 mb-4 page-break">6. Combustível (/combustivel)</h2>
+    <ScreenshotImg src={screenshotCombustivel} alt="Controle de Combustível — /combustivel" />
 
     <h3 className="text-lg font-semibold text-primary mt-4 mb-2">6.1 Formulário</h3>
     <p className="text-muted-foreground mb-2">Campos: Veículo, Data, Posto, Tipo Combustível, Litros, Valor Total, Quilometragem, Tanque Cheio, Condutor, Observações, Imagens.</p>
