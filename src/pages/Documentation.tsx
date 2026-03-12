@@ -95,6 +95,7 @@ const SectionAuth = () => (
 const SectionCockpit = () => (
   <div>
     <h2 className="text-xl font-bold text-foreground border-b-2 border-primary pb-2 mb-4 page-break">2. Painel de Controle (/)</h2>
+    <ScreenshotImg src={screenshotPainel} alt="Painel de Controle — Tela principal" />
     <p className="text-muted-foreground mb-4">Dashboard principal com métricas, módulos e informações resumidas da frota.</p>
 
     <h3 className="text-lg font-semibold text-primary mt-4 mb-2">2.1 Metric Cards</h3>
