@@ -18,6 +18,7 @@ import NotFound from "./pages/NotFound";
 import PopupAdmin from "./pages/PopupAdmin";
 import Profile from "./pages/Profile";
 import VehicleProfile from "./pages/VehicleProfile";
+import Documentation from "./pages/Documentation";
 
 const queryClient = new QueryClient();
 
@@ -91,11 +92,19 @@ const App = () => (
               element={
                 <AdminRoute>
                   <PopupAdmin />
-                </AdminRoute>
-              } 
-            />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
+              </AdminRoute>
+            } 
+          />
+          <Route 
+            path="/docs" 
+            element={
+              <ProtectedRoute>
+                <Documentation />
+              </ProtectedRoute>
+            } 
+          />
+          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="*" element={<NotFound />} />
           </Routes>
         </AnalyticsProvider>
       </BrowserRouter>
