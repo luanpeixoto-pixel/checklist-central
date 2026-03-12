@@ -162,6 +162,7 @@ const SectionCockpit = () => (
 const SectionVehicles = () => (
   <div>
     <h2 className="text-xl font-bold text-foreground border-b-2 border-primary pb-2 mb-4 page-break">3. Veículos (/veiculos)</h2>
+    <ScreenshotImg src={screenshotVeiculos} alt="Lista de Veículos — /veiculos" />
 
     <h3 className="text-lg font-semibold text-primary mt-4 mb-2">3.1 Listagem</h3>
     <p className="text-muted-foreground mb-2">Exibe todos os veículos do usuário com contador: <code className="bg-muted px-1 rounded text-xs">"X veículo(s) cadastrado(s)"</code></p>
