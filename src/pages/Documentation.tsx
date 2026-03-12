@@ -259,6 +259,7 @@ const SectionChecklist = () => (
 const SectionMaintenance = () => (
   <div>
     <h2 className="text-xl font-bold text-foreground border-b-2 border-primary pb-2 mb-4 page-break">5. Manutenção (/manutencao)</h2>
+    <ScreenshotImg src={screenshotManutencao} alt="Controle de Manutenção — /manutencao" />
 
     <h3 className="text-lg font-semibold text-primary mt-4 mb-2">5.1 Formulário</h3>
     <p className="text-muted-foreground mb-2">Campos: Veículo, Tipo (Preventiva/Corretiva), Grupo, Item, Descrição, Custo, Data, Quilometragem Atual/Próxima, Data Próxima, Fornecedor, Nota Fiscal, Status, Observações, Imagens.</p>
