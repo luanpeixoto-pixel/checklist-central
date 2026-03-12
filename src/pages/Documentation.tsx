@@ -200,6 +200,7 @@ const SectionVehicles = () => (
 const SectionChecklist = () => (
   <div>
     <h2 className="text-xl font-bold text-foreground border-b-2 border-primary pb-2 mb-4 page-break">4. Checklist de Inspeção (/checklist)</h2>
+    <ScreenshotImg src={screenshotChecklist} alt="Checklist de Inspeção — /checklist" />
 
     <h3 className="text-lg font-semibold text-primary mt-4 mb-2">4.1 Formulário</h3>
     <p className="text-muted-foreground mb-2">Seções colapsáveis:</p>
