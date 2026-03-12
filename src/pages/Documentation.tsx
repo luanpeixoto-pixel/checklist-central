@@ -60,6 +60,7 @@ const handleExportPDF = () => {
 const SectionAuth = () => (
   <div>
     <h2 className="text-xl font-bold text-foreground border-b-2 border-primary pb-2 mb-4">1. Autenticação (/auth)</h2>
+    <ScreenshotImg src={screenshotAuthLogin} alt="Tela de Login — /auth" />
     <h3 className="text-lg font-semibold text-primary mt-4 mb-2">1.1 Login</h3>
     <p className="text-muted-foreground mb-2">Formulário com campos: <strong>E-mail</strong> e <strong>Senha</strong>.</p>
     <table className="w-full text-sm border-collapse mb-4">
