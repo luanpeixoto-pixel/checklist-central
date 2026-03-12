@@ -356,6 +356,7 @@ const SectionFuel = () => (
 const SectionProfile = () => (
   <div>
     <h2 className="text-xl font-bold text-foreground border-b-2 border-primary pb-2 mb-4 page-break">7. Perfil (/profile)</h2>
+    <ScreenshotImg src={screenshotPerfil} alt="Meu Perfil — /profile" />
     <p className="text-muted-foreground mb-2">Campos editáveis: Nome, Telefone, Empresa, Cargo (select), Setor (select), Tamanho da Frota (select), Cidade, Estado (máx. 2 caracteres).</p>
     <p className="text-muted-foreground mb-2">Campo somente leitura: E-mail.</p>
     <p className="text-muted-foreground mb-2">Ao salvar, define <code className="bg-muted px-1 rounded text-xs">profile_completed = true</code>.</p>
