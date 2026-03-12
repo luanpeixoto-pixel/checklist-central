@@ -5,6 +5,22 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Download, FileText, BookOpen } from "lucide-react";
 
+// Screenshots
+import screenshotPainel from "@/assets/docs/painel.png";
+import screenshotVeiculos from "@/assets/docs/veiculos.png";
+import screenshotChecklist from "@/assets/docs/checklist.png";
+import screenshotManutencao from "@/assets/docs/manutencao.png";
+import screenshotCombustivel from "@/assets/docs/combustivel.png";
+import screenshotPerfil from "@/assets/docs/perfil.png";
+import screenshotAuthLogin from "@/assets/docs/auth-login.png";
+
+const ScreenshotImg = ({ src, alt }: { src: string; alt: string }) => (
+  <div className="my-4 rounded-lg overflow-hidden border border-border shadow-sm">
+    <img src={src} alt={alt} className="w-full" loading="lazy" />
+    <p className="text-xs text-muted-foreground text-center py-2 bg-muted/50">{alt}</p>
+  </div>
+);
+
 /* -------------------------------------------------------------------------- */
 /* PDF Export (print-based)                                                    */
 /* -------------------------------------------------------------------------- */
