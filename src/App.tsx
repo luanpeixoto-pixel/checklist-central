@@ -18,6 +18,7 @@ import NotFound from "./pages/NotFound";
 import PopupAdmin from "./pages/PopupAdmin";
 import Profile from "./pages/Profile";
 import VehicleProfile from "./pages/VehicleProfile";
+import Documentation from "./pages/Documentation";
 
 const queryClient = new QueryClient();
 
