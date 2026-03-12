@@ -5,6 +5,22 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Download, FileText, BookOpen } from "lucide-react";
 
+// Screenshots
+import screenshotPainel from "@/assets/docs/painel.png";
+import screenshotVeiculos from "@/assets/docs/veiculos.png";
+import screenshotChecklist from "@/assets/docs/checklist.png";
+import screenshotManutencao from "@/assets/docs/manutencao.png";
+import screenshotCombustivel from "@/assets/docs/combustivel.png";
+import screenshotPerfil from "@/assets/docs/perfil.png";
+import screenshotAuthLogin from "@/assets/docs/auth-login.png";
+
+const ScreenshotImg = ({ src, alt }: { src: string; alt: string }) => (
+  <div className="my-4 rounded-lg overflow-hidden border border-border shadow-sm">
+    <img src={src} alt={alt} className="w-full" loading="lazy" />
+    <p className="text-xs text-muted-foreground text-center py-2 bg-muted/50">{alt}</p>
+  </div>
+);
+
 /* -------------------------------------------------------------------------- */
 /* PDF Export (print-based)                                                    */
 /* -------------------------------------------------------------------------- */
@@ -44,6 +60,7 @@ const handleExportPDF = () => {
 const SectionAuth = () => (
   <div>
     <h2 className="text-xl font-bold text-foreground border-b-2 border-primary pb-2 mb-4">1. Autenticação (/auth)</h2>
+    <ScreenshotImg src={screenshotAuthLogin} alt="Tela de Login — /auth" />
     <h3 className="text-lg font-semibold text-primary mt-4 mb-2">1.1 Login</h3>
     <p className="text-muted-foreground mb-2">Formulário com campos: <strong>E-mail</strong> e <strong>Senha</strong>.</p>
     <table className="w-full text-sm border-collapse mb-4">
@@ -78,6 +95,7 @@ const SectionAuth = () => (
 const SectionCockpit = () => (
   <div>
     <h2 className="text-xl font-bold text-foreground border-b-2 border-primary pb-2 mb-4 page-break">2. Painel de Controle (/)</h2>
+    <ScreenshotImg src={screenshotPainel} alt="Painel de Controle — Tela principal" />
     <p className="text-muted-foreground mb-4">Dashboard principal com métricas, módulos e informações resumidas da frota.</p>
 
     <h3 className="text-lg font-semibold text-primary mt-4 mb-2">2.1 Metric Cards</h3>
@@ -144,6 +162,7 @@ const SectionCockpit = () => (
 const SectionVehicles = () => (
   <div>
     <h2 className="text-xl font-bold text-foreground border-b-2 border-primary pb-2 mb-4 page-break">3. Veículos (/veiculos)</h2>
+    <ScreenshotImg src={screenshotVeiculos} alt="Lista de Veículos — /veiculos" />
 
     <h3 className="text-lg font-semibold text-primary mt-4 mb-2">3.1 Listagem</h3>
     <p className="text-muted-foreground mb-2">Exibe todos os veículos do usuário com contador: <code className="bg-muted px-1 rounded text-xs">"X veículo(s) cadastrado(s)"</code></p>
@@ -181,6 +200,7 @@ const SectionVehicles = () => (
 const SectionChecklist = () => (
   <div>
     <h2 className="text-xl font-bold text-foreground border-b-2 border-primary pb-2 mb-4 page-break">4. Checklist de Inspeção (/checklist)</h2>
+    <ScreenshotImg src={screenshotChecklist} alt="Checklist de Inspeção — /checklist" />
 
     <h3 className="text-lg font-semibold text-primary mt-4 mb-2">4.1 Formulário</h3>
     <p className="text-muted-foreground mb-2">Seções colapsáveis:</p>
@@ -239,6 +259,7 @@ const SectionChecklist = () => (
 const SectionMaintenance = () => (
   <div>
     <h2 className="text-xl font-bold text-foreground border-b-2 border-primary pb-2 mb-4 page-break">5. Manutenção (/manutencao)</h2>
+    <ScreenshotImg src={screenshotManutencao} alt="Controle de Manutenção — /manutencao" />
 
     <h3 className="text-lg font-semibold text-primary mt-4 mb-2">5.1 Formulário</h3>
     <p className="text-muted-foreground mb-2">Campos: Veículo, Tipo (Preventiva/Corretiva), Grupo, Item, Descrição, Custo, Data, Quilometragem Atual/Próxima, Data Próxima, Fornecedor, Nota Fiscal, Status, Observações, Imagens.</p>
@@ -285,6 +306,7 @@ const SectionMaintenance = () => (
 const SectionFuel = () => (
   <div>
     <h2 className="text-xl font-bold text-foreground border-b-2 border-primary pb-2 mb-4 page-break">6. Combustível (/combustivel)</h2>
+    <ScreenshotImg src={screenshotCombustivel} alt="Controle de Combustível — /combustivel" />
 
     <h3 className="text-lg font-semibold text-primary mt-4 mb-2">6.1 Formulário</h3>
     <p className="text-muted-foreground mb-2">Campos: Veículo, Data, Posto, Tipo Combustível, Litros, Valor Total, Quilometragem, Tanque Cheio, Condutor, Observações, Imagens.</p>
@@ -334,6 +356,7 @@ const SectionFuel = () => (
 const SectionProfile = () => (
   <div>
     <h2 className="text-xl font-bold text-foreground border-b-2 border-primary pb-2 mb-4 page-break">7. Perfil (/profile)</h2>
+    <ScreenshotImg src={screenshotPerfil} alt="Meu Perfil — /profile" />
     <p className="text-muted-foreground mb-2">Campos editáveis: Nome, Telefone, Empresa, Cargo (select), Setor (select), Tamanho da Frota (select), Cidade, Estado (máx. 2 caracteres).</p>
     <p className="text-muted-foreground mb-2">Campo somente leitura: E-mail.</p>
     <p className="text-muted-foreground mb-2">Ao salvar, define <code className="bg-muted px-1 rounded text-xs">profile_completed = true</code>.</p>
